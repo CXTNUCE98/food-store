@@ -6,7 +6,7 @@ export const SITE: SiteConfig = {
   brandTail: 'TÉP',
   tagline:
     'Đồ ăn vặt chua ngọt, làm mới mỗi ngày. Chọn món, chụp màn hình, nhắn tin — tụi mình lo phần còn lại.',
-  messengerUrl: 'https://www.messenger.com/e2ee/t/7823905377719022',
+  messengerUrl: 'https://www.facebook.com/messages/t/722454310958839',
   zaloUrl: '#',
   instagramUrl: '#',
 }
