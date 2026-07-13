@@ -27,7 +27,17 @@ const emit = defineEmits<{ play: [Product]; snap: [Product] }>()
       </div>
 
       <div v-if="featured" class="hero-feature">
-        <span class="monogram">{{ monogram(featured.name) }}</span>
+        <img
+          v-if="featured.thumbnail_url"
+          :src="featured.thumbnail_url"
+          :alt="featured.name"
+          class="feature-cover"
+          fetchpriority="high"
+          decoding="async"
+          width="800"
+          height="1000"
+        />
+        <span v-else class="monogram">{{ monogram(featured.name) }}</span>
         <span class="hf-tag">★ Bán chạy</span>
         <div class="hf-body">
           <h3 class="display">{{ featured.name }}</h3>
@@ -101,6 +111,14 @@ const emit = defineEmits<{ play: [Product]; snap: [Product] }>()
   box-shadow: var(--shadow);
   aspect-ratio: 4 / 5;
   background: var(--hero-feature-bg);
+}
+
+.feature-cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .monogram {

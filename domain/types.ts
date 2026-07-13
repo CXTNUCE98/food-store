@@ -30,10 +30,23 @@ export interface Product {
   description: string
   /** Short taste tag, e.g. "Chua ngọt". */
   taste: string
-  /** Optional video URL (YouTube/Vimeo embed or mp4). Empty = "coming soon". */
-  video?: string
+  /** Poster/cover image shown on the card and as the video poster. */
+  thumbnail_url?: string
+  /** Video URL (YouTube/Vimeo watch/embed link or a direct mp4). */
+  video_url?: string
+  /** Gallery image URLs — clicked to view in the preview. */
+  images?: string[]
   /** Marks the product as a best-seller (badge + hero feature). */
   featured?: boolean
+}
+
+/** A single item in a product's preview gallery. */
+export interface MediaItem {
+  kind: 'video' | 'image'
+  /** The source URL: an embeddable/mp4 URL for video, an image URL otherwise. */
+  src: string
+  /** Preview image shown in the thumbnail strip. */
+  poster: string
 }
 
 /** Theme identifiers. `warm` is the default (TÓP TÉP look). */

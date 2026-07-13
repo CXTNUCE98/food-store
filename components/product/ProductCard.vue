@@ -15,6 +15,7 @@ const emit = defineEmits<{ play: [Product]; snap: [Product] }>()
     <ProductThumb
       :category="product.category"
       :name="product.name"
+      :thumbnail="product.thumbnail_url"
       :show-best="product.featured"
       show-play
       show-img-tag

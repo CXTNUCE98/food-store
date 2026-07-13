@@ -11,12 +11,16 @@ withDefaults(
   defineProps<{
     category: CategoryId
     name: string
+    /** Cover image; when set it replaces the gradient monogram placeholder. */
+    thumbnail?: string
+    /** Hint the browser to prioritise this image (e.g. above-the-fold). */
+    eager?: boolean
     monoSize?: number
     showPlay?: boolean
     showBest?: boolean
     showImgTag?: boolean
   }>(),
-  { monoSize: 96, showPlay: false, showBest: false, showImgTag: false },
+  { monoSize: 96, showPlay: false, showBest: false, showImgTag: false, eager: false },
 )
 
 const emit = defineEmits<{ play: [] }>()
@@ -25,10 +29,23 @@ const emit = defineEmits<{ play: [] }>()
 <template>
   <div class="thumb" :data-cat="category">
     <span v-if="showBest" class="best">★ Bán chạy</span>
-    <span class="mono display" :style="{ fontSize: `${monoSize}px` }">
+
+    <img
+      v-if="thumbnail"
+      :src="thumbnail"
+      :alt="name"
+      class="cover"
+      :loading="eager ? 'eager' : 'lazy'"
+      :fetchpriority="eager ? 'high' : 'auto'"
+      decoding="async"
+      width="800"
+      height="600"
+    />
+    <span v-else class="mono display" :style="{ fontSize: `${monoSize}px` }">
       {{ monogram(name) }}
     </span>
-    <span v-if="showImgTag" class="imgtag">Ảnh minh hoạ</span>
+
+    <span v-if="showImgTag && !thumbnail" class="imgtag">Ảnh minh hoạ</span>
     <button
       v-if="showPlay"
       class="play"
@@ -61,6 +78,14 @@ const emit = defineEmits<{ play: [] }>()
 }
 .thumb[data-cat='banhtrang'] {
   background: var(--thumb-banhtrang);
+}
+
+.cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .mono {

@@ -18,6 +18,7 @@ const emit = defineEmits<{ close: [] }>()
         class="sc-hero"
         :category="product.category"
         :name="product.name"
+        :thumbnail="product.thumbnail_url"
         :mono-size="88"
       />
 

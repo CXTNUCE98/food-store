@@ -4,7 +4,7 @@
  * routed page content. Product modals are rendered here once so they overlay
  * every page and read their state from useProductModals().
  */
-const { videoProduct, shareProduct, closeAll } = useProductModals()
+const { previewProduct, shareProduct, openShare, closeAll } = useProductModals()
 </script>
 
 <template>
@@ -16,7 +16,7 @@ const { videoProduct, shareProduct, closeAll } = useProductModals()
     <SiteFooter />
     <FloatingContact />
 
-    <VideoModal :product="videoProduct" @close="closeAll" />
+    <PreviewModal :product="previewProduct" @close="closeAll" @snap="openShare" />
     <ShareCard :product="shareProduct" @close="closeAll" />
   </div>
 </template>
