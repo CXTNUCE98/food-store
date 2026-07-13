@@ -7,11 +7,9 @@ import { buildMediaGallery, toEmbedUrl } from '~/utils/media'
  * - The main stage shows the active item: video (iframe/mp4) or a full image.
  * - Video is placed first, so it is what visitors see by default.
  * - A thumbnail strip lets them jump to any image (or back to the video).
- * The video only mounts once the visitor actually selects it, so opening the
- * preview never autoloads a heavy embed.
+ * Play/pause/seek are handled by the player's own native controls — the
+ * YouTube embed control bar for embeds, the browser's controls for mp4.
  */
-import { postYouTubeCommand } from '~/utils/media'
-
 const props = defineProps<{ product: Product }>()
 
 const items = computed(() => buildMediaGallery(props.product))
@@ -22,32 +20,14 @@ const activeEmbed = computed(() =>
   active.value?.kind === 'video' ? toEmbedUrl(active.value.src) : null,
 )
 
-// enablejsapi=1 lets us drive play/pause via postMessage from our own button.
+// autoplay so the video starts when the preview opens; rel=0 keeps suggestions
+// limited to the same channel.
 const embedSrc = computed(() =>
-  activeEmbed.value
-    ? `${activeEmbed.value}?autoplay=1&rel=0&enablejsapi=1&playsinline=1`
-    : '',
+  activeEmbed.value ? `${activeEmbed.value}?autoplay=1&rel=0&playsinline=1` : '',
 )
-
-const iframeRef = ref<HTMLIFrameElement | null>(null)
-const videoRef = ref<HTMLVideoElement | null>(null)
-const isPlaying = ref(true)
-
-/** Toggle the currently playing video, whether it's a YouTube embed or mp4. */
-function togglePlay() {
-  if (activeEmbed.value) {
-    postYouTubeCommand(iframeRef.value, isPlaying.value ? 'pauseVideo' : 'playVideo')
-    isPlaying.value = !isPlaying.value
-  } else if (videoRef.value) {
-    if (videoRef.value.paused) videoRef.value.play()
-    else videoRef.value.pause()
-    isPlaying.value = !videoRef.value.paused
-  }
-}
 
 function select(index: number) {
   activeIndex.value = index
-  isPlaying.value = true // a freshly-selected video autoplays
 }
 
 // Reset to the first item (the video, when present) whenever the product swaps.
@@ -55,7 +35,6 @@ watch(
   () => props.product.id,
   () => {
     activeIndex.value = 0
-    isPlaying.value = true
   },
 )
 </script>
@@ -68,23 +47,12 @@ watch(
       <template v-if="active?.kind === 'video'">
         <iframe
           v-if="activeEmbed"
-          ref="iframeRef"
           :src="embedSrc"
           title="Video món ăn"
           allow="autoplay; encrypted-media; picture-in-picture"
           allowfullscreen
         />
-        <video v-else ref="videoRef" :src="active.src" controls autoplay playsinline />
-
-        <button
-          type="button"
-          class="absolute bottom-3.5 right-3.5 z-[2] grid size-12 cursor-pointer place-items-center rounded-full border-0 bg-black/55 text-white backdrop-blur-[4px] transition-[background,transform] duration-150 hover:scale-105 hover:bg-accent hover:text-accent-ink [&_svg]:size-[22px]"
-          :aria-label="isPlaying ? 'Tạm dừng' : 'Phát'"
-          @click="togglePlay"
-        >
-          <IconPause v-if="isPlaying" />
-          <IconPlay v-else />
-        </button>
+        <video v-else :src="active.src" controls autoplay playsinline />
       </template>
 
       <img

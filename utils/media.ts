@@ -73,15 +73,3 @@ export function buildMediaGallery(product: Product): MediaItem[] {
 export function hasPreview(product: Product): boolean {
   return buildMediaGallery(product).length > 0
 }
-
-/**
- * Sends a command to a YouTube iframe via its postMessage API.
- * Requires the embed URL to carry `enablejsapi=1`. `func` is a player method
- * such as 'playVideo' or 'pauseVideo'.
- */
-export function postYouTubeCommand(iframe: HTMLIFrameElement | null, func: string) {
-  iframe?.contentWindow?.postMessage(
-    JSON.stringify({ event: 'command', func, args: [] }),
-    '*',
-  )
-}
