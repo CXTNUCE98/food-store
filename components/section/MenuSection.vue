@@ -18,33 +18,18 @@ const emit = defineEmits<{ play: [Product]; snap: [Product] }>()
       <div>
         <span class="eyebrow">Thực đơn hôm nay</span>
         <h2 class="display">Tất cả món đang có</h2>
-        <p>Giá và món là dữ liệu mẫu — chỉnh trong <code>data/products.ts</code> khi có menu thật.</p>
       </div>
     </div>
 
     <div class="filters">
-      <FilterChip
-        label="Tất cả"
-        :active="activeFilter === ALL_FILTER"
-        @select="activeFilter = ALL_FILTER"
-      />
-      <FilterChip
-        v-for="cat in CATEGORIES"
-        :key="cat.id"
-        :label="cat.label"
-        :active="activeFilter === cat.id"
-        @select="activeFilter = cat.id"
-      />
+      <FilterChip label="Tất cả" :active="activeFilter === ALL_FILTER" @select="activeFilter = ALL_FILTER" />
+      <FilterChip v-for="cat in CATEGORIES" :key="cat.id" :label="cat.label" :active="activeFilter === cat.id"
+        @select="activeFilter = cat.id" />
     </div>
 
     <div class="grid">
-      <ProductCard
-        v-for="product in products"
-        :key="product.id"
-        :product="product"
-        @play="emit('play', $event)"
-        @snap="emit('snap', $event)"
-      />
+      <ProductCard v-for="product in products" :key="product.id" :product="product" @play="emit('play', $event)"
+        @snap="emit('snap', $event)" />
       <p v-if="isEmpty" class="empty">Chưa có món trong danh mục này.</p>
     </div>
   </section>

@@ -10,27 +10,54 @@ import { buildMediaGallery, toEmbedUrl } from '~/utils/media'
  * The video only mounts once the visitor actually selects it, so opening the
  * preview never autoloads a heavy embed.
  */
+import { postYouTubeCommand } from '~/utils/media'
+
 const props = defineProps<{ product: Product }>()
 
 const items = computed(() => buildMediaGallery(props.product))
 const activeIndex = ref(0)
-
-// Reset to the first item (the video, when present) whenever the product swaps.
-watch(
-  () => props.product.id,
-  () => {
-    activeIndex.value = 0
-  },
-)
 
 const active = computed(() => items.value[activeIndex.value])
 const activeEmbed = computed(() =>
   active.value?.kind === 'video' ? toEmbedUrl(active.value.src) : null,
 )
 
+// enablejsapi=1 lets us drive play/pause via postMessage from our own button.
+const embedSrc = computed(() =>
+  activeEmbed.value
+    ? `${activeEmbed.value}?autoplay=1&rel=0&enablejsapi=1&playsinline=1`
+    : '',
+)
+
+const iframeRef = ref<HTMLIFrameElement | null>(null)
+const videoRef = ref<HTMLVideoElement | null>(null)
+const isPlaying = ref(true)
+
+/** Toggle the currently playing video, whether it's a YouTube embed or mp4. */
+function togglePlay() {
+  if (activeEmbed.value) {
+    postYouTubeCommand(iframeRef.value, isPlaying.value ? 'pauseVideo' : 'playVideo')
+    isPlaying.value = !isPlaying.value
+  } else if (videoRef.value) {
+    if (videoRef.value.paused) videoRef.value.play()
+    else videoRef.value.pause()
+    isPlaying.value = !videoRef.value.paused
+  }
+}
+
 function select(index: number) {
   activeIndex.value = index
+  isPlaying.value = true // a freshly-selected video autoplays
 }
+
+// Reset to the first item (the video, when present) whenever the product swaps.
+watch(
+  () => props.product.id,
+  () => {
+    activeIndex.value = 0
+    isPlaying.value = true
+  },
+)
 </script>
 
 <template>
@@ -39,12 +66,23 @@ function select(index: number) {
       <template v-if="active?.kind === 'video'">
         <iframe
           v-if="activeEmbed"
-          :src="`${activeEmbed}?autoplay=1&rel=0`"
+          ref="iframeRef"
+          :src="embedSrc"
           title="Video món ăn"
           allow="autoplay; encrypted-media; picture-in-picture"
           allowfullscreen
         />
-        <video v-else :src="active.src" controls autoplay playsinline />
+        <video v-else ref="videoRef" :src="active.src" controls autoplay playsinline />
+
+        <button
+          class="toggle-play"
+          type="button"
+          :aria-label="isPlaying ? 'Tạm dừng' : 'Phát'"
+          @click="togglePlay"
+        >
+          <IconPause v-if="isPlaying" />
+          <IconPlay v-else />
+        </button>
       </template>
 
       <img
@@ -109,6 +147,37 @@ function select(index: number) {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* Our own play/pause control, sitting above the embed so a single tap works
+   even when the player's native control bar is hidden. */
+.toggle-play {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  z-index: 2;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 0;
+  background: oklch(0% 0 0 / 0.55);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: background 0.18s, transform 0.15s;
+}
+
+.toggle-play:hover {
+  background: var(--accent);
+  color: var(--accent-ink);
+  transform: scale(1.06);
+}
+
+.toggle-play :deep(svg) {
+  width: 22px;
+  height: 22px;
 }
 
 .stage-empty {
