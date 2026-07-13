@@ -1,0 +1,77 @@
+/*
+ * Base reset + global primitives shared by every page.
+ * Component-specific styles live inside their own <style scoped> blocks;
+ * only truly global helpers belong here.
+ */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--body-bg);
+  color: var(--fg);
+  font: 16px/1.6 var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: var(--body-letter-spacing);
+  padding-bottom: 88px;
+  min-height: 100vh;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* ---- Global layout + typography helpers ---- */
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* The display face + weight both come from theme tokens, so a single class
+   renders as a rounded sans in the warm theme and as Lora serif in dark. */
+.display {
+  font-family: var(--font-display);
+  font-weight: var(--font-display-weight);
+}
+
+.eyebrow {
+  font: 600 12px/1 var(--font-sans);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

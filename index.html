@@ -1,0 +1,683 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ANTHE — Menu đồ ăn vặt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: oklch(17% 0.012 60);
+    --bg-2: oklch(20% 0.014 55);
+    --surface: oklch(23% 0.016 58);
+    --surface-2: oklch(27% 0.018 58);
+    --fg: oklch(95% 0.012 85);
+    --muted: oklch(70% 0.02 70);
+    --faint: oklch(55% 0.018 65);
+    --border: oklch(32% 0.016 60);
+    --accent: oklch(82% 0.13 88);      /* gold cổ điển */
+    --accent-ink: oklch(24% 0.06 80);
+    --lime: oklch(83% 0.16 135);       /* chua/tươi */
+    --chili: oklch(66% 0.18 40);       /* cay/nóng */
+    --radius: 16px;
+    --shadow: 0 24px 60px -20px rgba(0,0,0,.7);
+    --serif: 'Lora', Georgia, 'Times New Roman', 'Songti SC', serif;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:
+      radial-gradient(1200px 600px at 80% -10%, oklch(24% 0.03 80 / .6), transparent 60%),
+      radial-gradient(900px 500px at -10% 20%, oklch(22% 0.02 40 / .5), transparent 55%),
+      var(--bg);
+    color:var(--fg);
+    font:16px/1.6 var(--sans);
+    -webkit-font-smoothing:antialiased;
+    letter-spacing:.01em;
+    padding-bottom:88px;
+  }
+  ::selection{background:var(--accent);color:var(--accent-ink)}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+  .serif{font-family:var(--serif)}
+  a{color:inherit;text-decoration:none}
+  .eyebrow{
+    font:600 12px/1 var(--sans);
+    letter-spacing:.32em;text-transform:uppercase;color:var(--accent);
+  }
+
+  /* ---------- Header ---------- */
+  header{
+    position:sticky;top:0;z-index:40;
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    background:oklch(17% 0.012 60 / .78);
+    border-bottom:1px solid var(--border);
+  }
+  .bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0}
+  .brand{display:flex;align-items:baseline;gap:10px}
+  .brand .logo{
+    font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:.14em;
+    color:var(--fg);
+  }
+  .brand .logo b{color:var(--accent)}
+  .brand .sub{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--faint)}
+  .hnote{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+  .hnote .dot{width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 10px var(--lime)}
+  @media(max-width:680px){ .hnote{display:none} }
+
+  /* ---------- Hero ---------- */
+  .hero{padding:64px 0 40px;position:relative}
+  .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center}
+  .hero h1{
+    font-family:var(--serif);font-weight:700;line-height:1.02;
+    font-size:clamp(40px,6.4vw,76px);letter-spacing:-.01em;margin:14px 0 18px;
+  }
+  .hero h1 em{font-style:italic;color:var(--accent)}
+  .hero p.lead{font-size:clamp(16px,2vw,19px);color:var(--muted);max-width:46ch}
+  .hero .cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+  .btn{
+    display:inline-flex;align-items:center;gap:9px;
+    padding:13px 22px;border-radius:999px;font-weight:600;font-size:15px;
+    border:1px solid transparent;cursor:pointer;transition:transform .15s ease, background .2s ease, border-color .2s;
+  }
+  .btn:hover{transform:translateY(-2px)}
+  .btn-gold{background:var(--accent);color:var(--accent-ink)}
+  .btn-gold:hover{background:oklch(87% 0.13 88)}
+  .btn-ghost{background:transparent;color:var(--fg);border-color:var(--border)}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+  .btn svg{width:18px;height:18px}
+
+  /* hero visual = featured product */
+  .hero-feature{
+    position:relative;border-radius:22px;overflow:hidden;border:1px solid var(--border);
+    box-shadow:var(--shadow);aspect-ratio:4/5;
+    background:
+      radial-gradient(120% 90% at 30% 15%, oklch(40% 0.11 135 / .55), transparent 60%),
+      radial-gradient(110% 80% at 90% 90%, oklch(35% 0.13 40 / .5), transparent 60%),
+      linear-gradient(160deg, var(--surface-2), var(--bg-2));
+  }
+  .hero-feature .monogram{
+    position:absolute;inset:0;display:grid;place-items:center;
+    font-family:var(--serif);font-size:min(42vw,300px);color:oklch(100% 0 0 / .04);font-weight:700;
+  }
+  .hf-tag{
+    position:absolute;top:16px;left:16px;display:inline-flex;align-items:center;gap:7px;
+    background:oklch(17% 0.012 60 / .7);border:1px solid var(--border);backdrop-filter:blur(6px);
+    padding:7px 13px;border-radius:999px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--lime);
+  }
+  .hf-body{position:absolute;left:0;right:0;bottom:0;padding:22px;
+    background:linear-gradient(to top, oklch(14% 0.01 60 / .92), transparent);}
+  .hf-body h3{font-family:var(--serif);font-size:26px;font-weight:700}
+  .hf-body .price{color:var(--accent);font-weight:600;margin-top:2px}
+  .hf-body .row{display:flex;gap:10px;margin-top:14px}
+  .play-mini{
+    display:inline-flex;align-items:center;gap:8px;padding:9px 15px;border-radius:999px;
+    background:oklch(100% 0 0 / .1);border:1px solid var(--border);color:var(--fg);font-size:13px;cursor:pointer;
+  }
+  .play-mini:hover{background:oklch(100% 0 0 / .16)}
+  @media(max-width:860px){
+    .hero-grid{grid-template-columns:1fr;gap:32px}
+    .hero-feature{max-width:360px;aspect-ratio:4/4.4}
+  }
+
+  /* ---------- Steps ---------- */
+  .steps{padding:22px 0 8px}
+  .steps-in{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .step{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px}
+  .step .n{font-family:var(--serif);font-size:20px;color:var(--accent-ink);background:var(--accent);
+    width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:700}
+  .step h4{margin:14px 0 4px;font-size:16px}
+  .step p{color:var(--muted);font-size:14px}
+  @media(max-width:680px){ .steps-in{grid-template-columns:1fr} }
+
+  /* ---------- Filter + Menu ---------- */
+  .menu-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:56px 0 20px;flex-wrap:wrap}
+  .menu-head h2{font-family:var(--serif);font-size:clamp(28px,4vw,40px);font-weight:700}
+  .menu-head p{color:var(--muted);font-size:14px;max-width:40ch;margin-top:6px}
+  .filters{position:sticky;top:63px;z-index:30;display:flex;gap:8px;flex-wrap:wrap;padding:14px 0;
+    background:linear-gradient(to bottom, var(--bg) 60%, transparent);}
+  .chip{
+    padding:9px 16px;border-radius:999px;border:1px solid var(--border);background:var(--surface);
+    color:var(--muted);font-size:14px;font-weight:500;cursor:pointer;transition:all .18s;white-space:nowrap;
+  }
+  .chip:hover{color:var(--fg);border-color:var(--faint)}
+  .chip.active{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:8px}
+  @media(max-width:900px){ .grid{grid-template-columns:repeat(2,1fr)} }
+  @media(max-width:560px){ .grid{grid-template-columns:1fr} }
+
+  .card{
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;
+    display:flex;flex-direction:column;transition:transform .2s ease, border-color .2s ease, box-shadow .2s;
+  }
+  .card:hover{transform:translateY(-4px);border-color:oklch(45% 0.05 80);box-shadow:var(--shadow)}
+  .card.hidden{display:none}
+  .thumb{
+    position:relative;aspect-ratio:4/3;overflow:hidden;cursor:pointer;
+    display:grid;place-items:center;
+  }
+  .thumb[data-cat="chua"]{background:radial-gradient(120% 100% at 30% 20%, oklch(42% 0.13 135 / .6), transparent 60%),linear-gradient(160deg,var(--surface-2),var(--bg-2))}
+  .thumb[data-cat="lac"]{background:radial-gradient(120% 100% at 70% 20%, oklch(48% 0.13 90 / .55), transparent 60%),linear-gradient(160deg,var(--surface-2),var(--bg-2))}
+  .thumb[data-cat="say"]{background:radial-gradient(120% 100% at 40% 25%, oklch(40% 0.12 45 / .55), transparent 60%),linear-gradient(160deg,var(--surface-2),var(--bg-2))}
+  .thumb[data-cat="banhtrang"]{background:radial-gradient(120% 100% at 60% 20%, oklch(44% 0.09 60 / .55), transparent 60%),linear-gradient(160deg,var(--surface-2),var(--bg-2))}
+  .thumb .mono{font-family:var(--serif);font-size:96px;font-weight:700;color:oklch(100% 0 0 / .07)}
+  .thumb .imgtag{position:absolute;bottom:10px;left:10px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--faint);background:oklch(15% 0.01 60 / .6);padding:4px 8px;border-radius:6px}
+  .play{
+    position:absolute;top:12px;right:12px;width:44px;height:44px;border-radius:50%;
+    background:oklch(15% 0.01 60 / .65);border:1px solid var(--border);backdrop-filter:blur(6px);
+    display:grid;place-items:center;transition:all .2s;
+  }
+  .thumb:hover .play{background:var(--accent);border-color:var(--accent);transform:scale(1.06)}
+  .play svg{width:16px;height:16px;fill:var(--fg);margin-left:2px}
+  .thumb:hover .play svg{fill:var(--accent-ink)}
+  .best{position:absolute;top:12px;left:12px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    background:var(--chili);color:oklch(18% 0.02 40);font-weight:700;padding:5px 10px;border-radius:999px}
+
+  .card-body{padding:16px 16px 18px;display:flex;flex-direction:column;flex:1}
+  .card-body h3{font-family:var(--serif);font-size:19px;font-weight:700;line-height:1.2}
+  .card-body .desc{color:var(--muted);font-size:13.5px;margin-top:5px;flex:1}
+  .card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:14px;gap:10px}
+  .price{color:var(--accent);font-weight:700;font-size:17px}
+  .price .u{font-size:12px;font-weight:500;color:var(--faint)}
+  .taste{display:inline-block;font-size:11px;padding:3px 9px;border-radius:999px;border:1px solid var(--border);color:var(--muted);margin-top:8px}
+  .snap{
+    display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;
+    padding:9px 13px;border-radius:10px;background:oklch(100% 0 0 / .06);border:1px solid var(--border);
+    color:var(--fg);cursor:pointer;transition:all .18s;
+  }
+  .snap:hover{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  .snap svg{width:15px;height:15px}
+
+  .empty{grid-column:1/-1;text-align:center;padding:60px 0;color:var(--faint)}
+
+  /* ---------- Footer ---------- */
+  footer{margin-top:72px;border-top:1px solid var(--border);padding:48px 0 32px}
+  .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:32px}
+  .foot-grid h5{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);margin-bottom:14px}
+  .foot-grid a{display:block;color:var(--muted);padding:5px 0;transition:color .15s}
+  .foot-grid a:hover{color:var(--accent)}
+  .foot-brand .logo{font-family:var(--serif);font-size:24px;letter-spacing:.14em}
+  .foot-brand .logo b{color:var(--accent)}
+  .foot-brand p{color:var(--muted);font-size:14px;margin-top:10px;max-width:34ch}
+  .copyr{margin-top:36px;color:var(--faint);font-size:12.5px;border-top:1px solid var(--border);padding-top:20px}
+  @media(max-width:680px){ .foot-grid{grid-template-columns:1fr;gap:24px} }
+
+  /* ---------- Floating contact ---------- */
+  .fab{
+    position:fixed;left:0;right:0;bottom:0;z-index:45;
+    background:oklch(15% 0.012 60 / .92);backdrop-filter:blur(14px);border-top:1px solid var(--border);
+    padding:12px 24px;display:flex;align-items:center;justify-content:center;gap:12px;
+  }
+  .fab .txt{font-size:13.5px;color:var(--muted);margin-right:4px}
+  @media(max-width:560px){ .fab .txt{display:none} .fab{justify-content:stretch} .fab .btn{flex:1;justify-content:center} }
+
+  /* ---------- Modal ---------- */
+  .overlay{
+    position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:24px;
+    background:oklch(10% 0.01 60 / .82);backdrop-filter:blur(6px);
+  }
+  .overlay.open{display:flex}
+  .modal{
+    background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;
+    width:100%;max-width:720px;box-shadow:var(--shadow);animation:pop .22s ease;
+  }
+  @keyframes pop{from{transform:scale(.96);opacity:0}to{transform:scale(1);opacity:1}}
+  .m-video{aspect-ratio:16/9;position:relative;background:oklch(12% 0.01 60);display:grid;place-items:center}
+  .m-video iframe,.m-video video{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .m-video .ph{text-align:center;color:var(--muted);padding:24px}
+  .m-video .ph .pbtn{width:64px;height:64px;border-radius:50%;background:var(--accent);display:grid;place-items:center;margin:0 auto 14px}
+  .m-video .ph .pbtn svg{width:24px;height:24px;fill:var(--accent-ink);margin-left:3px}
+  .m-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:20px 22px}
+  .m-head h3{font-family:var(--serif);font-size:22px}
+  .m-head .price{margin-top:4px}
+  .x{width:38px;height:38px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--fg);
+    font-size:20px;cursor:pointer;flex-shrink:0;transition:all .15s}
+  .x:hover{background:oklch(100% 0 0 / .08)}
+
+  /* share/screenshot card */
+  .share-card{
+    background:linear-gradient(160deg,var(--surface-2),var(--bg-2));border:1px solid var(--border);
+    border-radius:20px;width:100%;max-width:420px;overflow:hidden;box-shadow:var(--shadow);animation:pop .22s ease;
+  }
+  .sc-top{padding:20px 22px 0;display:flex;align-items:center;justify-content:space-between}
+  .sc-top .logo{font-family:var(--serif);font-size:20px;letter-spacing:.14em}
+  .sc-top .logo b{color:var(--accent)}
+  .sc-hero{margin:16px 22px 0;aspect-ratio:4/3;border-radius:14px;display:grid;place-items:center}
+  .sc-hero .mono{font-family:var(--serif);font-size:88px;color:oklch(100% 0 0 / .08);font-weight:700}
+  .sc-info{padding:18px 22px 4px}
+  .sc-info h3{font-family:var(--serif);font-size:24px}
+  .sc-info .desc{color:var(--muted);font-size:14px;margin:6px 0 10px}
+  .sc-info .price{font-size:22px}
+  .sc-note{margin:8px 22px 0;padding:12px 14px;border-radius:12px;background:oklch(100% 0 0 / .05);
+    border:1px dashed var(--faint);font-size:13px;color:var(--muted)}
+  .sc-note b{color:var(--lime)}
+  .sc-foot{padding:16px 22px 22px;display:flex;gap:10px}
+  .sc-foot .btn{flex:1;justify-content:center;font-size:14px;padding:11px 14px}
+</style>
+</head>
+<body>
+
+<header data-od-id="site-header">
+  <div class="wrap bar">
+    <div class="brand" data-od-id="brand">
+      <span class="logo serif">AN<b>THE</b></span>
+      <span class="sub">Đồ ăn vặt</span>
+    </div>
+    <div class="hnote"><span class="dot"></span> Chọn món → chụp màn hình → nhắn tin là xong</div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" data-od-id="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">Menu trưng bày · Không đặt online</span>
+      <h1 class="serif">Ăn vặt <em>chua ngọt</em>,<br>chốt đơn trong một tin nhắn</h1>
+      <p class="lead">Lướt xem các món ANTHE đang có, bấm vào để xem clip món ăn. Ưng món nào thì chụp lại màn hình rồi nhắn tin cho tụi mình — khỏi cần điền form, khỏi thanh toán online.</p>
+      <div class="cta-row">
+        <a class="btn btn-gold" href="https://www.messenger.com/e2ee/t/7823905377719022" target="_blank" rel="noopener" data-od-id="cta-messenger">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.14 2 11.25c0 2.88 1.42 5.45 3.64 7.15V22l3.33-1.83c.94.26 1.93.4 2.03.4 5.5 0 10-4.14 10-9.25S17.5 2 12 2Zm1.03 12.05-2.55-2.72-4.98 2.72 5.47-5.81 2.61 2.72 4.9-2.72-5.45 5.81Z"/></svg>
+          Nhắn Messenger
+        </a>
+        <a class="btn btn-ghost" href="#" data-od-id="cta-zalo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v11H8l-4 3V5Z"/></svg>
+          Nhắn Zalo
+        </a>
+        <a class="btn btn-ghost" href="#menu" data-od-id="cta-menu">Xem menu ↓</a>
+      </div>
+    </div>
+
+    <div class="hero-feature" data-od-id="hero-feature">
+      <span class="monogram">A</span>
+      <span class="hf-tag">★ Bán chạy</span>
+      <div class="hf-body">
+        <h3 class="serif">Chùm ruột chanh muối</h3>
+        <div class="price">35.000<span style="font-size:13px;color:var(--faint)">đ / hũ</span></div>
+        <div class="row">
+          <button class="play-mini js-video" data-name="Chùm ruột chanh muối" data-video="" data-od-id="feature-play">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            Xem clip
+          </button>
+          <button class="play-mini js-snap" data-name="Chùm ruột chanh muối" data-price="35.000đ / hũ" data-cat="chua" data-desc="Chùm ruột giòn ngâm chanh muối, chua ngọt đậm đà — mồi ăn vặt kinh điển." data-od-id="feature-snap">
+            Chụp món này
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STEPS -->
+<section class="steps wrap" data-od-id="steps">
+  <div class="steps-in">
+    <div class="step" data-od-id="step-1"><div class="n serif">1</div><h4>Chọn món</h4><p>Lướt menu, bấm vào món để xem clip và mô tả chi tiết.</p></div>
+    <div class="step" data-od-id="step-2"><div class="n serif">2</div><h4>Chụp màn hình</h4><p>Bấm “Chụp món này” để hiện thẻ gọn gàng rồi chụp lại.</p></div>
+    <div class="step" data-od-id="step-3"><div class="n serif">3</div><h4>Nhắn tin</h4><p>Gửi ảnh qua Messenger/Zalo, tụi mình chốt đơn liền.</p></div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section class="wrap" id="menu" data-od-id="menu">
+  <div class="menu-head">
+    <div>
+      <span class="eyebrow">Thực đơn hôm nay</span>
+      <h2 class="serif">Tất cả món đang có</h2>
+      <p>Giá và món là dữ liệu mẫu — bạn chỉnh trực tiếp trong file khi có menu thật.</p>
+    </div>
+  </div>
+
+  <div class="filters" data-od-id="filters">
+    <button class="chip active" data-filter="all">Tất cả</button>
+    <button class="chip" data-filter="chua">Chua ngọt</button>
+    <button class="chip" data-filter="lac">Trái cây lắc</button>
+    <button class="chip" data-filter="say">Sấy khô</button>
+    <button class="chip" data-filter="banhtrang">Bánh tráng</button>
+  </div>
+
+  <div class="grid" id="grid" data-od-id="product-grid">
+
+    <!-- Card template repeats -->
+    <article class="card" data-cat="chua" data-od-id="card-chum-ruot">
+      <div class="thumb" data-cat="chua"
+           data-name="Chùm ruột chanh muối" data-price="35.000đ / hũ"
+           data-desc="Chùm ruột giòn ngâm chanh muối, chua ngọt đậm đà — mồi ăn vặt kinh điển."
+           data-video="">
+        <span class="best">★ Bán chạy</span>
+        <span class="mono serif">C</span>
+        <span class="imgtag">Ảnh minh hoạ</span>
+        <div class="play js-video-thumb"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      </div>
+      <div class="card-body">
+        <h3 class="serif">Chùm ruột chanh muối</h3>
+        <p class="desc">Chùm ruột giòn ngâm chanh muối, chua ngọt đậm đà.</p>
+        <span class="taste">Chua ngọt</span>
+        <div class="card-foot">
+          <span class="price">35.000<span class="u">đ / hũ</span></span>
+          <button class="snap js-snap" data-name="Chùm ruột chanh muối" data-price="35.000đ / hũ" data-cat="chua" data-desc="Chùm ruột giòn ngâm chanh muối, chua ngọt đậm đà — mồi ăn vặt kinh điển.">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/></svg>
+            Chụp
+          </button>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="lac" data-od-id="card-xoai-lac">
+      <div class="thumb" data-cat="lac" data-name="Xoài lắc muối ớt" data-price="40.000đ / phần" data-desc="Xoài xanh giòn, lắc đều muối ớt cay the — chua giòn kích thích." data-video="">
+        <span class="mono serif">X</span><span class="imgtag">Ảnh minh hoạ</span>
+        <div class="play js-video-thumb"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      </div>
+      <div class="card-body">
+        <h3 class="serif">Xoài lắc muối ớt</h3>
+        <p class="desc">Xoài xanh giòn lắc muối ớt cay the.</p>
+        <span class="taste">Cay · Chua</span>
+        <div class="card-foot"><span class="price">40.000<span class="u">đ / phần</span></span>
+          <button class="snap js-snap" data-name="Xoài lắc muối ớt" data-price="40.000đ / phần" data-cat="lac" data-desc="Xoài xanh giòn, lắc đều muối ớt cay the — chua giòn kích thích.">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/></svg>Chụp</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="lac" data-od-id="card-coc-non">
+      <div class="thumb" data-cat="lac" data-name="Cóc non lắc" data-price="35.000đ / phần" data-desc="Cóc non giòn rụm lắc muối tôm, chấm chút chua cay là ghiền." data-video="">
+        <span class="mono serif">C</span><span class="imgtag">Ảnh minh hoạ</span>
+        <div class="play js-video-thumb"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      </div>
+      <div class="card-body">
+        <h3 class="serif">Cóc non lắc</h3>
+        <p class="desc">Cóc non giòn rụm lắc muối tôm.</p>
+        <span class="taste">Giòn · Chua cay</span>
+        <div class="card-foot"><span class="price">35.000<span class="u">đ / phần</span></span>
+          <button class="snap js-snap" data-name="Cóc non lắc" data-price="35.000đ / phần" data-cat="lac" data-desc="Cóc non giòn rụm lắc muối tôm, chấm chút chua cay là ghiền.">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/></svg>Chụp</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="chua" data-od-id="card-me-ngao">
+      <div class="thumb" data-cat="chua" data-name="Me ngào đường" data-price="30.000đ / hũ" data-desc="Me chín dẻo ngào đường thắng, chua ngọt sánh mịn, cay nhẹ." data-video="">
+        <span class="mono serif">M</span><span class="imgtag">Ảnh minh hoạ</span>
+        <div class="play js-video-thumb"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      </div>
+      <div class="card-body">
+        <h3 class="serif">Me ngào đường</h3>
+        <p class="desc">Me chín dẻo ngào đường, chua ngọt sánh mịn.</p>
+        <span class="taste">Chua ngọt</span>
+        <div class="card-foot"><span class="price">30.000<span class="u">đ / hũ</span></span>
+          <button class="snap js-snap" data-name="Me ngào đường" data-price="30.000đ / hũ" data-cat="chua" data-desc="Me chín dẻo ngào đường thắng, chua ngọt sánh mịn, cay nhẹ.">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/></svg>Chụp</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="chua" data-od-id="card-tac-xi-muoi">
+      <div class="thumb" data-cat="chua" data-name="Tắc xí muội" data-price="30.000đ / hũ" data-desc="Tắc ngâm xí muội, vị chua mặn ngọt hài hoà, thơm the." data-video="">
+        <span class="mono serif">T</span><span class="imgtag">Ảnh minh hoạ</span>
+        <div class="play js-video-thumb"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      </div>
+      <div class="card-body">
+        <h3 class="serif">Tắc xí muội</h3>
+        <p class="desc">Tắc ngâm xí muội, chua mặn ngọt hài hoà.</p>
+        <span class="taste">Chua mặn</span>
+        <div class="card-foot"><span class="price">30.000<span class="u">đ / hũ</span></span>
+          <button class="snap js-snap" data-name="Tắc xí muội" data-price="30.000đ / hũ" data-cat="chua" data-desc="Tắc ngâm xí muội, vị chua mặn ngọt hài hoà, thơm the.">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/></svg>Chụp</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="lac" data-od-id="card-oi-lac">
+      <div class="thumb" data-cat="lac" data-name="Ổi lắc muối ớt" data-price="35.000đ / phần" data-desc="Ổi giòn lắc muối ớt Tây Ninh, cay mặn đậm đà." data-video="">
+        <span class="mono serif">O</span><span class="imgtag">Ảnh minh hoạ</span>
+        <div class="play js-video-thumb"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      </div>
+      <div class="card-body">
+        <h3 class="serif">Ổi lắc muối ớt</h3>
+        <p class="desc">Ổi giòn lắc muối ớt Tây Ninh.</p>
+        <span class="taste">Giòn · Cay mặn</span>
+        <div class="card-foot"><span class="price">35.000<span class="u">đ / phần</span></span>
+          <button class="snap js-snap" data-name="Ổi lắc muối ớt" data-price="35.000đ / phần" data-cat="lac" data-desc="Ổi giòn lắc muối ớt Tây Ninh, cay mặn đậm đà.">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/></svg>Chụp</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="say" data-od-id="card-kho-ga">
+      <div class="thumb" data-cat="say" data-name="Khô gà lá chanh" data-price="55.000đ / hộp" data-desc="Khô gà xé sợi rim sả ớt, rắc lá chanh thơm — cay ngọt hết ý." data-video="">
+        <span class="mono serif">K</span><span class="imgtag">Ảnh minh hoạ</span>
+        <div class="play js-video-thumb"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      </div>
+      <div class="card-body">
+        <h3 class="serif">Khô gà lá chanh</h3>
+        <p class="desc">Khô gà xé sợi rim sả ớt, rắc lá chanh.</p>
+        <span class="taste">Cay ngọt</span>
+        <div class="card-foot"><span class="price">55.000<span class="u">đ / hộp</span></span>
+          <button class="snap js-snap" data-name="Khô gà lá chanh" data-price="55.000đ / hộp" data-cat="say" data-desc="Khô gà xé sợi rim sả ớt, rắc lá chanh thơm — cay ngọt hết ý.">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/></svg>Chụp</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="say" data-od-id="card-xoai-say">
+      <div class="thumb" data-cat="say" data-name="Xoài sấy dẻo" data-price="45.000đ / gói" data-desc="Xoài sấy dẻo tự nhiên, ngọt thanh, không phẩm màu." data-video="">
+        <span class="mono serif">X</span><span class="imgtag">Ảnh minh hoạ</span>
+        <div class="play js-video-thumb"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      </div>
+      <div class="card-body">
+        <h3 class="serif">Xoài sấy dẻo</h3>
+        <p class="desc">Xoài sấy dẻo tự nhiên, ngọt thanh.</p>
+        <span class="taste">Ngọt dịu</span>
+        <div class="card-foot"><span class="price">45.000<span class="u">đ / gói</span></span>
+          <button class="snap js-snap" data-name="Xoài sấy dẻo" data-price="45.000đ / gói" data-cat="say" data-desc="Xoài sấy dẻo tự nhiên, ngọt thanh, không phẩm màu.">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/></svg>Chụp</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="banhtrang" data-od-id="card-btt">
+      <div class="thumb" data-cat="banhtrang" data-name="Bánh tráng trộn" data-price="25.000đ / bịch" data-desc="Bánh tráng trộn khô bò, xoài, rau răm, trứng cút — topping đầy đủ." data-video="">
+        <span class="mono serif">B</span><span class="imgtag">Ảnh minh hoạ</span>
+        <div class="play js-video-thumb"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      </div>
+      <div class="card-body">
+        <h3 class="serif">Bánh tráng trộn</h3>
+        <p class="desc">Khô bò, xoài, rau răm, trứng cút — đủ topping.</p>
+        <span class="taste">Mặn · Chua cay</span>
+        <div class="card-foot"><span class="price">25.000<span class="u">đ / bịch</span></span>
+          <button class="snap js-snap" data-name="Bánh tráng trộn" data-price="25.000đ / bịch" data-cat="banhtrang" data-desc="Bánh tráng trộn khô bò, xoài, rau răm, trứng cút — topping đầy đủ.">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/></svg>Chụp</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="banhtrang" data-od-id="card-btm-cuon">
+      <div class="thumb" data-cat="banhtrang" data-name="Bánh tráng muối tôm cuốn" data-price="20.000đ / cuốn" data-desc="Bánh tráng cuốn muối tôm, khô bò, mỡ hành, sốt me chua ngọt." data-video="">
+        <span class="mono serif">B</span><span class="imgtag">Ảnh minh hoạ</span>
+        <div class="play js-video-thumb"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      </div>
+      <div class="card-body">
+        <h3 class="serif">Bánh tráng muối tôm cuốn</h3>
+        <p class="desc">Cuốn muối tôm, khô bò, mỡ hành, sốt me.</p>
+        <span class="taste">Mặn ngọt</span>
+        <div class="card-foot"><span class="price">20.000<span class="u">đ / cuốn</span></span>
+          <button class="snap js-snap" data-name="Bánh tráng muối tôm cuốn" data-price="20.000đ / cuốn" data-cat="banhtrang" data-desc="Bánh tráng cuốn muối tôm, khô bò, mỡ hành, sốt me chua ngọt.">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/></svg>Chụp</button>
+        </div>
+      </div>
+    </article>
+
+    <div class="empty" id="empty" hidden>Chưa có món trong danh mục này.</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer data-od-id="site-footer">
+  <div class="wrap foot-grid">
+    <div class="foot-brand">
+      <div class="logo serif">AN<b>THE</b></div>
+      <p>Đồ ăn vặt chua ngọt, làm mới mỗi ngày. Chọn món, chụp màn hình, nhắn tin — tụi mình lo phần còn lại.</p>
+    </div>
+    <div>
+      <h5>Chốt đơn</h5>
+      <a href="https://www.messenger.com/e2ee/t/7823905377719022" target="_blank" rel="noopener">Messenger</a>
+      <a href="#">Zalo</a>
+      <a href="#">Instagram</a>
+    </div>
+    <div>
+      <h5>Thông tin</h5>
+      <a href="#menu">Menu hôm nay</a>
+      <a href="#">Khu vực giao</a>
+      <a href="#">Giờ mở bán</a>
+    </div>
+  </div>
+  <div class="wrap copyr">© <span id="yr"></span> ANTHE · Giá là số mẫu, cập nhật theo menu thực tế.</div>
+</footer>
+
+<!-- Floating contact -->
+<div class="fab" data-od-id="fab-contact">
+  <span class="txt">Ưng món nào rồi? Nhắn tin chốt đơn ngay:</span>
+  <a class="btn btn-gold" href="https://www.messenger.com/e2ee/t/7823905377719022" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.14 2 11.25c0 2.88 1.42 5.45 3.64 7.15V22l3.33-1.83c.94.26 1.93.4 2.03.4 5.5 0 10-4.14 10-9.25S17.5 2 12 2Z"/></svg>
+    Messenger
+  </a>
+  <a class="btn btn-ghost" href="#">Zalo</a>
+</div>
+
+<!-- Video modal -->
+<div class="overlay" id="videoOverlay" data-od-id="video-modal">
+  <div class="modal">
+    <div class="m-video" id="videoBox"></div>
+    <div class="m-head">
+      <div>
+        <h3 class="serif" id="vTitle">Món ăn</h3>
+        <div class="price" id="vPrice"></div>
+      </div>
+      <button class="x" data-close aria-label="Đóng">×</button>
+    </div>
+  </div>
+</div>
+
+<!-- Share/screenshot modal -->
+<div class="overlay" id="shareOverlay" data-od-id="share-modal">
+  <div class="share-card" id="shareCard">
+    <div class="sc-top">
+      <span class="logo serif">AN<b>THE</b></span>
+      <button class="x" data-close aria-label="Đóng" style="width:32px;height:32px;font-size:18px">×</button>
+    </div>
+    <div class="sc-hero" id="scHero"><span class="mono serif" id="scMono">A</span></div>
+    <div class="sc-info">
+      <h3 class="serif" id="scName">Món ăn</h3>
+      <p class="desc" id="scDesc"></p>
+      <div class="price" id="scPrice"></div>
+    </div>
+    <div class="sc-note">📸 <b>Chụp màn hình thẻ này</b> rồi gửi qua Messenger/Zalo để chốt đơn nhé.</div>
+    <div class="sc-foot">
+      <a class="btn btn-gold" href="https://www.messenger.com/e2ee/t/7823905377719022" target="_blank" rel="noopener">Nhắn Messenger</a>
+      <a class="btn btn-ghost" href="#">Nhắn Zalo</a>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  /* ---- Filter ---- */
+  var chips = document.querySelectorAll('.chip');
+  var cards = document.querySelectorAll('#grid .card');
+  var empty = document.getElementById('empty');
+  chips.forEach(function(chip){
+    chip.addEventListener('click', function(){
+      chips.forEach(function(c){c.classList.remove('active')});
+      chip.classList.add('active');
+      var f = chip.dataset.filter, shown = 0;
+      cards.forEach(function(card){
+        var ok = (f === 'all' || card.dataset.cat === f);
+        card.classList.toggle('hidden', !ok);
+        if(ok) shown++;
+      });
+      empty.hidden = shown > 0;
+    });
+  });
+
+  /* ---- Video modal ---- */
+  var vOverlay = document.getElementById('videoOverlay');
+  var vBox = document.getElementById('videoBox');
+  var vTitle = document.getElementById('vTitle');
+  var vPrice = document.getElementById('vPrice');
+
+  function openVideo(name, price, video){
+    vTitle.textContent = name || 'Món ăn';
+    vPrice.textContent = price || '';
+    if(video){
+      // Chấp nhận link YouTube embed hoặc file mp4
+      if(/youtube|youtu\.be|vimeo/.test(video)){
+        vBox.innerHTML = '<iframe src="'+video+'" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+      } else {
+        vBox.innerHTML = '<video src="'+video+'" controls autoplay playsinline></video>';
+      }
+    } else {
+      vBox.innerHTML = '<div class="ph"><div class="pbtn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>'
+        + '<div style="font-weight:600;color:var(--fg);margin-bottom:4px">Clip đang cập nhật</div>'
+        + '<div style="font-size:13px">Gắn link YouTube hoặc file mp4 vào thuộc tính <code>data-video</code> của món này.</div></div>';
+    }
+    vOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  // click play button / thumbnail
+  document.querySelectorAll('.js-video-thumb').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      var t = btn.closest('.thumb');
+      openVideo(t.dataset.name, t.dataset.price, t.dataset.video);
+    });
+  });
+  document.querySelectorAll('.thumb').forEach(function(t){
+    t.addEventListener('click', function(){ openVideo(t.dataset.name, t.dataset.price, t.dataset.video); });
+  });
+  document.querySelectorAll('.js-video').forEach(function(btn){
+    btn.addEventListener('click', function(){ openVideo(btn.dataset.name, '', btn.dataset.video); });
+  });
+
+  /* ---- Share/screenshot modal ---- */
+  var sOverlay = document.getElementById('shareOverlay');
+  var scHero = document.getElementById('scHero');
+  var catBg = {
+    chua:'radial-gradient(120% 100% at 30% 20%, oklch(42% 0.13 135 / .6), transparent 60%),linear-gradient(160deg,var(--surface-2),var(--bg-2))',
+    lac:'radial-gradient(120% 100% at 70% 20%, oklch(48% 0.13 90 / .55), transparent 60%),linear-gradient(160deg,var(--surface-2),var(--bg-2))',
+    say:'radial-gradient(120% 100% at 40% 25%, oklch(40% 0.12 45 / .55), transparent 60%),linear-gradient(160deg,var(--surface-2),var(--bg-2))',
+    banhtrang:'radial-gradient(120% 100% at 60% 20%, oklch(44% 0.09 60 / .55), transparent 60%),linear-gradient(160deg,var(--surface-2),var(--bg-2))'
+  };
+  document.querySelectorAll('.js-snap').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var d = btn.dataset;
+      document.getElementById('scName').textContent = d.name;
+      document.getElementById('scDesc').textContent = d.desc || '';
+      document.getElementById('scPrice').textContent = d.price || '';
+      document.getElementById('scMono').textContent = (d.name||'A').charAt(0).toUpperCase();
+      scHero.style.background = catBg[d.cat] || catBg.chua;
+      sOverlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+
+  /* ---- Close handlers ---- */
+  function closeAll(){
+    vOverlay.classList.remove('open');
+    sOverlay.classList.remove('open');
+    vBox.innerHTML = '';
+    document.body.style.overflow = '';
+  }
+  document.querySelectorAll('[data-close]').forEach(function(b){ b.addEventListener('click', closeAll); });
+  [vOverlay, sOverlay].forEach(function(o){
+    o.addEventListener('click', function(e){ if(e.target === o) closeAll(); });
+  });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeAll(); });
+})();
+</script>
+</body>
+</html>
