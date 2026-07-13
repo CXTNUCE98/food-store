@@ -1,0 +1,5 @@
+# Original hand-drawn mock-ups kept for reference only. Mark them as
+# documentation + vendored so GitHub Linguist excludes them from the
+# repository language statistics (the real app is Vue + TypeScript).
+index.html   linguist-documentation linguist-vendored
+index2.html  linguist-documentation linguist-vendored

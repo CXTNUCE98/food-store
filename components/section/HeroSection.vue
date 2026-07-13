@@ -3,53 +3,82 @@ import type { Product } from '~/domain/types'
 import { formatPrice, monogram } from '~/utils/format'
 
 /** The featured product powers the hero visual on the right. */
-const props = defineProps<{ featured: Product | null }>()
+defineProps<{ featured: Product | null }>()
 const emit = defineEmits<{ play: [Product]; snap: [Product] }>()
 </script>
 
 <template>
-  <section class="hero">
-    <div class="wrap hero-grid">
+  <section class="relative pb-10 pt-[60px]">
+    <div
+      class="wrap grid grid-cols-1 items-center gap-8 min-[861px]:grid-cols-[1.15fr_0.85fr] min-[861px]:gap-12"
+    >
       <div>
         <span class="eyebrow">Menu trưng bày · Không đặt online</span>
-        <h1 class="display">
-          Ăn vặt <span class="hl">siêu ngon</span>,<br /><em>mê là ghiền!</em>
+        <h1
+          class="display my-[18px] text-fg [font-size:clamp(40px,6.2vw,74px)] leading-[1.02] tracking-[-0.01em]"
+        >
+          Ăn vặt
+          <span class="text-accent [font-style:var(--heading-style)]">siêu ngon</span>,<br />
+          <em class="text-hot [font-style:var(--heading-style)]">mê là ghiền!</em>
         </h1>
-        <p class="lead">
+        <p class="max-w-[46ch] text-muted [font-size:clamp(16px,2vw,19px)]">
           Lướt xem các món TÓP TÉP đang có, bấm vào để xem clip món ăn. Ưng món nào
           thì chụp lại màn hình rồi nhắn tin cho tụi mình — khỏi cần điền form, khỏi
           thanh toán online.
         </p>
-        <div class="cta-row">
+        <div class="mt-[26px] flex flex-wrap gap-3">
           <ContactButtons />
           <AppButton variant="ghost" href="#menu">Xem menu ↓</AppButton>
         </div>
       </div>
 
-      <div v-if="featured" class="hero-feature">
+      <div
+        v-if="featured"
+        class="relative aspect-[4/5] overflow-hidden rounded-3xl border border-border bg-[var(--hero-feature-bg)] shadow-soft max-[860px]:max-w-[360px] max-[860px]:[aspect-ratio:4/4.4]"
+      >
         <img
           v-if="featured.thumbnail_url"
           :src="featured.thumbnail_url"
           :alt="featured.name"
-          class="feature-cover"
+          class="absolute inset-0 size-full object-cover"
           fetchpriority="high"
           decoding="async"
           width="800"
           height="1000"
         />
-        <span v-else class="monogram">{{ monogram(featured.name) }}</span>
-        <span class="hf-tag">★ Bán chạy</span>
-        <div class="hf-body">
-          <h3 class="display">{{ featured.name }}</h3>
-          <div class="price">
-            {{ formatPrice(featured.price) }}<span class="u">đ / {{ featured.unit }}</span>
+        <span
+          v-else
+          class="display absolute inset-0 grid place-items-center text-[min(42vw,300px)] text-[var(--monogram-color)]"
+        >
+          {{ monogram(featured.name) }}
+        </span>
+
+        <span
+          class="absolute left-4 top-4 inline-flex items-center gap-[7px] rounded-full border border-[var(--hf-tag-border)] bg-[var(--hf-tag-bg)] px-[13px] py-[7px] text-xs font-bold uppercase tracking-[0.1em] text-[var(--hf-tag-ink)] shadow-soft-sm backdrop-blur-[6px]"
+        >
+          ★ Bán chạy
+        </span>
+
+        <div class="absolute inset-x-0 bottom-0 bg-[var(--hero-feature-caption)] p-[22px]">
+          <h3 class="display text-[27px] text-white">{{ featured.name }}</h3>
+          <div class="mt-0.5 font-bold text-[oklch(94%_0.12_92)]">
+            {{ formatPrice(featured.price)
+            }}<span class="text-[13px] opacity-85">đ / {{ featured.unit }}</span>
           </div>
-          <div class="row">
-            <button class="play-mini" type="button" @click="emit('play', featured)">
+          <div class="mt-3.5 flex flex-wrap gap-2.5">
+            <button
+              type="button"
+              class="inline-flex cursor-pointer items-center gap-2 rounded-full border-0 bg-white/90 px-[15px] py-[9px] text-[13px] font-bold text-fg transition-colors hover:bg-white [&_svg]:size-[15px] [&_svg]:fill-current"
+              @click="emit('play', featured)"
+            >
               <IconPlay />
               Xem clip
             </button>
-            <button class="play-mini" type="button" @click="emit('snap', featured)">
+            <button
+              type="button"
+              class="inline-flex cursor-pointer items-center gap-2 rounded-full border-0 bg-white/90 px-[15px] py-[9px] text-[13px] font-bold text-fg transition-colors hover:bg-white"
+              @click="emit('snap', featured)"
+            >
               Chụp món này
             </button>
           </div>
@@ -58,166 +87,3 @@ const emit = defineEmits<{ play: [Product]; snap: [Product] }>()
     </div>
   </section>
 </template>
-
-<style scoped>
-.hero {
-  padding: 60px 0 40px;
-  position: relative;
-}
-
-.hero-grid {
-  display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
-  gap: 48px;
-  align-items: center;
-}
-
-.hero h1 {
-  line-height: 1.02;
-  font-size: clamp(40px, 6.2vw, 74px);
-  letter-spacing: -0.01em;
-  margin: 14px 0 18px;
-  color: var(--fg);
-}
-
-.hero h1 em {
-  font-style: var(--heading-style);
-  color: var(--hot);
-}
-
-.hero h1 .hl {
-  color: var(--accent);
-  font-style: var(--heading-style);
-}
-
-.lead {
-  font-size: clamp(16px, 2vw, 19px);
-  color: var(--muted);
-  max-width: 46ch;
-}
-
-.cta-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 26px;
-}
-
-.hero-feature {
-  position: relative;
-  border-radius: 24px;
-  overflow: hidden;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-  aspect-ratio: 4 / 5;
-  background: var(--hero-feature-bg);
-}
-
-.feature-cover {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.monogram {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  font-family: var(--font-display);
-  font-weight: var(--font-display-weight);
-  font-size: min(42vw, 300px);
-  color: var(--monogram-color);
-}
-
-.hf-tag {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  background: var(--hf-tag-bg);
-  border: 1px solid var(--hf-tag-border);
-  color: var(--hf-tag-ink);
-  backdrop-filter: blur(6px);
-  padding: 7px 13px;
-  border-radius: 999px;
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  font-weight: 700;
-  box-shadow: var(--shadow-sm);
-}
-
-.hf-body {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 22px;
-  background: var(--hero-feature-caption);
-}
-
-.hf-body h3 {
-  font-size: 27px;
-  color: #fff;
-}
-
-.hf-body .price {
-  color: oklch(94% 0.12 92);
-  font-weight: 700;
-  margin-top: 2px;
-}
-
-.hf-body .price .u {
-  font-size: 13px;
-  opacity: 0.85;
-}
-
-.row {
-  display: flex;
-  gap: 10px;
-  margin-top: 14px;
-  flex-wrap: wrap;
-}
-
-.play-mini {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 9px 15px;
-  border-radius: 999px;
-  background: oklch(100% 0 0 / 0.92);
-  border: 0;
-  color: var(--fg);
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.play-mini:hover {
-  background: #fff;
-}
-
-.play-mini :deep(svg) {
-  width: 15px;
-  height: 15px;
-  fill: currentColor;
-}
-
-@media (max-width: 860px) {
-  .hero-grid {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
-
-  .hero-feature {
-    max-width: 360px;
-    aspect-ratio: 4 / 4.4;
-  }
-}
-</style>

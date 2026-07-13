@@ -5,38 +5,16 @@ defineEmits<{ select: [] }>()
 
 <template>
   <button
-    class="chip"
-    :class="{ active }"
     type="button"
     :aria-pressed="active"
+    class="cursor-pointer whitespace-nowrap rounded-full border-[1.5px] px-4 py-[9px] text-sm font-semibold transition-all duration-[180ms]"
+    :class="
+      active
+        ? 'border-accent bg-accent text-accent-ink'
+        : 'border-border bg-surface text-muted hover:border-accent hover:text-fg'
+    "
     @click="$emit('select')"
   >
     {{ label }}
   </button>
 </template>
-
-<style scoped>
-.chip {
-  padding: 9px 16px;
-  border-radius: 999px;
-  border: 1.5px solid var(--border);
-  background: var(--surface);
-  color: var(--muted);
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.18s;
-  white-space: nowrap;
-}
-
-.chip:hover {
-  color: var(--fg);
-  border-color: var(--accent);
-}
-
-.chip.active {
-  background: var(--accent);
-  color: var(--accent-ink);
-  border-color: var(--accent);
-}
-</style>

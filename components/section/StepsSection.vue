@@ -8,61 +8,21 @@ const steps = [
 </script>
 
 <template>
-  <section class="steps wrap">
-    <div class="steps-in">
-      <div v-for="step in steps" :key="step.n" class="step">
-        <div class="n display">{{ step.n }}</div>
-        <h4>{{ step.title }}</h4>
-        <p>{{ step.text }}</p>
+  <section class="wrap pb-2 pt-[22px]">
+    <div class="grid grid-cols-1 gap-4 min-[681px]:grid-cols-3">
+      <div
+        v-for="step in steps"
+        :key="step.n"
+        class="rounded-card border border-border bg-surface p-[22px] shadow-soft-sm"
+      >
+        <div
+          class="display grid size-[38px] place-items-center rounded-full bg-accent text-xl text-accent-ink"
+        >
+          {{ step.n }}
+        </div>
+        <h4 class="mb-1 mt-3.5 text-base font-bold">{{ step.title }}</h4>
+        <p class="text-sm text-muted">{{ step.text }}</p>
       </div>
     </div>
   </section>
 </template>
-
-<style scoped>
-.steps {
-  padding: 22px 0 8px;
-}
-
-.steps-in {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-
-.step {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 22px;
-  box-shadow: var(--shadow-sm);
-}
-
-.n {
-  font-size: 20px;
-  color: var(--accent-ink);
-  background: var(--accent);
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-}
-
-.step h4 {
-  margin: 14px 0 4px;
-  font-size: 16px;
-  font-weight: 700;
-}
-
-.step p {
-  color: var(--muted);
-  font-size: 14px;
-}
-
-@media (max-width: 680px) {
-  .steps-in {
-    grid-template-columns: 1fr;
-  }
-}
-</style>

@@ -4,7 +4,7 @@
  * Renders as <a> when `href` is given, otherwise a real <button>.
  * Variants: gold (primary accent) and ghost (outlined).
  */
-withDefaults(
+const props = withDefaults(
   defineProps<{
     variant?: 'gold' | 'ghost'
     href?: string
@@ -14,6 +14,16 @@ withDefaults(
   }>(),
   { variant: 'gold', type: 'button', external: false },
 )
+
+const base =
+  'inline-flex items-center gap-[9px] whitespace-nowrap rounded-full border-[1.5px] px-[22px] py-[13px] text-[15px] font-bold cursor-pointer transition-[transform,background,border-color,color] duration-200 hover:-translate-y-0.5 [&_svg]:size-[18px]'
+
+const variants = {
+  gold: 'border-transparent bg-accent text-accent-ink shadow-soft-sm hover:bg-accent-hover',
+  ghost: 'border-border bg-surface text-fg hover:border-accent hover:text-accent',
+}
+
+const classes = computed(() => [base, variants[props.variant]])
 </script>
 
 <template>
@@ -22,58 +32,11 @@ withDefaults(
     :href="href"
     :target="external ? '_blank' : undefined"
     :rel="external ? 'noopener' : undefined"
-    class="btn"
-    :class="`btn-${variant}`"
+    :class="classes"
   >
     <slot />
   </a>
-  <button v-else :type="type" class="btn" :class="`btn-${variant}`">
+  <button v-else :type="type" :class="classes">
     <slot />
   </button>
 </template>
-
-<style scoped>
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  padding: 13px 22px;
-  border-radius: 999px;
-  font-weight: 700;
-  font-size: 15px;
-  border: 1.5px solid transparent;
-  cursor: pointer;
-  transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s, color 0.2s;
-  white-space: nowrap;
-}
-
-.btn:hover {
-  transform: translateY(-2px);
-}
-
-.btn-gold {
-  background: var(--accent);
-  color: var(--accent-ink);
-  box-shadow: var(--shadow-sm);
-}
-
-.btn-gold:hover {
-  background: var(--accent-hover);
-}
-
-.btn-ghost {
-  background: var(--surface);
-  color: var(--fg);
-  border-color: var(--border);
-}
-
-.btn-ghost:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-.btn :deep(svg) {
-  width: 18px;
-  height: 18px;
-}
-</style>

@@ -5,83 +5,29 @@ const year = new Date().getFullYear()
 </script>
 
 <template>
-  <footer>
-    <div class="wrap foot-grid">
-      <div class="foot-brand">
-        <BrandLogo :size="26" />
-        <p>{{ SITE.tagline }}</p>
-      </div>
+  <footer class="mt-[72px] border-t border-border pb-8 pt-12">
+    <div
+      class="wrap grid grid-cols-1 gap-8 min-[681px]:grid-cols-[1.4fr_1fr_1fr] [&_h5]:mb-3.5 [&_h5]:text-[13px] [&_h5]:font-bold [&_h5]:uppercase [&_h5]:tracking-[0.16em] [&_h5]:text-faint"
+    >
       <div>
+        <BrandLogo :size="26" />
+        <p class="mt-2.5 max-w-[34ch] text-sm text-muted">{{ SITE.tagline }}</p>
+      </div>
+      <nav class="[&_a]:block [&_a]:py-[5px] [&_a]:text-muted [&_a]:transition-colors hover:[&_a]:text-accent">
         <h5>Chốt đơn</h5>
         <a :href="SITE.messengerUrl" target="_blank" rel="noopener">Messenger</a>
         <a :href="SITE.zaloUrl">Zalo</a>
         <a :href="SITE.instagramUrl">Instagram</a>
-      </div>
-      <div>
+      </nav>
+      <nav class="[&_a]:block [&_a]:py-[5px] [&_a]:text-muted [&_a]:transition-colors hover:[&_a]:text-accent">
         <h5>Thông tin</h5>
         <a href="#menu">Menu hôm nay</a>
         <a href="#">Khu vực giao</a>
         <a href="#">Giờ mở bán</a>
-      </div>
+      </nav>
     </div>
-    <div class="wrap copyr">
+    <div class="wrap mt-9 border-t border-border pt-5 text-[12.5px] text-faint">
       © {{ year }} TÓP TÉP · Giá là số mẫu, cập nhật theo menu thực tế.
     </div>
   </footer>
 </template>
-
-<style scoped>
-footer {
-  margin-top: 72px;
-  border-top: 1px solid var(--border);
-  padding: 48px 0 32px;
-}
-
-.foot-grid {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr;
-  gap: 32px;
-}
-
-.foot-grid h5 {
-  font-size: 13px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--faint);
-  margin-bottom: 14px;
-  font-weight: 700;
-}
-
-.foot-grid a {
-  display: block;
-  color: var(--muted);
-  padding: 5px 0;
-  transition: color 0.15s;
-}
-
-.foot-grid a:hover {
-  color: var(--accent);
-}
-
-.foot-brand p {
-  color: var(--muted);
-  font-size: 14px;
-  margin-top: 10px;
-  max-width: 34ch;
-}
-
-.copyr {
-  margin-top: 36px;
-  color: var(--faint);
-  font-size: 12.5px;
-  border-top: 1px solid var(--border);
-  padding-top: 20px;
-}
-
-@media (max-width: 680px) {
-  .foot-grid {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-}
-</style>

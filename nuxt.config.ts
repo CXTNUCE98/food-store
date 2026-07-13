@@ -3,14 +3,23 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-01-01',
   devtools: { enabled: true },
 
-  // Global stylesheet: base reset + theme tokens
+  modules: ['@nuxtjs/tailwindcss'],
+
+  // Global stylesheet: theme tokens + Tailwind layers + a few shared helpers.
   css: ['~/assets/css/main.css'],
+
+  tailwindcss: {
+    // We import Tailwind ourselves inside main.css so the CSS-variable theme
+    // tokens load first; disable the module's own injected stylesheet.
+    cssPath: false,
+    viewer: false,
+  },
 
   runtimeConfig: {
     public: {
       // Absolute site origin used for canonical URLs, Open Graph and sitemap.
       // Override in production via NUXT_PUBLIC_SITE_URL.
-      siteUrl: 'https://toptep.vn',
+      siteUrl: 'https://toptep.vercel.app/',
     },
   },
 

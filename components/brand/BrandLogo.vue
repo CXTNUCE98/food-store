@@ -9,36 +9,18 @@ withDefaults(defineProps<{ size?: number; showSub?: boolean }>(), {
 </script>
 
 <template>
-  <span class="brand">
-    <span class="logo display" :style="{ fontSize: `${size}px` }">
+  <span class="flex items-baseline gap-2.5">
+    <span
+      class="display leading-none tracking-[0.06em] text-hot [&_b]:text-accent"
+      :style="{ fontSize: `${size}px` }"
+    >
       {{ SITE.brandLead }} <b>{{ SITE.brandTail }}</b>
     </span>
-    <span v-if="showSub" class="sub">Đồ ăn vặt</span>
+    <span
+      v-if="showSub"
+      class="text-[11px] font-semibold uppercase tracking-[0.24em] text-faint"
+    >
+      Đồ ăn vặt
+    </span>
   </span>
 </template>
-
-<style scoped>
-.brand {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-}
-
-.logo {
-  letter-spacing: 0.06em;
-  color: var(--hot);
-  line-height: 1;
-}
-
-.logo b {
-  color: var(--accent);
-}
-
-.sub {
-  font-size: 11px;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--faint);
-  font-weight: 600;
-}
-</style>

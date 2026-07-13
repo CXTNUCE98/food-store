@@ -1,3 +1,55 @@
-/* Order matters: theme tokens first, then the base layer that consumes them. */
+/* Theme tokens first so the CSS variables exist before anything consumes them. */
 @import './themes.css';
-@import './base.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---- Base layer: reset + document defaults that Tailwind's preflight
+       doesn't cover (theme-driven body background, fonts, selection). ---- */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: var(--body-bg);
+    color: var(--fg);
+    font: 16px/1.6 var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: var(--body-letter-spacing);
+    padding-bottom: 88px;
+    min-height: 100vh;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+/* ---- Component layer: a few cross-cutting patterns reused everywhere.
+       Everything else is plain Tailwind utilities in the templates. ---- */
+@layer components {
+  /* Centered page container. */
+  .wrap {
+    @apply mx-auto w-full max-w-wrap px-6;
+  }
+
+  /* Display face + weight both come from theme tokens, so this renders as a
+     rounded sans in the warm theme and Lora serif in dark. */
+  .display {
+    font-family: var(--font-display);
+    font-weight: var(--font-display-weight);
+  }
+
+  .eyebrow {
+    @apply text-xs font-semibold uppercase text-accent;
+    letter-spacing: 0.3em;
+  }
+}

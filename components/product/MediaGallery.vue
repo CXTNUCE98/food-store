@@ -61,8 +61,10 @@ watch(
 </script>
 
 <template>
-  <div class="gallery">
-    <div class="stage">
+  <div class="flex flex-col">
+    <div
+      class="relative grid aspect-video place-items-center overflow-hidden bg-[var(--video-bg)] [&_iframe]:absolute [&_iframe]:inset-0 [&_iframe]:size-full [&_iframe]:border-0 [&_video]:absolute [&_video]:inset-0 [&_video]:size-full [&_video]:border-0"
+    >
       <template v-if="active?.kind === 'video'">
         <iframe
           v-if="activeEmbed"
@@ -75,8 +77,8 @@ watch(
         <video v-else ref="videoRef" :src="active.src" controls autoplay playsinline />
 
         <button
-          class="toggle-play"
           type="button"
+          class="absolute bottom-3.5 right-3.5 z-[2] grid size-12 cursor-pointer place-items-center rounded-full border-0 bg-black/55 text-white backdrop-blur-[4px] transition-[background,transform] duration-150 hover:scale-105 hover:bg-accent hover:text-accent-ink [&_svg]:size-[22px]"
           :aria-label="isPlaying ? 'Tạm dừng' : 'Phát'"
           @click="togglePlay"
         >
@@ -89,185 +91,41 @@ watch(
         v-else-if="active"
         :src="active.src"
         :alt="product.name"
-        class="stage-img"
+        class="size-full object-cover"
       />
 
-      <div v-else class="stage-empty">
-        <div class="pbtn"><IconPlay /></div>
-        <p class="empty-title">Ảnh/clip đang cập nhật</p>
-        <p class="empty-sub">
+      <div v-else class="p-6 text-center text-muted">
+        <div
+          class="mx-auto mb-3.5 grid size-16 place-items-center rounded-full bg-accent shadow-soft-sm [&_svg]:ml-[3px] [&_svg]:size-6 [&_svg]:fill-[var(--accent-ink)]"
+        >
+          <IconPlay />
+        </div>
+        <p class="mb-1 font-bold text-fg">Ảnh/clip đang cập nhật</p>
+        <p class="text-[13px] [&_code]:rounded [&_code]:bg-bg-2 [&_code]:px-[5px] [&_code]:py-px">
           Thêm <code>video_url</code>, <code>thumbnail_url</code> hoặc
           <code>images</code> cho món này trong <code>data/products.ts</code>.
         </p>
       </div>
     </div>
 
-    <div v-if="items.length > 1" class="strip">
+    <div v-if="items.length > 1" class="flex gap-2.5 overflow-x-auto p-4 [scrollbar-width:thin]">
       <button
         v-for="(item, i) in items"
         :key="i"
-        class="thumb-btn"
-        :class="{ active: i === activeIndex }"
         type="button"
+        class="relative aspect-[4/3] w-[84px] flex-none cursor-pointer overflow-hidden rounded-[10px] border-2 bg-bg-2 transition-[border-color,transform] duration-[180ms] hover:-translate-y-0.5 [&_img]:size-full [&_img]:object-cover"
+        :class="i === activeIndex ? 'border-accent' : 'border-transparent'"
         :aria-label="item.kind === 'video' ? 'Xem clip' : `Xem ảnh ${i}`"
         @click="select(i)"
       >
         <img :src="item.poster" :alt="`${product.name} — ${item.kind}`" loading="lazy" />
-        <span v-if="item.kind === 'video'" class="play-badge"><IconPlay /></span>
+        <span
+          v-if="item.kind === 'video'"
+          class="absolute inset-0 grid place-items-center bg-black/40 [&_svg]:size-[22px] [&_svg]:fill-white"
+        >
+          <IconPlay />
+        </span>
       </button>
     </div>
   </div>
 </template>
-
-<style scoped>
-.gallery {
-  display: flex;
-  flex-direction: column;
-}
-
-.stage {
-  position: relative;
-  aspect-ratio: 16 / 9;
-  background: var(--video-bg);
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-}
-
-.stage iframe,
-.stage video {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
-}
-
-.stage-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Our own play/pause control, sitting above the embed so a single tap works
-   even when the player's native control bar is hidden. */
-.toggle-play {
-  position: absolute;
-  right: 14px;
-  bottom: 14px;
-  z-index: 2;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  border: 0;
-  background: oklch(0% 0 0 / 0.55);
-  color: #fff;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  backdrop-filter: blur(4px);
-  transition: background 0.18s, transform 0.15s;
-}
-
-.toggle-play:hover {
-  background: var(--accent);
-  color: var(--accent-ink);
-  transform: scale(1.06);
-}
-
-.toggle-play :deep(svg) {
-  width: 22px;
-  height: 22px;
-}
-
-.stage-empty {
-  text-align: center;
-  color: var(--muted);
-  padding: 24px;
-}
-
-.pbtn {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: var(--accent);
-  display: grid;
-  place-items: center;
-  margin: 0 auto 14px;
-  box-shadow: var(--shadow-sm);
-}
-
-.pbtn :deep(svg) {
-  width: 24px;
-  height: 24px;
-  fill: var(--accent-ink);
-  margin-left: 3px;
-}
-
-.empty-title {
-  font-weight: 700;
-  color: var(--fg);
-  margin-bottom: 4px;
-}
-
-.empty-sub {
-  font-size: 13px;
-}
-
-.empty-sub code {
-  background: var(--bg-2);
-  padding: 1px 5px;
-  border-radius: 5px;
-}
-
-/* Thumbnail strip */
-.strip {
-  display: flex;
-  gap: 10px;
-  padding: 14px 16px;
-  overflow-x: auto;
-  scrollbar-width: thin;
-}
-
-.thumb-btn {
-  position: relative;
-  flex: 0 0 auto;
-  width: 84px;
-  aspect-ratio: 4 / 3;
-  border-radius: 10px;
-  overflow: hidden;
-  border: 2px solid transparent;
-  padding: 0;
-  cursor: pointer;
-  background: var(--bg-2);
-  transition: border-color 0.18s, transform 0.18s;
-}
-
-.thumb-btn:hover {
-  transform: translateY(-2px);
-}
-
-.thumb-btn.active {
-  border-color: var(--accent);
-}
-
-.thumb-btn img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.play-badge {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  background: oklch(0% 0 0 / 0.4);
-}
-
-.play-badge :deep(svg) {
-  width: 22px;
-  height: 22px;
-  fill: #fff;
-}
-</style>

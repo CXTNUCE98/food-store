@@ -12,20 +12,23 @@ const emit = defineEmits<{ close: []; snap: [Product] }>()
 
 <template>
   <BaseModal :open="!!product" @close="emit('close')">
-    <div v-if="product" class="modal">
+    <div
+      v-if="product"
+      class="max-h-[calc(100vh-48px)] w-full max-w-[720px] animate-pop overflow-y-auto overflow-x-hidden rounded-[22px] border border-border bg-surface shadow-soft"
+    >
       <MediaGallery :product="product" />
 
-      <div class="m-head">
+      <div class="flex items-start justify-between gap-3.5 px-[22px] pt-[18px]">
         <div>
-          <h3 class="display">{{ product.name }}</h3>
-          <div class="price display">{{ formatPriceWithUnit(product) }}</div>
+          <h3 class="display text-[22px]">{{ product.name }}</h3>
+          <div class="display mt-1 text-hot">{{ formatPriceWithUnit(product) }}</div>
         </div>
         <CloseButton @click="emit('close')" />
       </div>
 
-      <p class="m-desc">{{ product.description }}</p>
+      <p class="px-[22px] pt-2.5 text-sm text-muted">{{ product.description }}</p>
 
-      <div class="m-foot">
+      <div class="px-[22px] pb-[22px] pt-4 [&>*]:w-full [&>*]:justify-center">
         <AppButton variant="gold" @click="emit('snap', product)">
           <IconCamera />
           Chụp món này
@@ -34,61 +37,3 @@ const emit = defineEmits<{ close: []; snap: [Product] }>()
     </div>
   </BaseModal>
 </template>
-
-<style scoped>
-.modal {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 22px;
-  overflow: hidden;
-  width: 100%;
-  max-width: 720px;
-  max-height: calc(100vh - 48px);
-  overflow-y: auto;
-  box-shadow: var(--shadow);
-  animation: pop 0.22s ease;
-}
-
-@keyframes pop {
-  from {
-    transform: scale(0.96);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-.m-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 18px 22px 0;
-}
-
-.m-head h3 {
-  font-size: 22px;
-}
-
-.price {
-  color: var(--hot);
-  margin-top: 4px;
-}
-
-.m-desc {
-  color: var(--muted);
-  font-size: 14px;
-  padding: 10px 22px 0;
-}
-
-.m-foot {
-  padding: 16px 22px 22px;
-}
-
-.m-foot :deep(.btn) {
-  width: 100%;
-  justify-content: center;
-}
-</style>
