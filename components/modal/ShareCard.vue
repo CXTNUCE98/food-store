@@ -34,7 +34,7 @@ const emit = defineEmits<{ close: [] }>()
       <div
         class="mx-[22px] mt-2 rounded-xl border-[1.5px] border-dashed border-accent bg-bg-2 px-3.5 py-3 text-[13px] text-muted [&_b]:text-fresh"
       >
-        📸 <b>Chụp màn hình thẻ này</b> rồi gửi qua Messenger/Zalo để chốt đơn nhé.
+        📸 <b>Chụp màn hình thẻ này</b> rồi gửi qua Messenger để chốt đơn nhé.
       </div>
 
       <div class="flex gap-2.5 px-[22px] pb-[22px] pt-4 [&>*]:flex-1 [&>*]:justify-center">

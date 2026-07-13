@@ -28,7 +28,10 @@ const emit = defineEmits<{ play: [Product]; snap: [Product] }>()
         </p>
         <div class="mt-[26px] flex flex-wrap gap-3">
           <ContactButtons />
-          <AppButton variant="ghost" href="#menu">Xem menu ↓</AppButton>
+          <AppButton variant="ghost" href="#menu">
+            Xem menu
+            <IconArrowDown />
+          </AppButton>
         </div>
       </div>
 

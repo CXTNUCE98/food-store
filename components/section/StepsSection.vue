@@ -3,7 +3,7 @@
 const steps = [
   { n: 1, title: 'Chọn món', text: 'Lướt menu, bấm vào món để xem clip và mô tả chi tiết.' },
   { n: 2, title: 'Chụp màn hình', text: 'Bấm “Chụp món này” để hiện thẻ gọn gàng rồi chụp lại.' },
-  { n: 3, title: 'Nhắn tin', text: 'Gửi ảnh qua Messenger/Zalo, tụi mình chốt đơn liền.' },
+  { n: 3, title: 'Nhắn tin', text: 'Gửi ảnh qua Messenger, tụi mình chốt đơn liền.' },
 ]
 </script>
 

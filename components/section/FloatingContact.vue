@@ -5,6 +5,6 @@
     <span class="mr-1 text-[13.5px] font-medium text-muted max-[560px]:hidden">
       Ưng món nào rồi? Nhắn tin chốt đơn ngay:
     </span>
-    <ContactButtons messenger-label="Messenger" zalo-label="Zalo" />
+    <ContactButtons messenger-label="Messenger" />
   </div>
 </template>

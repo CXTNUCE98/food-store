@@ -63,6 +63,5 @@ export interface SiteConfig {
   brandTail: string
   tagline: string
   messengerUrl: string
-  zaloUrl: string
   instagramUrl: string
 }

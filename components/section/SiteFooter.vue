@@ -16,7 +16,6 @@ const year = new Date().getFullYear()
       <nav class="[&_a]:block [&_a]:py-[5px] [&_a]:text-muted [&_a]:transition-colors hover:[&_a]:text-accent">
         <h5>Chốt đơn</h5>
         <a :href="SITE.messengerUrl" target="_blank" rel="noopener">Messenger</a>
-        <a :href="SITE.zaloUrl">Zalo</a>
         <a :href="SITE.instagramUrl">Instagram</a>
       </nav>
       <nav class="[&_a]:block [&_a]:py-[5px] [&_a]:text-muted [&_a]:transition-colors hover:[&_a]:text-accent">

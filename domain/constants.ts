@@ -7,7 +7,6 @@ export const SITE: SiteConfig = {
   tagline:
     'Đồ ăn vặt chua ngọt, làm mới mỗi ngày. Chọn món, chụp màn hình, nhắn tin — tụi mình lo phần còn lại.',
   messengerUrl: 'https://www.facebook.com/messages/t/722454310958839',
-  zaloUrl: '#',
   instagramUrl: '#',
 }
 
