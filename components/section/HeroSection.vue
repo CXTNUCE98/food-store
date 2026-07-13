@@ -71,7 +71,7 @@ const emit = defineEmits<{ play: [Product]; snap: [Product] }>()
           <div class="mt-3.5 flex flex-wrap gap-2.5">
             <button
               type="button"
-              class="inline-flex cursor-pointer items-center gap-2 rounded-full border-0 bg-white/90 px-[15px] py-[9px] text-[13px] font-bold text-fg transition-colors hover:bg-white [&_svg]:size-[15px] [&_svg]:fill-current"
+              class="inline-flex cursor-pointer items-center gap-2 rounded-full border-0 bg-white/90 px-[15px] py-[9px] text-[13px] font-bold text-[oklch(32%_0.045_55)] transition-colors hover:bg-white [&_svg]:size-[15px] [&_svg]:fill-current"
               @click="emit('play', featured)"
             >
               <IconPlay />
@@ -79,7 +79,7 @@ const emit = defineEmits<{ play: [Product]; snap: [Product] }>()
             </button>
             <button
               type="button"
-              class="inline-flex cursor-pointer items-center gap-2 rounded-full border-0 bg-white/90 px-[15px] py-[9px] text-[13px] font-bold text-fg transition-colors hover:bg-white"
+              class="inline-flex cursor-pointer items-center gap-2 rounded-full border-0 bg-white/90 px-[15px] py-[9px] text-[13px] font-bold text-[oklch(32%_0.045_55)] transition-colors hover:bg-white"
               @click="emit('snap', featured)"
             >
               Chụp món này
