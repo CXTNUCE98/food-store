@@ -7,7 +7,7 @@ defineEmits<{ select: [] }>()
   <button
     type="button"
     :aria-pressed="active"
-    class="cursor-pointer whitespace-nowrap rounded-full border-[1.5px] px-4 py-[9px] text-sm font-semibold transition-all duration-[180ms]"
+    class="cursor-pointer whitespace-nowrap rounded-full border-[1.5px] px-4 py-[10px] text-sm font-semibold transition-all duration-[180ms] active:scale-[0.95]"
     :class="
       active
         ? 'border-accent bg-accent text-accent-ink'

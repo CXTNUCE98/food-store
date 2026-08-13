@@ -47,9 +47,21 @@ export default <Partial<Config>>{
           from: { transform: 'scale(0.96)', opacity: '0' },
           to: { transform: 'scale(1)', opacity: '1' },
         },
+        // Above-the-fold entrance: fade + slide up, staggered via delays.
+        rise: {
+          from: { opacity: '0', transform: 'translateY(26px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        // Slow vertical drift for the hero's decorative blobs.
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-20px)' },
+        },
       },
       animation: {
         pop: 'pop 0.22s ease',
+        rise: 'rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both',
+        float: 'float 7s ease-in-out infinite',
       },
     },
   },

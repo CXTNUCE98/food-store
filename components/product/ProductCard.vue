@@ -12,7 +12,7 @@ const emit = defineEmits<{ play: [Product]; snap: [Product] }>()
 
 <template>
   <article
-    class="flex flex-col overflow-hidden rounded-card border border-border bg-surface shadow-soft-sm transition-[transform,border-color,box-shadow] duration-200 hover:-translate-y-1 hover:border-accent hover:shadow-soft"
+    class="flex h-full flex-col overflow-hidden rounded-card border border-border bg-surface shadow-soft-sm transition-[transform,border-color,box-shadow] duration-200 hover:-translate-y-1 hover:border-accent hover:shadow-soft"
   >
     <ProductThumb
       :category="product.category"
@@ -38,7 +38,7 @@ const emit = defineEmits<{ play: [Product]; snap: [Product] }>()
         </span>
         <button
           type="button"
-          class="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border-[1.5px] border-[var(--ghost-border)] bg-[var(--ghost-surface)] px-[13px] py-[9px] text-[13px] font-bold text-fg transition-all duration-[180ms] hover:border-accent hover:bg-accent hover:text-accent-ink [&_svg]:size-[15px]"
+          class="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border-[1.5px] border-[var(--ghost-border)] bg-[var(--ghost-surface)] px-[13px] py-[9px] text-[13px] font-bold text-fg transition-all duration-[180ms] hover:border-accent hover:bg-accent hover:text-accent-ink active:scale-[0.95] [&_svg]:size-[15px]"
           @click="emit('snap', product)"
         >
           <IconCamera />

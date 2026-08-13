@@ -16,7 +16,7 @@ const props = withDefaults(
 )
 
 const base =
-  'inline-flex items-center gap-[9px] whitespace-nowrap rounded-full border-[1.5px] px-[22px] py-[13px] text-[15px] font-bold cursor-pointer transition-[transform,background,border-color,color] duration-200 hover:-translate-y-0.5 [&_svg]:size-[18px]'
+  'inline-flex items-center gap-[9px] whitespace-nowrap rounded-full border-[1.5px] px-[22px] py-[13px] text-[15px] font-bold cursor-pointer transition-[transform,background,border-color,color,box-shadow] duration-200 hover:-translate-y-0.5 active:scale-[0.97] [&_svg]:size-[18px]'
 
 const variants = {
   gold: 'border-transparent bg-accent text-accent-ink shadow-soft-sm hover:bg-accent-hover',
