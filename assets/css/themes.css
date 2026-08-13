@@ -72,6 +72,7 @@
   /* "Bán chạy" badge */
   --best-bg: var(--hot);
   --best-ink: #fff;
+  --best-glow: oklch(58% 0.21 30 / 0.45);
 
   /* Hero feature tag */
   --hf-tag-bg: var(--hot);
@@ -139,6 +140,7 @@
 
   --best-bg: var(--hot);
   --best-ink: oklch(18% 0.02 40);
+  --best-glow: oklch(66% 0.18 40 / 0.4);
 
   --hf-tag-bg: oklch(17% 0.012 60 / 0.7);
   --hf-tag-border: var(--border);

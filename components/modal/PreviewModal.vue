@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import type { Product } from '~/domain/types'
+import { SITE } from '~/domain/constants'
 import { formatPriceWithUnit } from '~/utils/format'
 
 /**
  * Product preview overlay. Shows the media gallery (video-first, then images)
- * plus name/price and a jump to the share card for closing the order.
+ * plus name/price and two exits: snap the share card, or message directly.
  */
 defineProps<{ product: Product | null }>()
 const emit = defineEmits<{ close: []; snap: [Product] }>()
@@ -28,10 +29,14 @@ const emit = defineEmits<{ close: []; snap: [Product] }>()
 
       <p class="px-[22px] pt-2.5 text-sm text-muted">{{ product.description }}</p>
 
-      <div class="px-[22px] pb-[22px] pt-4 [&>*]:w-full [&>*]:justify-center">
+      <div class="flex gap-2.5 px-[22px] pb-[22px] pt-4 [&>*]:flex-1 [&>*]:justify-center">
         <AppButton variant="gold" @click="emit('snap', product)">
           <IconCamera />
           Chụp món này
+        </AppButton>
+        <AppButton variant="ghost" :href="SITE.messengerUrl" external>
+          <IconMessenger />
+          Messenger
         </AppButton>
       </div>
     </div>

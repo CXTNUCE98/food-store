@@ -34,6 +34,9 @@ const emit = defineEmits<{ close: [] }>()
       <div
         class="mx-[22px] mt-2 rounded-xl border-[1.5px] border-dashed border-accent bg-bg-2 px-3.5 py-3 text-[13px] text-muted [&_b]:text-fresh"
       >
+        <div class="mb-1.5 font-bold text-fg">
+          Note đặt món: {{ product.name }} — {{ formatPriceWithUnit(product) }}
+        </div>
         📸 <b>Chụp màn hình thẻ này</b> rồi gửi qua Messenger để chốt đơn nhé.
       </div>
 

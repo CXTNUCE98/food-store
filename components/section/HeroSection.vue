@@ -5,6 +5,13 @@ import { formatPrice, monogram } from '~/utils/format'
 /** The featured product powers the hero visual on the right. */
 defineProps<{ featured: Product | null }>()
 const emit = defineEmits<{ play: [Product]; snap: [Product] }>()
+
+// Fade the cover in once decoded (matches ProductThumb behaviour).
+const loaded = ref(false)
+const imgRef = ref<HTMLImageElement | null>(null)
+onMounted(() => {
+  if (imgRef.value?.complete) loaded.value = true
+})
 </script>
 
 <template>
@@ -47,17 +54,20 @@ const emit = defineEmits<{ play: [Product]; snap: [Product] }>()
 
       <div
         v-if="featured"
-        class="animate-rise relative aspect-[4/5] overflow-hidden rounded-3xl border border-border bg-[var(--hero-feature-bg)] shadow-soft [animation-delay:220ms] max-[860px]:max-w-[360px] max-[860px]:[aspect-ratio:4/4.4]"
+        class="animate-rise relative aspect-[4/5] overflow-hidden rounded-3xl border border-border bg-[var(--hero-feature-bg)] shadow-soft [animation-delay:220ms] max-[860px]:mx-auto max-[860px]:max-w-[360px] max-[860px]:[aspect-ratio:4/4.4]"
       >
         <img
           v-if="featured.thumbnail_url"
+          ref="imgRef"
           :src="featured.thumbnail_url"
           :alt="featured.name"
-          class="absolute inset-0 size-full object-cover"
+          class="absolute inset-0 size-full object-cover transition-opacity duration-500"
+          :class="loaded ? 'opacity-100' : 'opacity-0'"
           fetchpriority="high"
           decoding="async"
           width="800"
           height="1000"
+          @load="loaded = true"
         />
         <span
           v-else
@@ -70,6 +80,13 @@ const emit = defineEmits<{ play: [Product]; snap: [Product] }>()
           class="absolute left-4 top-4 inline-flex items-center gap-[7px] rounded-full border border-[var(--hf-tag-border)] bg-[var(--hf-tag-bg)] px-[13px] py-[7px] text-xs font-bold uppercase tracking-[0.1em] text-[var(--hf-tag-ink)] shadow-soft-sm backdrop-blur-[6px]"
         >
           ★ Bán chạy
+        </span>
+
+        <!-- Floating price tag: the offer is readable at a glance. -->
+        <span
+          class="display absolute right-4 top-4 -rotate-3 rounded-full bg-hot px-3.5 py-[7px] text-[15px] text-hot-ink shadow-soft-sm"
+        >
+          {{ formatPrice(featured.price) }}đ
         </span>
 
         <div class="absolute inset-x-0 bottom-0 bg-[var(--hero-feature-caption)] p-[22px]">

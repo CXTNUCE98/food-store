@@ -58,6 +58,14 @@
     @apply text-xs font-semibold uppercase text-accent;
     letter-spacing: 0.3em;
   }
+
+  /* Horizontally scrollable rows (filter chips) without a visible scrollbar. */
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* ---- Scroll reveal (unlayered so it wins over utility transitions).

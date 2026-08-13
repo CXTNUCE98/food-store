@@ -27,8 +27,8 @@ const year = new Date().getFullYear()
       >
         <h5>Thông tin</h5>
         <a href="#menu">Menu hôm nay</a>
-        <a href="#">Khu vực giao</a>
-        <a href="#">Giờ mở bán</a>
+        <p class="py-[5px] text-muted">Giờ mở bán: 9:00 – 21:00 hằng ngày</p>
+        <p class="py-[5px] text-muted">Khu vực giao: nội thành, freeship &lt; 3km</p>
       </nav>
     </div>
     <div class="wrap mt-9 border-t border-border pt-5 text-[12.5px] text-faint">
