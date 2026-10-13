@@ -36,8 +36,9 @@ const categoryLabel = computed(
       <p class="mt-1.5 flex-1 text-sm text-muted">{{ product.summary }}</p>
 
       <div class="mt-4 flex items-center justify-between gap-3">
-        <p class="flex min-w-0 flex-wrap items-baseline gap-x-1">
-          <span class="display text-[24px]">{{ formatVnd(product.price) }}</span>
+        <!-- Unit sits under the price so it reads the same at every card width. -->
+        <p class="min-w-0">
+          <span class="display block text-[24px]">{{ formatVnd(product.price) }}</span>
           <span class="text-sm font-semibold text-muted">/ {{ product.unit }}</span>
         </p>
         <CartControl :product="product" />

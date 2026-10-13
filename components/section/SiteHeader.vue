@@ -11,7 +11,11 @@ const { openDrawer } = useOverlays()
       </a>
 
       <div class="flex items-center gap-1.5">
-        <nav class="flex items-center text-[15px] font-semibold" aria-label="Điều hướng chính">
+        <!-- Phones have no room for the anchors; the hero's "Xem menu" covers them there. -->
+        <nav
+          class="flex items-center whitespace-nowrap text-[15px] font-semibold max-[440px]:hidden"
+          aria-label="Điều hướng chính"
+        >
           <a href="#how" class="flex min-h-10 items-center rounded-full px-2.5 transition-colors hover:bg-ink hover:text-paper">
             Cách đặt
           </a>
@@ -27,7 +31,7 @@ const { openDrawer } = useOverlays()
           @click="openDrawer"
         >
           <IconBag />
-          <span class="max-[400px]:sr-only">Giỏ</span>
+          <span>Giỏ</span>
           <span class="grid h-8 min-w-8 place-items-center rounded-full bg-ink px-1.5 text-[13px] tabular-nums text-paper">
             {{ count }}
           </span>

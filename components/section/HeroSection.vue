@@ -20,7 +20,8 @@ defineProps<{ featured: Product | null }>()
         </p>
 
         <h1 class="display animate-rise mt-7 [animation-delay:80ms] [font-size:clamp(48px,7.5vw,96px)]">
-          Ăn vặt siêu ngon,
+          Ăn vặt<br />
+          siêu ngon,
           <span
             class="mt-[0.12em] inline-block -rotate-2 rounded-[0.22em] border bg-lime px-[0.18em] pb-[0.1em] pt-[0.06em] shadow-hard"
           >
@@ -33,7 +34,10 @@ defineProps<{ featured: Product | null }>()
           đơn rồi nhắn tụi mình qua Messenger — khỏi điền form, khỏi thanh toán online.
         </p>
 
-        <div class="animate-rise mt-8 flex flex-wrap gap-3.5 [animation-delay:240ms]">
+        <!-- Side by side when there's room, full-width stack on phones. -->
+        <div
+          class="animate-rise mt-8 grid max-w-[460px] gap-3.5 [animation-delay:240ms] [grid-template-columns:repeat(auto-fit,minmax(170px,1fr))]"
+        >
           <AppButton variant="ink" size="lg" href="#menu">Xem menu</AppButton>
           <AppButton variant="white" size="lg" :href="SITE.messengerUrl" external>
             <IconMessenger />
