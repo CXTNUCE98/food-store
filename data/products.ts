@@ -1,9 +1,12 @@
 import type { CategoryId, Product } from '~/domain/types'
 
 /**
- * Product catalogue (sample data from the original mock-up).
- * This is the single source of truth for the menu — replace with a real API
- * call later by swapping the implementation of `getProducts()` only.
+ * Product catalogue. This is the single source of truth for the menu —
+ * replace with a real API call later by swapping the implementation of
+ * `getProducts()` only.
+ *
+ * Photos: set `thumbnail_url` to a real 4:3 shot on a light background.
+ * Products without one render a striped placeholder in their category colour.
  */
 const PRODUCTS: Product[] = [
   {
@@ -16,13 +19,6 @@ const PRODUCTS: Product[] = [
     description:
       'Chùm ruột giòn ngâm chanh muối, chua ngọt đậm đà — mồi ăn vặt kinh điển.',
     taste: 'Chua ngọt',
-    thumbnail_url: 'https://picsum.photos/seed/chum-ruot/800/600',
-    video_url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    images: [
-      'https://picsum.photos/seed/chum-ruot-1/800/600',
-      'https://picsum.photos/seed/chum-ruot-2/800/600',
-      'https://picsum.photos/seed/chum-ruot-3/800/600',
-    ],
     featured: true,
   },
   {
@@ -34,11 +30,6 @@ const PRODUCTS: Product[] = [
     summary: 'Xoài xanh giòn lắc muối ớt cay the.',
     description: 'Xoài xanh giòn, lắc đều muối ớt cay the — chua giòn kích thích.',
     taste: 'Cay · Chua',
-    thumbnail_url: 'https://picsum.photos/seed/xoai-lac/800/600',
-    images: [
-      'https://picsum.photos/seed/xoai-lac-1/800/600',
-      'https://picsum.photos/seed/xoai-lac-2/800/600',
-    ],
   },
   {
     id: 'coc-non-lac',
@@ -49,8 +40,6 @@ const PRODUCTS: Product[] = [
     summary: 'Cóc non giòn rụm lắc muối tôm.',
     description: 'Cóc non giòn rụm lắc muối tôm, chấm chút chua cay là ghiền.',
     taste: 'Giòn · Chua cay',
-    thumbnail_url: 'https://picsum.photos/seed/coc-non/800/600',
-    images: ['https://picsum.photos/seed/coc-non-1/800/600'],
   },
   {
     id: 'me-ngao-duong',
@@ -61,8 +50,6 @@ const PRODUCTS: Product[] = [
     summary: 'Me chín dẻo ngào đường, chua ngọt sánh mịn.',
     description: 'Me chín dẻo ngào đường thắng, chua ngọt sánh mịn, cay nhẹ.',
     taste: 'Chua ngọt',
-    thumbnail_url: 'https://picsum.photos/seed/me-ngao/800/600',
-    images: ['https://picsum.photos/seed/me-ngao-1/800/600'],
   },
   {
     id: 'tac-xi-muoi',
@@ -73,8 +60,6 @@ const PRODUCTS: Product[] = [
     summary: 'Tắc ngâm xí muội, chua mặn ngọt hài hoà.',
     description: 'Tắc ngâm xí muội, vị chua mặn ngọt hài hoà, thơm the.',
     taste: 'Chua mặn',
-    thumbnail_url: 'https://picsum.photos/seed/tac-xi-muoi/800/600',
-    images: ['https://picsum.photos/seed/tac-xi-muoi-1/800/600'],
   },
   {
     id: 'oi-lac-muoi-ot',
@@ -85,8 +70,6 @@ const PRODUCTS: Product[] = [
     summary: 'Ổi giòn lắc muối ớt Tây Ninh.',
     description: 'Ổi giòn lắc muối ớt Tây Ninh, cay mặn đậm đà.',
     taste: 'Giòn · Cay mặn',
-    thumbnail_url: 'https://picsum.photos/seed/oi-lac/800/600',
-    images: ['https://picsum.photos/seed/oi-lac-1/800/600'],
   },
   {
     id: 'kho-ga-la-chanh',
@@ -97,11 +80,6 @@ const PRODUCTS: Product[] = [
     summary: 'Khô gà xé sợi rim sả ớt, rắc lá chanh.',
     description: 'Khô gà xé sợi rim sả ớt, rắc lá chanh thơm — cay ngọt hết ý.',
     taste: 'Cay ngọt',
-    thumbnail_url: 'https://picsum.photos/seed/kho-ga/800/600',
-    images: [
-      'https://picsum.photos/seed/kho-ga-1/800/600',
-      'https://picsum.photos/seed/kho-ga-2/800/600',
-    ],
   },
   {
     id: 'xoai-say-deo',
@@ -112,8 +90,6 @@ const PRODUCTS: Product[] = [
     summary: 'Xoài sấy dẻo tự nhiên, ngọt thanh.',
     description: 'Xoài sấy dẻo tự nhiên, ngọt thanh, không phẩm màu.',
     taste: 'Ngọt dịu',
-    thumbnail_url: 'https://picsum.photos/seed/xoai-say/800/600',
-    images: ['https://picsum.photos/seed/xoai-say-1/800/600'],
   },
   {
     id: 'banh-trang-tron',
@@ -124,11 +100,6 @@ const PRODUCTS: Product[] = [
     summary: 'Khô bò, xoài, rau răm, trứng cút — đủ topping.',
     description: 'Bánh tráng trộn khô bò, xoài, rau răm, trứng cút — topping đầy đủ.',
     taste: 'Mặn · Chua cay',
-    thumbnail_url: 'https://picsum.photos/seed/btt/800/600',
-    images: [
-      'https://picsum.photos/seed/btt-1/800/600',
-      'https://picsum.photos/seed/btt-2/800/600',
-    ],
   },
   {
     id: 'banh-trang-muoi-tom-cuon',
@@ -139,8 +110,6 @@ const PRODUCTS: Product[] = [
     summary: 'Cuốn muối tôm, khô bò, mỡ hành, sốt me.',
     description: 'Bánh tráng cuốn muối tôm, khô bò, mỡ hành, sốt me chua ngọt.',
     taste: 'Mặn ngọt',
-    thumbnail_url: 'https://picsum.photos/seed/btm-cuon/800/600',
-    images: ['https://picsum.photos/seed/btm-cuon-1/800/600'],
   },
 ]
 
@@ -152,6 +121,11 @@ export function getProducts(): Product[] {
 /** Returns the featured (best-seller) product, if any. */
 export function getFeaturedProduct(): Product | undefined {
   return PRODUCTS.find((p) => p.featured)
+}
+
+/** Looks a product up by its slug (used to rebuild the cart from storage). */
+export function getProductById(id: string): Product | undefined {
+  return PRODUCTS.find((p) => p.id === id)
 }
 
 /** Groups products by category id — handy for category-first layouts. */

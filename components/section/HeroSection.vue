@@ -1,118 +1,75 @@
 <script setup lang="ts">
 import type { Product } from '~/domain/types'
-import { formatPrice, monogram } from '~/utils/format'
+import { SITE } from '~/domain/constants'
+import { formatPriceWithUnit } from '~/utils/format'
 
-/** The featured product powers the hero visual on the right. */
+/** The featured product powers the sticker card on the right. */
 defineProps<{ featured: Product | null }>()
-const emit = defineEmits<{ play: [Product]; snap: [Product] }>()
-
-// Fade the cover in once decoded (matches ProductThumb behaviour).
-const loaded = ref(false)
-const imgRef = ref<HTMLImageElement | null>(null)
-onMounted(() => {
-  if (imgRef.value?.complete) loaded.value = true
-})
 </script>
 
 <template>
-  <section class="relative pb-10 pt-[60px]">
-    <!-- Decorative drifting blobs behind the hero content. -->
-    <div aria-hidden="true" class="pointer-events-none absolute inset-0 overflow-hidden">
-      <div
-        class="animate-float absolute -top-24 left-[5%] size-[300px] rounded-full bg-accent opacity-[0.14] blur-[90px]"
-      />
-      <div
-        class="animate-float absolute right-[3%] top-44 size-[340px] rounded-full bg-hot opacity-[0.10] blur-[100px] [animation-delay:2.2s]"
-      />
-    </div>
-
+  <section class="overflow-x-clip pb-[clamp(48px,7vw,88px)] pt-[clamp(32px,6vw,72px)]">
     <div
-      class="wrap relative grid grid-cols-1 items-center gap-8 min-[861px]:grid-cols-[1.15fr_0.85fr] min-[861px]:gap-12"
+      class="wrap grid items-center gap-x-12 gap-y-14 [grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))]"
     >
       <div>
-        <span class="eyebrow animate-rise inline-block">Menu trưng bày · Không đặt online</span>
-        <h1
-          class="display animate-rise my-[18px] text-fg [animation-delay:90ms] [font-size:clamp(40px,6.2vw,74px)] leading-[1.02] tracking-[-0.01em]"
+        <p
+          class="animate-rise inline-flex rounded-full border bg-white px-4 py-2 text-[13px] font-semibold shadow-hard-sm"
         >
-          Ăn vặt
-          <span class="text-accent [font-style:var(--heading-style)]">siêu ngon</span>,<br />
-          <em class="text-hot [font-style:var(--heading-style)]">mê là ghiền!</em>
-        </h1>
-        <p class="animate-rise max-w-[46ch] text-muted [animation-delay:180ms] [font-size:clamp(16px,2vw,19px)]">
-          Lướt xem các món TÓP TÉP đang có, bấm vào để xem clip món ăn. Ưng món nào
-          thì chụp lại màn hình rồi nhắn tin cho tụi mình — khỏi cần điền form, khỏi
-          thanh toán online.
+          Chọn món → tạo ảnh đơn → nhắn tin là xong
         </p>
-        <div class="animate-rise mt-[26px] flex flex-wrap gap-3 [animation-delay:270ms]">
-          <ContactButtons />
-          <AppButton variant="ghost" href="#menu">
-            Xem menu
-            <IconArrowDown />
+
+        <h1 class="display animate-rise mt-7 [animation-delay:80ms] [font-size:clamp(48px,7.5vw,96px)]">
+          Ăn vặt siêu ngon,
+          <span
+            class="mt-[0.12em] inline-block -rotate-2 rounded-[0.22em] border bg-lime px-[0.18em] pb-[0.1em] pt-[0.06em] shadow-hard"
+          >
+            mê là ghiền!
+          </span>
+        </h1>
+
+        <p class="animate-rise mt-7 max-w-[44ch] text-ink-soft [animation-delay:160ms] [font-size:clamp(16px,1.8vw,19px)]">
+          Đồ ăn vặt chua cay mặn ngọt, làm mới mỗi ngày. Bấm thêm món vào giỏ, tạo ảnh
+          đơn rồi nhắn tụi mình qua Messenger — khỏi điền form, khỏi thanh toán online.
+        </p>
+
+        <div class="animate-rise mt-8 flex flex-wrap gap-3.5 [animation-delay:240ms]">
+          <AppButton variant="ink" size="lg" href="#menu">Xem menu</AppButton>
+          <AppButton variant="white" size="lg" :href="SITE.messengerUrl" external>
+            <IconMessenger />
+            Nhắn Messenger
           </AppButton>
         </div>
       </div>
 
-      <div
-        v-if="featured"
-        class="animate-rise relative aspect-[4/5] overflow-hidden rounded-3xl border border-border bg-[var(--hero-feature-bg)] shadow-soft [animation-delay:220ms] max-[860px]:mx-auto max-[860px]:max-w-[360px] max-[860px]:[aspect-ratio:4/4.4]"
-      >
-        <img
-          v-if="featured.thumbnail_url"
-          ref="imgRef"
-          :src="featured.thumbnail_url"
-          :alt="featured.name"
-          class="absolute inset-0 size-full object-cover transition-opacity duration-500"
-          :class="loaded ? 'opacity-100' : 'opacity-0'"
-          fetchpriority="high"
-          decoding="async"
-          width="800"
-          height="1000"
-          @load="loaded = true"
-        />
-        <span
-          v-else
-          class="display absolute inset-0 grid place-items-center text-[min(42vw,300px)] text-[var(--monogram-color)]"
-        >
-          {{ monogram(featured.name) }}
-        </span>
-
-        <span
-          class="absolute left-4 top-4 inline-flex items-center gap-[7px] rounded-full border border-[var(--hf-tag-border)] bg-[var(--hf-tag-bg)] px-[13px] py-[7px] text-xs font-bold uppercase tracking-[0.1em] text-[var(--hf-tag-ink)] shadow-soft-sm backdrop-blur-[6px]"
-        >
-          ★ Bán chạy
-        </span>
-
-        <!-- Floating price tag: the offer is readable at a glance. -->
-        <span
-          class="display absolute right-4 top-4 -rotate-3 rounded-full bg-hot px-3.5 py-[7px] text-[15px] text-hot-ink shadow-soft-sm"
-        >
-          {{ formatPrice(featured.price) }}đ
-        </span>
-
-        <div class="absolute inset-x-0 bottom-0 bg-[var(--hero-feature-caption)] p-[22px]">
-          <h3 class="display text-[27px] text-white">{{ featured.name }}</h3>
-          <div class="mt-0.5 font-bold text-[oklch(94%_0.12_92)]">
-            {{ formatPrice(featured.price)
-            }}<span class="text-[13px] opacity-85">đ / {{ featured.unit }}</span>
-          </div>
-          <div class="mt-3.5 flex flex-wrap gap-2.5">
-            <button
-              type="button"
-              class="inline-flex cursor-pointer items-center gap-2 rounded-full border-0 bg-white/90 px-[15px] py-[9px] text-[13px] font-bold text-[oklch(32%_0.045_55)] transition-all hover:bg-white active:scale-[0.96] [&_svg]:size-[15px] [&_svg]:fill-current"
-              @click="emit('play', featured)"
-            >
-              <IconPlay />
-              Xem clip
-            </button>
-            <button
-              type="button"
-              class="inline-flex cursor-pointer items-center gap-2 rounded-full border-0 bg-white/90 px-[15px] py-[9px] text-[13px] font-bold text-[oklch(32%_0.045_55)] transition-all hover:bg-white active:scale-[0.96]"
-              @click="emit('snap', featured)"
-            >
-              Chụp món này
-            </button>
-          </div>
+      <div v-if="featured" class="relative mx-auto w-full max-w-[440px] px-3 py-8">
+        <!-- Rise lives on a wrapper: the animation owns `transform`, the card owns its tilt. -->
+        <div class="animate-rise [animation-delay:200ms]">
+          <article class="rotate-2 rounded-hero border-[3px] bg-white p-4 shadow-hard-lg">
+            <div class="relative">
+              <ProductThumb :product="featured" eager class="aspect-[4/3] rounded-[18px] border" />
+              <BestSticker large class="absolute -right-5 -top-6" />
+            </div>
+            <div class="px-1 pb-1 pt-4">
+              <p class="display text-[clamp(26px,3vw,32px)]">{{ featured.name }}</p>
+              <p class="mt-1.5 font-semibold text-ink-soft">{{ formatPriceWithUnit(featured) }}</p>
+              <CartControl :product="featured" label="+ Thêm vào giỏ" size="lg" block class="mt-4" />
+            </div>
+          </article>
         </div>
+
+        <span
+          aria-hidden="true"
+          class="display animate-float absolute -left-1 top-1 z-10 rounded-full border bg-mango px-4 py-2 text-[20px] shadow-hard-sm [--r:-10deg] [transform:rotate(var(--r))]"
+        >
+          Chua chua
+        </span>
+        <span
+          aria-hidden="true"
+          class="display animate-float absolute -right-1 bottom-2 z-10 rounded-full border bg-pink px-4 py-2 text-[20px] shadow-hard-sm [--r:6deg] [animation-delay:-2.5s] [transform:rotate(var(--r))]"
+        >
+          Giòn rụm
+        </span>
       </div>
     </div>
   </section>

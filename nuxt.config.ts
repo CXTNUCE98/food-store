@@ -5,12 +5,12 @@ export default defineNuxtConfig({
 
   modules: ['@nuxtjs/tailwindcss'],
 
-  // Global stylesheet: theme tokens + Tailwind layers + a few shared helpers.
+  // Global stylesheet: Tailwind layers + a few shared sticker helpers.
   css: ['~/assets/css/main.css'],
 
   tailwindcss: {
-    // We import Tailwind ourselves inside main.css so the CSS-variable theme
-    // tokens load first; disable the module's own injected stylesheet.
+    // We import Tailwind ourselves inside main.css; disable the module's own
+    // injected stylesheet.
     cssPath: false,
     viewer: false,
   },
@@ -31,7 +31,7 @@ export default defineNuxtConfig({
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'theme-color', content: '#f2994a' },
+        { name: 'theme-color', content: '#FFF6E6' },
         { name: 'format-detection', content: 'telephone=no' },
       ],
       link: [
@@ -39,7 +39,7 @@ export default defineNuxtConfig({
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
         {
           rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Quicksand:wght@500..700&display=swap',
+          href: 'https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,800&display=swap',
         },
       ],
     },

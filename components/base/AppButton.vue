@@ -1,29 +1,45 @@
 <script setup lang="ts">
 /**
- * The single button primitive used across the site.
+ * The single button primitive used across the site: a pill sticker with an
+ * ink border and a hard shadow that presses in on click.
  * Renders as <a> when `href` is given, otherwise a real <button>.
- * Variants: gold (primary accent) and ghost (outlined).
  */
 const props = withDefaults(
   defineProps<{
-    variant?: 'gold' | 'ghost'
+    variant?: 'lime' | 'ink' | 'white' | 'chili'
+    size?: 'md' | 'lg'
     href?: string
     /** When set, opens the link in a new tab with safe rel. */
     external?: boolean
     type?: 'button' | 'submit'
+    /** Stretch to the full width of the parent. */
+    block?: boolean
+    disabled?: boolean
   }>(),
-  { variant: 'gold', type: 'button', external: false },
+  { variant: 'lime', size: 'md', type: 'button', external: false, block: false, disabled: false },
 )
 
 const base =
-  'inline-flex items-center gap-[9px] whitespace-nowrap rounded-full border-[1.5px] px-[22px] py-[13px] text-[15px] font-bold cursor-pointer transition-[transform,background,border-color,color,box-shadow] duration-200 hover:-translate-y-0.5 active:scale-[0.97] [&_svg]:size-[18px]'
+  'press inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border font-bold shadow-hard-sm disabled:pointer-events-none disabled:opacity-45 [&_svg]:size-[18px] [&_svg]:shrink-0'
 
-const variants = {
-  gold: 'border-transparent bg-accent text-accent-ink shadow-soft-sm hover:bg-accent-hover',
-  ghost: 'border-border bg-surface text-fg hover:border-accent hover:text-accent',
+const sizes = {
+  md: 'min-h-11 px-5 text-[15px]',
+  lg: 'min-h-[52px] px-6 text-base',
 }
 
-const classes = computed(() => [base, variants[props.variant]])
+const variants = {
+  lime: 'bg-lime text-ink',
+  ink: 'bg-ink text-paper',
+  white: 'bg-white text-ink',
+  chili: 'bg-chili text-ink',
+}
+
+const classes = computed(() => [
+  base,
+  sizes[props.size],
+  variants[props.variant],
+  props.block && 'w-full',
+])
 </script>
 
 <template>
@@ -36,7 +52,7 @@ const classes = computed(() => [base, variants[props.variant]])
   >
     <slot />
   </a>
-  <button v-else :type="type" :class="classes">
+  <button v-else :type="type" :disabled="disabled" :class="classes">
     <slot />
   </button>
 </template>

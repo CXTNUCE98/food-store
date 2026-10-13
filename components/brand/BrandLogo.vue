@@ -1,26 +1,22 @@
 <script setup lang="ts">
 import { SITE } from '~/domain/constants'
 
-/** Wordmark used in the header, footer and share card. `size` scales it. */
-withDefaults(defineProps<{ size?: number; showSub?: boolean }>(), {
-  size: 28,
-  showSub: false,
-})
+/**
+ * Sticker wordmark: "TÓP" on an ink block tilted left, "TÉP" on a lime block
+ * tilted right. `size` is the font size in px.
+ */
+withDefaults(defineProps<{ size?: number }>(), { size: 22 })
 </script>
 
 <template>
-  <span class="flex items-baseline gap-2.5">
-    <span
-      class="display leading-none tracking-[0.06em] text-hot [&_b]:text-accent"
-      :style="{ fontSize: `${size}px` }"
-    >
-      {{ SITE.brandLead }} <b>{{ SITE.brandTail }}</b>
+  <span class="inline-flex items-center" :style="{ fontSize: `${size}px` }">
+    <span class="display -rotate-[4deg] rounded-[0.4em] bg-ink px-[0.35em] pb-[0.18em] pt-[0.26em] text-paper">
+      {{ SITE.brandLead }}
     </span>
     <span
-      v-if="showSub"
-      class="text-[11px] font-semibold uppercase tracking-[0.24em] text-faint"
+      class="display -ml-[0.12em] rotate-[3deg] rounded-[0.4em] border bg-lime px-[0.35em] pb-[0.14em] pt-[0.22em] text-ink"
     >
-      Đồ ăn vặt
+      {{ SITE.brandTail }}
     </span>
   </span>
 </template>

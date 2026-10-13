@@ -1,21 +1,37 @@
+<script setup lang="ts">
+const { count } = useCart()
+const { openDrawer } = useOverlays()
+</script>
+
 <template>
-  <header
-    class="sticky top-0 z-40 border-b border-border bg-[var(--header-bg)] backdrop-blur-[14px]"
-  >
-    <div class="wrap flex items-center justify-between gap-4 py-3.5">
-      <BrandLogo :size="28" show-sub />
-      <nav class="hidden items-center gap-6 text-sm font-semibold text-muted min-[901px]:flex">
-        <a href="#how" class="transition-colors hover:text-accent">Cách đặt</a>
-        <a href="#menu" class="transition-colors hover:text-accent">Menu</a>
-      </nav>
-      <div class="flex items-center gap-3.5">
-        <span class="hidden items-center gap-2 text-[13px] font-medium text-muted min-[681px]:flex">
-          <span
-            class="size-[7px] rounded-full bg-fresh shadow-[0_0_10px_var(--fresh)]"
-          />
-          Chọn món → chụp màn hình → nhắn tin là xong
-        </span>
-        <ThemeToggle />
+  <header class="sticky top-0 z-40 border-b bg-paper">
+    <div class="wrap flex min-h-[68px] items-center justify-between gap-2">
+      <a href="#top" class="shrink-0 py-2" aria-label="TÓP TÉP — về đầu trang">
+        <BrandLogo :size="22" />
+      </a>
+
+      <div class="flex items-center gap-1.5">
+        <nav class="flex items-center text-[15px] font-semibold" aria-label="Điều hướng chính">
+          <a href="#how" class="flex min-h-10 items-center rounded-full px-2.5 transition-colors hover:bg-ink hover:text-paper">
+            Cách đặt
+          </a>
+          <a href="#menu" class="flex min-h-10 items-center rounded-full px-2.5 transition-colors hover:bg-ink hover:text-paper">
+            Menu
+          </a>
+        </nav>
+
+        <button
+          type="button"
+          class="press ml-1 inline-flex min-h-11 items-center gap-2 rounded-full border bg-chili pl-3.5 pr-1.5 font-bold text-ink shadow-hard-sm [&_svg]:size-5"
+          :aria-label="`Mở giỏ, ${count} món`"
+          @click="openDrawer"
+        >
+          <IconBag />
+          <span class="max-[400px]:sr-only">Giỏ</span>
+          <span class="grid h-8 min-w-8 place-items-center rounded-full bg-ink px-1.5 text-[13px] tabular-nums text-paper">
+            {{ count }}
+          </span>
+        </button>
       </div>
     </div>
   </header>

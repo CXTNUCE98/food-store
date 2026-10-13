@@ -1,30 +1,25 @@
-/* Theme tokens first so the CSS variables exist before anything consumes them. */
-@import './themes.css';
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ---- Base layer: reset + document defaults that Tailwind's preflight
-       doesn't cover (theme-driven body background, fonts, selection). ---- */
+/* ---- Base layer: document defaults that Tailwind's preflight doesn't cover. ---- */
 @layer base {
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 88px;
+    /* Overlays lock body scroll; reserving the gutter stops the page jumping. */
+    scrollbar-gutter: stable;
   }
 
   body {
-    background: var(--body-bg);
-    color: var(--fg);
-    font: 16px/1.6 var(--font-sans);
-    -webkit-font-smoothing: antialiased;
-    letter-spacing: var(--body-letter-spacing);
-    padding-bottom: 88px;
+    @apply bg-paper font-sans text-ink antialiased;
+    font-size: 16px;
+    line-height: 1.6;
     min-height: 100vh;
   }
 
   ::selection {
-    background: var(--accent);
-    color: var(--accent-ink);
+    @apply bg-lime text-ink;
   }
 
   a {
@@ -32,45 +27,73 @@
     text-decoration: none;
   }
 
-  /* Keyboard focus ring, themed per active token set. */
+  /* Keyboard focus ring: a thick ink outline reads on every accent. */
   :focus-visible {
-    outline: 2px solid var(--accent);
+    outline: 3px solid theme('colors.ink');
     outline-offset: 3px;
   }
 }
 
-/* ---- Component layer: a few cross-cutting patterns reused everywhere.
+/* ---- Component layer: the few cross-cutting sticker patterns.
        Everything else is plain Tailwind utilities in the templates. ---- */
 @layer components {
   /* Centered page container. */
   .wrap {
-    @apply mx-auto w-full max-w-wrap px-6;
+    @apply mx-auto w-full max-w-wrap px-5;
   }
 
-  /* Display face + weight both come from theme tokens, so this renders as a
-     rounded sans in the warm theme and Lora serif in dark. */
+  /* Display face: Bricolage 800, tight tracking and leading. */
   .display {
-    font-family: var(--font-display);
-    font-weight: var(--font-display-weight);
+    @apply font-display font-extrabold;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
   }
 
   .eyebrow {
-    @apply text-xs font-semibold uppercase text-accent;
-    letter-spacing: 0.3em;
+    @apply text-[13px] font-bold uppercase text-eyebrow;
+    letter-spacing: 0.16em;
   }
 
-  /* Horizontally scrollable rows (filter chips) without a visible scrollbar. */
-  .no-scrollbar {
-    scrollbar-width: none;
+  /* Pressable sticker: lifts on hover, sinks into its shadow when pressed.
+     Pair with a `shadow-hard*` utility for the resting shadow. */
+  .press {
+    @apply cursor-pointer transition-[transform,box-shadow] duration-150;
   }
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
+  .press:hover {
+    @apply -translate-x-0.5 -translate-y-0.5 shadow-hard;
   }
+  .press:active {
+    @apply translate-x-0.5 translate-y-0.5 shadow-none;
+  }
+}
+
+/* ---- Overlay transition (drawer + modal). The backdrop fades while the
+       [data-panel] inside slides in from the right or pops in the center. ---- */
+.overlay-enter-active,
+.overlay-leave-active {
+  transition: opacity 0.26s ease;
+}
+.overlay-enter-active [data-panel],
+.overlay-leave-active [data-panel] {
+  transition: transform 0.26s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.overlay-enter-from,
+.overlay-leave-to {
+  opacity: 0;
+}
+.overlay-enter-from [data-panel='right'],
+.overlay-leave-to [data-panel='right'] {
+  transform: translateX(100%);
+}
+.overlay-enter-from [data-panel='center'],
+.overlay-leave-to [data-panel='center'] {
+  transform: translateY(24px) scale(0.96);
 }
 
 /* ---- Scroll reveal (unlayered so it wins over utility transitions).
        Pair the .reveal class with the v-reveal directive in plugins/reveal.ts,
-       which adds .is-revealed once the element enters the viewport. ---- */
+       which adds .is-revealed once the element enters the viewport.
+       It owns `transform`, so never put it on an element that is also rotated. ---- */
 .reveal {
   opacity: 0;
   transform: translateY(20px);
@@ -97,7 +120,13 @@
   }
 
   .animate-rise,
-  .animate-float {
+  .animate-float,
+  .animate-marquee {
     animation: none;
+  }
+
+  .press:hover,
+  .press:active {
+    transform: none;
   }
 }

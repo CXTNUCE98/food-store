@@ -1,43 +1,36 @@
 import type { Config } from 'tailwindcss'
+import { COLORS, FONTS } from './design/tokens'
+
+const INK = COLORS.ink
 
 /**
- * Tailwind maps its utility names onto the CSS-variable theme tokens defined
- * in assets/css/themes.css. Because the values are `var(--token)`, every
- * utility (bg-accent, text-fg, border-border…) automatically follows the
- * active [data-theme] — a single set of classes serves both themes.
+ * Tailwind maps its utility names onto the sticker design tokens in
+ * design/tokens.ts. The bare `border` utility is the house border (2.5px ink),
+ * and the `shadow-hard*` scale is the hard, blur-free offset shadow.
  */
 export default <Partial<Config>>{
-  // Map Tailwind's `dark:` variant onto our own theme attribute so utilities
-  // can target the dark theme without a separate media query.
-  darkMode: ['selector', '[data-theme="dark"]'],
   theme: {
     extend: {
-      colors: {
-        bg: 'var(--bg)',
-        'bg-2': 'var(--bg-2)',
-        surface: 'var(--surface)',
-        'surface-2': 'var(--surface-2)',
-        fg: 'var(--fg)',
-        muted: 'var(--muted)',
-        faint: 'var(--faint)',
-        border: 'var(--border)',
-        accent: 'var(--accent)',
-        'accent-hover': 'var(--accent-hover)',
-        'accent-ink': 'var(--accent-ink)',
-        hot: 'var(--hot)',
-        'hot-ink': 'var(--hot-ink)',
-        fresh: 'var(--fresh)',
-      },
+      colors: COLORS,
       fontFamily: {
-        sans: 'var(--font-sans)',
-        display: 'var(--font-display)',
+        sans: FONTS.body,
+        display: FONTS.display,
+      },
+      borderWidth: {
+        DEFAULT: '2.5px',
+      },
+      borderColor: {
+        DEFAULT: INK,
       },
       borderRadius: {
-        card: 'var(--radius)',
+        card: '24px',
+        hero: '28px',
       },
       boxShadow: {
-        soft: 'var(--shadow)',
-        'soft-sm': 'var(--shadow-sm)',
+        'hard-sm': `2px 2px 0 ${INK}`,
+        hard: `5px 5px 0 ${INK}`,
+        'hard-lg': `8px 8px 0 ${INK}`,
+        'hard-chili': `4px 4px 0 ${COLORS.chili}`,
       },
       maxWidth: {
         wrap: '1200px',
@@ -52,16 +45,22 @@ export default <Partial<Config>>{
           from: { opacity: '0', transform: 'translateY(26px)' },
           to: { opacity: '1', transform: 'translateY(0)' },
         },
-        // Slow vertical drift for the hero's decorative blobs.
+        // Gentle bob for the hero stickers; keeps each sticker's own tilt (--r).
         float: {
-          '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-20px)' },
+          '0%, 100%': { transform: 'translateY(0) rotate(var(--r, 0deg))' },
+          '50%': { transform: 'translateY(-10px) rotate(var(--r, 0deg))' },
+        },
+        // The taste strip scrolls one copy of its content, then loops.
+        marquee: {
+          from: { transform: 'translateX(0)' },
+          to: { transform: 'translateX(-50%)' },
         },
       },
       animation: {
         pop: 'pop 0.22s ease',
         rise: 'rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both',
-        float: 'float 7s ease-in-out infinite',
+        float: 'float 5s ease-in-out infinite',
+        marquee: 'marquee 28s linear infinite',
       },
     },
   },

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-withDefaults(defineProps<{ small?: boolean }>(), { small: false })
 defineEmits<{ click: [] }>()
 </script>
 
@@ -7,10 +6,9 @@ defineEmits<{ click: [] }>()
   <button
     type="button"
     aria-label="Đóng"
-    class="flex shrink-0 cursor-pointer items-center justify-center rounded-full border-[1.5px] border-border bg-surface leading-none text-fg transition-colors hover:bg-bg-2"
-    :class="small ? 'size-8 text-[18px]' : 'size-[38px] text-[20px]'"
+    class="press grid size-11 shrink-0 place-items-center rounded-full border bg-white text-[26px] font-semibold leading-none text-ink shadow-hard-sm"
     @click="$emit('click')"
   >
-    ×
+    <span aria-hidden="true" class="-mt-0.5">×</span>
   </button>
 </template>

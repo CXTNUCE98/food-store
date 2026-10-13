@@ -5,34 +5,32 @@ const year = new Date().getFullYear()
 </script>
 
 <template>
-  <footer class="mt-[72px] border-t border-border pb-8 pt-12">
+  <footer class="bg-ink pb-8 pt-14 text-paper">
     <div
-      class="wrap grid grid-cols-1 gap-8 min-[681px]:grid-cols-[1.4fr_1fr_1fr] [&_h5]:mb-3.5 [&_h5]:text-[13px] [&_h5]:font-bold [&_h5]:uppercase [&_h5]:tracking-[0.16em] [&_h5]:text-faint"
+      class="wrap grid gap-10 [grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))] [&_h2]:mb-3 [&_h2]:text-[13px] [&_h2]:font-bold [&_h2]:uppercase [&_h2]:tracking-[0.16em] [&_h2]:text-paper/60"
     >
-      <div v-reveal class="reveal">
-        <BrandLogo :size="26" />
-        <p class="mt-2.5 max-w-[34ch] text-sm text-muted">{{ SITE.tagline }}</p>
+      <div>
+        <p class="display text-[44px]">
+          {{ SITE.brandLead }} <span class="text-lime">{{ SITE.brandTail }}</span>
+        </p>
+        <p class="mt-4 max-w-[36ch] text-[15px] text-paper/80">{{ SITE.tagline }}</p>
       </div>
-      <nav
-        v-reveal="110"
-        class="reveal [&_a]:block [&_a]:w-fit [&_a]:py-[5px] [&_a]:text-muted [&_a]:transition-all hover:[&_a]:translate-x-1 hover:[&_a]:text-accent"
-      >
-        <h5>Chốt đơn</h5>
+
+      <nav aria-label="Chốt đơn" class="[&_a]:flex [&_a]:min-h-10 [&_a]:w-fit [&_a]:items-center [&_a]:font-semibold [&_a]:transition-colors hover:[&_a]:text-lime">
+        <h2>Chốt đơn</h2>
         <a :href="SITE.messengerUrl" target="_blank" rel="noopener">Messenger</a>
         <a :href="SITE.instagramUrl">Instagram</a>
       </nav>
-      <nav
-        v-reveal="220"
-        class="reveal [&_a]:block [&_a]:w-fit [&_a]:py-[5px] [&_a]:text-muted [&_a]:transition-all hover:[&_a]:translate-x-1 hover:[&_a]:text-accent"
-      >
-        <h5>Thông tin</h5>
-        <a href="#menu">Menu hôm nay</a>
-        <p class="py-[5px] text-muted">Giờ mở bán: 9:00 – 21:00 hằng ngày</p>
-        <p class="py-[5px] text-muted">Khu vực giao: nội thành, freeship &lt; 3km</p>
-      </nav>
+
+      <div class="text-[15px] text-paper/80 [&_p]:py-2">
+        <h2>Thông tin</h2>
+        <p>Giờ mở bán: {{ SITE.openingHours }} hằng ngày</p>
+        <p>Khu vực giao: {{ SITE.deliveryArea }}</p>
+      </div>
     </div>
-    <div class="wrap mt-9 border-t border-border pt-5 text-[12.5px] text-faint">
+
+    <p class="wrap mt-12 border-t border-paper/20 pt-6 text-[13px] text-paper/60">
       © {{ year }} TÓP TÉP · Giá là số mẫu, cập nhật theo menu thực tế.
-    </div>
+    </p>
   </footer>
 </template>

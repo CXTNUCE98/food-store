@@ -1,0 +1,40 @@
+<script setup lang="ts">
+/** Ink pill "− n +". `label` names the product for the button labels. */
+withDefaults(
+  defineProps<{
+    qty: number
+    label: string
+    size?: 'sm' | 'md' | 'lg'
+    block?: boolean
+  }>(),
+  { size: 'md', block: false },
+)
+defineEmits<{ increment: []; decrement: [] }>()
+
+const heights = { sm: 'h-10', md: 'h-11', lg: 'h-[52px]' }
+</script>
+
+<template>
+  <div
+    class="inline-flex items-center justify-between rounded-full border bg-ink text-paper"
+    :class="[heights[size], block && 'w-full']"
+  >
+    <button
+      type="button"
+      class="grid aspect-square h-full cursor-pointer place-items-center rounded-full text-[22px] font-bold leading-none transition-colors hover:text-lime"
+      :aria-label="`Bớt 1 ${label}`"
+      @click="$emit('decrement')"
+    >
+      −
+    </button>
+    <span class="display min-w-[2ch] text-center text-[19px] tabular-nums" aria-live="polite">{{ qty }}</span>
+    <button
+      type="button"
+      class="grid aspect-square h-full cursor-pointer place-items-center rounded-full text-[22px] font-bold leading-none transition-colors hover:text-lime"
+      :aria-label="`Thêm 1 ${label}`"
+      @click="$emit('increment')"
+    >
+      +
+    </button>
+  </div>
+</template>

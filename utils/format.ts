@@ -8,12 +8,21 @@ export function formatPrice(amount: number): string {
   return new Intl.NumberFormat('vi-VN').format(amount)
 }
 
-/** "35.000đ / hũ" — the compact price shown on cards and modals. */
-export function formatPriceWithUnit(product: Pick<Product, 'price' | 'unit'>): string {
-  return `${formatPrice(product.price)}đ / ${product.unit}`
+/** "35.000đ" — a bare amount, used for totals and line subtotals. */
+export function formatVnd(amount: number): string {
+  return `${formatPrice(amount)}đ`
 }
 
-/** First letter of a name, upper-cased — used for the monogram placeholder. */
-export function monogram(name: string): string {
-  return (name.trim().charAt(0) || 'T').toUpperCase()
+/** "35.000đ / hũ" — the compact price shown on cards and in the cart. */
+export function formatPriceWithUnit(product: Pick<Product, 'price' | 'unit'>): string {
+  return `${formatVnd(product.price)} / ${product.unit}`
+}
+
+/** "13/10/2026" — the date printed on the order image. */
+export function formatOrderDate(date: Date): string {
+  return new Intl.DateTimeFormat('vi-VN', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  }).format(date)
 }
