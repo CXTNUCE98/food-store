@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-01-01',
   devtools: { enabled: true },
 
-  modules: ['@nuxtjs/tailwindcss'],
+  modules: ['@nuxtjs/tailwindcss', 'nuxt-api-party'],
 
   // Global stylesheet: Tailwind layers + a few shared sticker helpers.
   css: ['~/assets/css/main.css'],
@@ -20,9 +20,24 @@ export default defineNuxtConfig({
       // Absolute site origin used for canonical URLs, Open Graph, sitemap and order links.
       // Override in production via NUXT_PUBLIC_SITE_URL.
       siteUrl: 'https://toptep.vercel.app/',
-      // food-store-be API. Override via NUXT_PUBLIC_API_BASE (e.g. http://localhost:4000/api/v1).
-      apiBase: 'https://food-store-be.vercel.app/api/v1',
     },
+  },
+
+  // Auto-imported, OpenAPI-typed `$foodStoreApi(path, opts)` / `useFoodStoreApiData()`.
+  // Types come from schemas/foodStoreApi.json — refresh it with `pnpm openapi:foodstore`.
+  apiParty: {
+    endpoints: {
+      foodStoreApi: {
+        // Build time: FOOD_STORE_API_URL (e.g. http://localhost:4000/api/v1); runtime: NUXT_PUBLIC_API_PARTY_ENDPOINTS_FOOD_STORE_API_URL.
+        url: process.env.FOOD_STORE_API_URL || 'https://food-store-be.vercel.app/api/v1',
+        schema: './schemas/foodStoreApi.json',
+      },
+    },
+    // Call the API directly (browser and server) instead of through the Nuxt proxy route,
+    // so the API still sees the shopper's IP (rate limits) — same as plain $fetch before.
+    client: 'always',
+    // TanStack Query already caches and hands SSR data to the client.
+    experimental: { disableClientPayloadCache: true },
   },
 
   app: {

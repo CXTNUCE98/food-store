@@ -44,7 +44,7 @@ interface SavedOrder {
 
 /** Places orders and remembers them in this browser so the tracking page needs no login. */
 export function useOrders() {
-  const { apiBase, siteUrl } = useRuntimeConfig().public
+  const { siteUrl } = useRuntimeConfig().public
   const cart = useCart()
 
   function remember(order: CreatedOrder) {
@@ -79,8 +79,7 @@ export function useOrders() {
    * The fetcher behind OrderModal's useMutation.
    */
   async function placeOrder(source: 'WEB' | 'MESSENGER', contact: CheckoutContact = {}): Promise<CreatedOrder> {
-    const order = await $fetch<CreatedOrder>('/orders', {
-      baseURL: apiBase,
+    const order: CreatedOrder = await $foodStoreApi('/orders', {
       method: 'POST',
       body: { lines: cart.apiLines.value, source, ...contact },
     })

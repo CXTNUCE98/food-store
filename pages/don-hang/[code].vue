@@ -27,7 +27,6 @@ interface Tracked {
  */
 await loadCatalog()
 const route = useRoute()
-const { apiBase } = useRuntimeConfig().public
 const { savedToken } = useOrders()
 const { site } = useCatalog()
 const queryClient = useQueryClient()
@@ -53,7 +52,7 @@ function submitPhone() {
 const DONE = ['COMPLETED', 'CANCELLED']
 const { data: order, error: loadError, isLoading: loading, refetch } = useQuery({
   queryKey: queryKeys.order(code, access),
-  queryFn: () => $fetch<Tracked>(`/orders/track/${code.value}`, { baseURL: apiBase, query: access.value! }),
+  queryFn: (): Promise<Tracked> => $foodStoreApi('/orders/track/{code}', { path: { code: code.value }, query: access.value! }),
   enabled: computed(() => !!access.value),
   // A wrong phone/token won't fix itself.
   retry: false,
@@ -62,7 +61,8 @@ const { data: order, error: loadError, isLoading: loading, refetch } = useQuery(
 })
 
 const { mutate: cancelOrder, isPending: cancelling, error: cancelError } = useMutation({
-  mutationFn: () => $fetch<Tracked>(`/orders/${code.value}/cancel`, { baseURL: apiBase, method: 'POST', body: { ...access.value, reason: 'Huỷ trên web' } }),
+  mutationFn: (): Promise<Tracked> =>
+    $foodStoreApi('/orders/{code}/cancel', { method: 'POST', path: { code: code.value }, body: { ...access.value, reason: 'Huỷ trên web' } }),
   onSuccess: (updated) => queryClient.setQueryData(queryKeys.order(code.value, access.value), updated),
 })
 const lastError = computed(() => cancelError.value ?? loadError.value)

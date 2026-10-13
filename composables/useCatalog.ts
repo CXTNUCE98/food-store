@@ -16,14 +16,14 @@ interface CatalogData {
 }
 
 /** The catalogue query: menu + public settings, fetched together. */
-function catalogQueryOptions(apiBase: string, queryClient: QueryClient) {
+function catalogQueryOptions(queryClient: QueryClient) {
   return {
     queryKey: queryKeys.catalog,
     queryFn: async (): Promise<CatalogData> => {
       const [menu, settings] = await Promise.all([
-        $fetch<MenuData>('/catalog/menu', { baseURL: apiBase, timeout: 8000 }),
+        $foodStoreApi('/catalog/menu', { timeout: 8000 }) as Promise<MenuData>,
         // Settings are optional: keep the last known ones (or the defaults) if this call fails.
-        $fetch<PublicSettings>('/settings/public', { baseURL: apiBase, timeout: 8000 }).catch(
+        ($foodStoreApi('/settings/public', { timeout: 8000 }) as Promise<PublicSettings>).catch(
           () => queryClient.getQueryData<CatalogData>(queryKeys.catalog)?.settings ?? null,
         ),
       ])
@@ -48,18 +48,17 @@ export function useCatalog() {
   const nuxtApp = useNuxtApp()
   let catalog = catalogs.get(nuxtApp)
   if (!catalog) {
-    const { apiBase } = useRuntimeConfig().public
     const queryClient = nuxtApp.$queryClient
     // Detached scope: the shared observer must outlive whichever component asked first.
-    catalog = effectScope(true).run(() => createCatalog(apiBase, queryClient))!
+    catalog = effectScope(true).run(() => createCatalog(queryClient))!
     catalogs.set(nuxtApp, catalog)
   }
   return catalog
 }
 
-function createCatalog(apiBase: string, queryClient: QueryClient) {
+function createCatalog(queryClient: QueryClient) {
   // The client is passed explicitly so this also works from plugins (no inject() there).
-  const { data } = useQuery(catalogQueryOptions(apiBase, queryClient), queryClient)
+  const { data } = useQuery(catalogQueryOptions(queryClient), queryClient)
   const menu = computed<MenuData>(() => data.value?.menu ?? FALLBACK_MENU)
   const settings = computed<PublicSettings>(() =>
     data.value?.settings
@@ -136,9 +135,8 @@ function createCatalog(apiBase: string, queryClient: QueryClient) {
  * cached yet. `refetchInterval` keeps an open page's stock and flash prices fresh.
  */
 export async function loadCatalog(options: { refetchOnMount?: boolean | 'always'; refetchInterval?: number } = {}) {
-  const { apiBase } = useRuntimeConfig().public
   const queryClient = useQueryClient()
-  const query = useQuery({ ...catalogQueryOptions(apiBase, queryClient), ...options })
+  const query = useQuery({ ...catalogQueryOptions(queryClient), ...options })
   if (import.meta.server || !query.data.value) await query.suspense()
   return query
 }

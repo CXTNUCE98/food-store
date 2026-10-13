@@ -9,11 +9,19 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "typecheck": "nuxt typecheck"
+    "typecheck": "nuxt typecheck",
+    "openapi:foodstore": "tsx ./s-openapi.ts https://food-store-be.vercel.app/api/docs-json ./schemas/foodStoreApi.json --prefix /api/v1"
   },
   "devDependencies": {
+    "@antfu/utils": "^9.3.0",
     "@nuxtjs/tailwindcss": "^6.14.0",
+    "@types/node": "^22.20.5",
+    "citty": "^0.2.2",
     "nuxt": "^3.14.0",
+    "nuxt-api-party": "^3.4.3",
+    "ofetch": "^1.5.1",
+    "openapi-typescript": "^7.13.0",
+    "tsx": "^4.23.15",
     "typescript": "^5.6.3",
     "vue-tsc": "^2.1.10"
   },
