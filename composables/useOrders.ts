@@ -74,7 +74,10 @@ export function useOrders() {
     }
   }
 
-  /** WEB = checkout form; MESSENGER = "send the order image" (contact optional). */
+  /**
+   * WEB = checkout form; MESSENGER = "send the order image" (contact optional).
+   * The fetcher behind OrderModal's useMutation.
+   */
   async function placeOrder(source: 'WEB' | 'MESSENGER', contact: CheckoutContact = {}): Promise<CreatedOrder> {
     const order = await $fetch<CreatedOrder>('/orders', {
       baseURL: apiBase,

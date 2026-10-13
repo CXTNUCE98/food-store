@@ -1,4 +1,6 @@
+import type { QueryClient } from '@tanstack/vue-query'
 import type { Category, Combo, FlashSaleInfo, MenuData, PaymentMethod, Product, Sellable, SellableKind, SiteConfig } from '~/domain/types'
+import type { NuxtApp } from '#app'
 import { CATEGORY_COLORS } from '~/design/tokens'
 import { SITE } from '~/domain/constants'
 import { FALLBACK_MENU } from '~/data/products'
@@ -8,16 +10,64 @@ interface PublicSettings {
   paymentMethods: PaymentMethod[]
 }
 
+interface CatalogData {
+  menu: MenuData
+  settings: PublicSettings | null
+}
+
+/** The catalogue query: menu + public settings, fetched together. */
+function catalogQueryOptions(apiBase: string, queryClient: QueryClient) {
+  return {
+    queryKey: queryKeys.catalog,
+    queryFn: async (): Promise<CatalogData> => {
+      const [menu, settings] = await Promise.all([
+        $fetch<MenuData>('/catalog/menu', { baseURL: apiBase, timeout: 8000 }),
+        // Settings are optional: keep the last known ones (or the defaults) if this call fails.
+        $fetch<PublicSettings>('/settings/public', { baseURL: apiBase, timeout: 8000 }).catch(
+          () => queryClient.getQueryData<CatalogData>(queryKeys.catalog)?.settings ?? null,
+        ),
+      ])
+      return { menu, settings }
+    },
+    // One quick retry, then the fallback menu stays up rather than blocking the page.
+    retry: 1,
+  }
+}
+
+/** One catalogue observer per app, shared by every component (and the cart plugin). */
+const catalogs = new WeakMap<NuxtApp, ReturnType<typeof createCatalog>>()
+
 /**
- * Catalogue + shop settings shared by every component. The page loads them
- * once with `await loadCatalog()` (SSR / ISR), then the client refreshes in
- * the background so stock and flash-sale prices are never stale for long.
- * When the API is unreachable the static fallback menu keeps the page usable.
+ * Catalogue + shop settings shared by every component, backed by a TanStack
+ * query. Pages load it with `await loadCatalog()` (SSR / ISR), then the client
+ * refetches it in the background so stock and flash-sale prices are never stale
+ * for long. Until the API answers (or if it never does) the static fallback menu
+ * keeps the page usable.
  */
 export function useCatalog() {
-  const menu = useState<MenuData>('catalog', () => FALLBACK_MENU)
-  const settings = useState<PublicSettings>('site-settings', () => ({ site: SITE, paymentMethods: ['COD'] }))
-  const online = useState('catalog-online', () => false)
+  const nuxtApp = useNuxtApp()
+  let catalog = catalogs.get(nuxtApp)
+  if (!catalog) {
+    const { apiBase } = useRuntimeConfig().public
+    const queryClient = nuxtApp.$queryClient
+    // Detached scope: the shared observer must outlive whichever component asked first.
+    catalog = effectScope(true).run(() => createCatalog(apiBase, queryClient))!
+    catalogs.set(nuxtApp, catalog)
+  }
+  return catalog
+}
+
+function createCatalog(apiBase: string, queryClient: QueryClient) {
+  // The client is passed explicitly so this also works from plugins (no inject() there).
+  const { data } = useQuery(catalogQueryOptions(apiBase, queryClient), queryClient)
+  const menu = computed<MenuData>(() => data.value?.menu ?? FALLBACK_MENU)
+  const settings = computed<PublicSettings>(() =>
+    data.value?.settings
+      ? { site: { ...SITE, ...data.value.settings.site }, paymentMethods: data.value.settings.paymentMethods }
+      : { site: SITE, paymentMethods: ['COD'] },
+  )
+  /** True once the live menu has loaded (the fallback can't take orders). */
+  const online = computed(() => !!data.value)
   const now = useNow()
 
   const categories = computed<Category[]>(() => menu.value.categories)
@@ -80,28 +130,21 @@ export function useCatalog() {
   }
 }
 
-/** Fetches menu + settings. Await it in page setup so SSR/ISR renders real data. */
-export async function loadCatalog() {
+/**
+ * Page-level catalogue query. Awaited during SSR/ISR so the HTML carries the real
+ * menu (dehydrated into the payload); on the client it only waits when nothing is
+ * cached yet. `refetchInterval` keeps an open page's stock and flash prices fresh.
+ */
+export async function loadCatalog(options: { refetchOnMount?: boolean | 'always'; refetchInterval?: number } = {}) {
   const { apiBase } = useRuntimeConfig().public
-  const menu = useState<MenuData>('catalog', () => FALLBACK_MENU)
-  const settings = useState<PublicSettings>('site-settings', () => ({ site: SITE, paymentMethods: ['COD'] }))
-  const online = useState('catalog-online', () => false)
+  const queryClient = useQueryClient()
+  const query = useQuery({ ...catalogQueryOptions(apiBase, queryClient), ...options })
+  if (import.meta.server || !query.data.value) await query.suspense()
+  return query
+}
 
-  const { data, refresh } = await useAsyncData('catalog-fetch', async () => {
-    const [m, s] = await Promise.all([
-      $fetch<MenuData>('/catalog/menu', { baseURL: apiBase, timeout: 8000 }),
-      $fetch<PublicSettings>('/settings/public', { baseURL: apiBase, timeout: 8000 }).catch(() => null),
-    ])
-    return { menu: m, settings: s }
-  })
-
-  const apply = () => {
-    if (!data.value) return
-    menu.value = data.value.menu
-    online.value = true
-    if (data.value.settings) settings.value = { site: { ...SITE, ...data.value.settings.site }, paymentMethods: data.value.settings.paymentMethods }
-  }
-  apply()
-  watch(data, apply)
-  return { refresh }
+/** Refetches the catalogue (e.g. after the API rejected a stale cart). */
+export function useRefreshCatalog() {
+  const queryClient = useQueryClient()
+  return () => queryClient.invalidateQueries({ queryKey: queryKeys.catalog })
 }

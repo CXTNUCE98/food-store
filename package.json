@@ -24,6 +24,7 @@
     ]
   },
   "dependencies": {
+    "@tanstack/vue-query": "^5.104.2",
     "uqr": "^0.1.3"
   }
 }

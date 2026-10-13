@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { DeliveryMethod, OrderSnapshot, PaymentMethod } from '~/domain/types'
-import type { CreatedOrder } from '~/composables/useOrders'
+import type { CheckoutContact, CreatedOrder } from '~/composables/useOrders'
 import { parseCartKey } from '~/composables/useCart'
 import { formatVnd } from '~/utils/format'
 import { downloadBlob, renderOrderImage } from '~/utils/orderImage'
@@ -19,11 +19,9 @@ const cart = useCart()
 const { orderOpen, closeAll, openDrawer } = useOverlays()
 const { site, paymentMethods, online } = useCatalog()
 const { placeOrder, snapshot, trackingUrl } = useOrders()
-// The page owns the catalogue fetch (loadCatalog); refreshing its key re-applies fresh stock/prices.
-const refreshCatalog = () => refreshNuxtData('catalog-fetch')
+const refreshCatalog = useRefreshCatalog()
 
 const step = ref<Step>('choose')
-const busy = ref(false)
 const error = ref('')
 const created = ref<CreatedOrder | null>(null)
 const receipt = ref<OrderSnapshot | null>(null)
@@ -80,41 +78,48 @@ async function handleCartError(err: unknown) {
   }
 }
 
+const { mutateAsync: submitOrder, isPending: busy } = useMutation({
+  mutationFn: ({ source, contact }: { source: 'WEB' | 'MESSENGER'; contact?: CheckoutContact }) => placeOrder(source, contact),
+  onMutate: () => {
+    error.value = ''
+  },
+  onSuccess: (order) => {
+    created.value = order
+    receipt.value = snapshot(order)
+    cart.clear()
+    // Stock and flash slots just went down — refresh the menu in the background.
+    void refreshCatalog()
+  },
+  // Awaited before the mutation settles, so the buttons stay busy while the cart is corrected.
+  onError: handleCartError,
+})
+
 async function submitWeb() {
   if (!validate()) return
-  busy.value = true
-  error.value = ''
   try {
-    created.value = await placeOrder('WEB', {
-      customerName: form.customerName.trim(),
-      customerPhone: form.customerPhone,
-      deliveryMethod: form.deliveryMethod,
-      address: form.deliveryMethod === 'DELIVERY' ? form.address.trim() : undefined,
-      note: form.note.trim() || undefined,
-      paymentMethod: form.paymentMethod,
+    await submitOrder({
+      source: 'WEB',
+      contact: {
+        customerName: form.customerName.trim(),
+        customerPhone: form.customerPhone,
+        deliveryMethod: form.deliveryMethod,
+        address: form.deliveryMethod === 'DELIVERY' ? form.address.trim() : undefined,
+        note: form.note.trim() || undefined,
+        paymentMethod: form.paymentMethod,
+      },
     })
-    receipt.value = snapshot(created.value)
-    cart.clear()
     step.value = 'web-done'
-  } catch (err) {
-    await handleCartError(err)
-  } finally {
-    busy.value = false
+  } catch {
+    // Shown by handleCartError.
   }
 }
 
 async function createImageOrder() {
-  busy.value = true
-  error.value = ''
   try {
-    created.value = await placeOrder('MESSENGER')
-    receipt.value = snapshot(created.value)
-    cart.clear()
+    await submitOrder({ source: 'MESSENGER' })
     step.value = 'image-done'
-  } catch (err) {
-    await handleCartError(err)
-  } finally {
-    busy.value = false
+  } catch {
+    // Shown by handleCartError.
   }
 }
 

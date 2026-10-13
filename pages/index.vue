@@ -3,19 +3,13 @@
  * Landing page. Composes the sections; catalogue data comes from the API via
  * loadCatalog() (rendered on the server, refreshed on the client), menu state
  * (filter) lives in useMenu(), cart state in useCart().
+ *
+ * The HTML may be cached (ISR): refetch stock and flash prices once the page is
+ * live, and again every minute while it stays open.
  */
-const { refresh } = await loadCatalog()
+await loadCatalog({ refetchOnMount: 'always', refetchInterval: 60_000 })
 const { products, visibleProducts, activeFilter, isEmpty } = useMenu()
 const { featured } = useCatalog()
-
-// The HTML may be cached (ISR) — pull fresh stock and flash prices once the page is live,
-// and again every minute while it stays open.
-let timer: ReturnType<typeof setInterval>
-onMounted(() => {
-  void refresh()
-  timer = setInterval(() => void refresh(), 60_000)
-})
-onBeforeUnmount(() => clearInterval(timer))
 
 useHomeSeo({
   title: 'Menu đồ ăn vặt chua ngọt',

@@ -30,59 +30,51 @@ const route = useRoute()
 const { apiBase } = useRuntimeConfig().public
 const { savedToken } = useOrders()
 const { site } = useCatalog()
+const queryClient = useQueryClient()
 const code = computed(() => String(route.params.code).toUpperCase())
 useSeoMeta({ title: () => `Đơn #${code.value}`, robots: 'noindex' })
 
+type Access = { token: string } | { phone: string }
 const phone = ref((route.query.phone as string) ?? '')
-const order = ref<Tracked | null>(null)
-const error = ref('')
-const loading = ref(true)
-
-function auth() {
+/** What the lookup is authorised with: the tracking token if we have one, else the phone (set on submit). */
+function initialAccess(): Access | null {
   const token = (route.query.t as string) || savedToken(code.value)
   return token ? { token } : phone.value ? { phone: phone.value } : null
 }
-
-async function load() {
-  const a = auth()
-  if (!a) {
-    loading.value = false
-    return
-  }
-  try {
-    order.value = await $fetch<Tracked>(`/orders/track/${code.value}`, { baseURL: apiBase, query: a })
-    error.value = ''
-  } catch (err) {
-    error.value = toApiError(err).message
-  } finally {
-    loading.value = false
-  }
+const access = ref<Access | null>(initialAccess())
+function submitPhone() {
+  if (!phone.value.trim()) return
+  const unchanged = !!access.value && 'phone' in access.value && access.value.phone === phone.value
+  access.value = { phone: phone.value }
+  // A new phone changes the query key (and fetches by itself); the same one needs a retry.
+  if (unchanged) void refetch()
 }
 
-let timer: ReturnType<typeof setInterval>
-onMounted(() => {
-  void load()
-  // Status changes as the shop works on the order.
-  timer = setInterval(() => order.value && !['COMPLETED', 'CANCELLED'].includes(order.value.status) && load(), 30_000)
+const DONE = ['COMPLETED', 'CANCELLED']
+const { data: order, error: loadError, isLoading: loading, refetch } = useQuery({
+  queryKey: queryKeys.order(code, access),
+  queryFn: () => $fetch<Tracked>(`/orders/track/${code.value}`, { baseURL: apiBase, query: access.value! }),
+  enabled: computed(() => !!access.value),
+  // A wrong phone/token won't fix itself.
+  retry: false,
+  // Status changes as the shop works on the order; stop polling once it's final.
+  refetchInterval: (query) => (query.state.data && !DONE.includes(query.state.data.status) ? 30_000 : false),
 })
-onBeforeUnmount(() => clearInterval(timer))
+
+const { mutate: cancelOrder, isPending: cancelling, error: cancelError } = useMutation({
+  mutationFn: () => $fetch<Tracked>(`/orders/${code.value}/cancel`, { baseURL: apiBase, method: 'POST', body: { ...access.value, reason: 'Huỷ trên web' } }),
+  onSuccess: (updated) => queryClient.setQueryData(queryKeys.order(code.value, access.value), updated),
+})
+const lastError = computed(() => cancelError.value ?? loadError.value)
+const error = computed(() => (lastError.value ? toApiError(lastError.value).message : ''))
 
 const FLOW = ['PENDING', 'CONFIRMED', 'PREPARING', 'DELIVERING', 'COMPLETED']
 const LABELS: Record<string, string> = { PENDING: 'Chờ xác nhận', CONFIRMED: 'Đã xác nhận', PREPARING: 'Đang chuẩn bị', DELIVERING: 'Đang giao', COMPLETED: 'Hoàn thành' }
 const steps = computed(() => (order.value?.deliveryMethod === 'PICKUP' ? FLOW.filter((s) => s !== 'DELIVERING') : FLOW))
 const stepIndex = computed(() => steps.value.indexOf(order.value?.status ?? ''))
 
-const cancelling = ref(false)
-async function cancel() {
-  if (!confirm('Huỷ đơn này?')) return
-  cancelling.value = true
-  try {
-    order.value = await $fetch<Tracked>(`/orders/${code.value}/cancel`, { baseURL: apiBase, method: 'POST', body: { ...auth(), reason: 'Huỷ trên web' } })
-  } catch (err) {
-    error.value = toApiError(err).message
-  } finally {
-    cancelling.value = false
-  }
+function cancel() {
+  if (confirm('Huỷ đơn này?')) cancelOrder()
 }
 </script>
 
@@ -93,7 +85,7 @@ async function cancel() {
 
     <p v-if="loading" class="mt-8 text-muted">Đang tải đơn…</p>
 
-    <form v-else-if="!order" class="mt-8 space-y-3 rounded-hero border-[3px] bg-white p-5 shadow-hard" @submit.prevent="loading = true; load()">
+    <form v-else-if="!order" class="mt-8 space-y-3 rounded-hero border-[3px] bg-white p-5 shadow-hard" @submit.prevent="submitPhone">
       <p class="text-ink-soft">Nhập số điện thoại đã dùng khi đặt để xem đơn.</p>
       <CheckoutField v-model="phone" label="Số điện thoại" type="tel" inputmode="tel" :error="error || undefined" />
       <AppButton type="submit" size="lg" block>Xem đơn</AppButton>

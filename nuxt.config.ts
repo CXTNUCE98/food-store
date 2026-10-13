@@ -20,8 +20,8 @@ export default defineNuxtConfig({
       // Absolute site origin used for canonical URLs, Open Graph, sitemap and order links.
       // Override in production via NUXT_PUBLIC_SITE_URL.
       siteUrl: 'https://toptep.vercel.app/',
-      // food-store-be API. Override via NUXT_PUBLIC_API_BASE.
-      apiBase: 'http://localhost:4000/api/v1',
+      // food-store-be API. Override via NUXT_PUBLIC_API_BASE (e.g. http://localhost:4000/api/v1).
+      apiBase: 'https://food-store-be.vercel.app/api/v1',
     },
   },
 
@@ -50,6 +50,11 @@ export default defineNuxtConfig({
   // Component names come purely from the file name so folder nesting stays
   // an organizational concern, not part of the component identity.
   components: [{ path: '~/components', pathPrefix: false }],
+
+  // TanStack Query composables are auto-imported like Nuxt's own.
+  imports: {
+    presets: [{ from: '@tanstack/vue-query', imports: ['useQuery', 'useMutation', 'useQueryClient'] }],
+  },
 
   // The menu now comes from the API, so the landing page is regenerated in the
   // background (ISR on Vercel) instead of being frozen at build time; the client
