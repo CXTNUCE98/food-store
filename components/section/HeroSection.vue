@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type { Product } from '~/domain/types'
-import { SITE } from '~/domain/constants'
-import { formatPriceWithUnit } from '~/utils/format'
-
 /** The featured product powers the sticker card on the right. */
-defineProps<{ featured: Product | null }>()
+const props = defineProps<{ featured: Product | null }>()
+
+const { site: SITE, toSellable } = useCatalog()
+const featuredItem = computed(() => (props.featured ? toSellable('PRODUCT', props.featured) : null))
 </script>
 
 <template>
@@ -16,7 +16,7 @@ defineProps<{ featured: Product | null }>()
         <p
           class="animate-rise inline-flex rounded-full border bg-white px-4 py-2 text-[13px] font-semibold shadow-hard-sm"
         >
-          Chọn món → tạo ảnh đơn → nhắn tin là xong
+          Chọn món → đặt trên web hoặc gửi ảnh đơn
         </p>
 
         <h1 class="display animate-rise mt-7 [animation-delay:80ms] [font-size:clamp(48px,7.5vw,96px)]">
@@ -30,8 +30,8 @@ defineProps<{ featured: Product | null }>()
         </h1>
 
         <p class="animate-rise mt-7 max-w-[44ch] text-ink-soft [animation-delay:160ms] [font-size:clamp(16px,1.8vw,19px)]">
-          Đồ ăn vặt chua cay mặn ngọt, làm mới mỗi ngày. Bấm thêm món vào giỏ, tạo ảnh
-          đơn rồi nhắn tụi mình qua Messenger — khỏi điền form, khỏi thanh toán online.
+          Đồ ăn vặt chua cay mặn ngọt, làm mới mỗi ngày. Bấm thêm món vào giỏ rồi đặt ngay
+          trên web, hoặc tạo ảnh đơn gửi tụi mình qua Messenger — chốt đơn trong vài phút.
         </p>
 
         <!-- Side by side when there's room, full-width stack on phones. -->
@@ -46,7 +46,7 @@ defineProps<{ featured: Product | null }>()
         </div>
       </div>
 
-      <div v-if="featured" class="relative mx-auto w-full max-w-[440px] px-3 py-8">
+      <div v-if="featured && featuredItem" class="relative mx-auto w-full max-w-[440px] px-3 py-8">
         <!-- Rise lives on a wrapper: the animation owns `transform`, the card owns its tilt. -->
         <div class="animate-rise [animation-delay:200ms]">
           <article class="rotate-2 rounded-hero border-[3px] bg-white p-4 shadow-hard-lg">
@@ -56,8 +56,8 @@ defineProps<{ featured: Product | null }>()
             </div>
             <div class="px-1 pb-1 pt-4">
               <p class="display text-[clamp(26px,3vw,32px)]">{{ featured.name }}</p>
-              <p class="mt-1.5 font-semibold text-ink-soft">{{ formatPriceWithUnit(featured) }}</p>
-              <CartControl :product="featured" label="+ Thêm vào giỏ" size="lg" block class="mt-4" />
+              <PriceTag :item="featuredItem" class="mt-1.5" />
+              <CartControl :item="featuredItem" label="+ Thêm vào giỏ" size="lg" block class="mt-4" />
             </div>
           </article>
         </div>

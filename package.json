@@ -22,5 +22,8 @@
       "@parcel/watcher",
       "esbuild"
     ]
+  },
+  "dependencies": {
+    "uqr": "^0.1.3"
   }
 }

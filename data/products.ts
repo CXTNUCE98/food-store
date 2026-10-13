@@ -1,12 +1,10 @@
-import type { CategoryId, Product } from '~/domain/types'
+import type { MenuData, Product } from '~/domain/types'
+import { CATEGORIES } from '~/domain/constants'
 
 /**
- * Product catalogue. This is the single source of truth for the menu —
- * replace with a real API call later by swapping the implementation of
- * `getProducts()` only.
- *
- * Photos: set `thumbnail_url` to a real 4:3 shot on a light background.
- * Products without one render a striped placeholder in their category colour.
+ * Offline fallback catalogue. The live menu comes from the API
+ * (composables/useCatalog.ts → GET /catalog/menu); this list is only rendered
+ * when the API can't be reached, so the page never ships empty.
  */
 const PRODUCTS: Product[] = [
   {
@@ -113,22 +111,10 @@ const PRODUCTS: Product[] = [
   },
 ]
 
-/** Returns the full catalogue. Swap this body for a real fetch when ready. */
-export function getProducts(): Product[] {
-  return PRODUCTS
-}
-
-/** Returns the featured (best-seller) product, if any. */
-export function getFeaturedProduct(): Product | undefined {
-  return PRODUCTS.find((p) => p.featured)
-}
-
-/** Looks a product up by its slug (used to rebuild the cart from storage). */
-export function getProductById(id: string): Product | undefined {
-  return PRODUCTS.find((p) => p.id === id)
-}
-
-/** Groups products by category id — handy for category-first layouts. */
-export function getProductsByCategory(category: CategoryId): Product[] {
-  return PRODUCTS.filter((p) => p.category === category)
+/** Menu shape used when the API is down: no combos, no flash sales, ordering via image only. */
+export const FALLBACK_MENU: MenuData = {
+  categories: CATEGORIES.map((c) => ({ ...c, count: PRODUCTS.filter((p) => p.category === c.id).length })),
+  products: PRODUCTS.map((p) => ({ ...p, inStock: true, available: 99, flashSale: null })),
+  combos: [],
+  flashSales: { running: [], upcoming: [] },
 }

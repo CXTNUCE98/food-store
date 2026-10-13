@@ -1,12 +1,14 @@
-import type { OrderSnapshot } from '~/domain/types'
-import { SITE } from '~/domain/constants'
+import { encode } from 'uqr'
+import type { OrderSnapshot, SiteConfig } from '~/domain/types'
 import { COLORS, FONTS } from '~/design/tokens'
-import { formatPriceWithUnit, formatVnd } from './format'
+import { formatVnd } from './format'
 
 /**
  * Draws the order receipt onto a 1080px-wide canvas and returns it as a PNG.
  * It mirrors components/cart/OrderReceipt.vue (lime band, item rows, dashed
  * rule, big total) but is laid out straight so it reads well in a chat.
+ * A QR with the order link sits in the band so the shop can open the order
+ * by pasting the image into the admin.
  */
 
 const WIDTH = 1080
@@ -20,16 +22,17 @@ const BAND_H = 216
 const ROW_H = 108
 const RULE_GAP = 32 // last row -> dashed rule
 const TOTAL_H = 180 // dashed rule -> caption baseline
+const QR_SIZE = 168
 
-const CAPTION = `Gửi ảnh này qua Messenger để chốt đơn · ${SITE.openingHours}`
+const caption = (site: SiteConfig) => `Gửi ảnh này qua Messenger để chốt đơn · ${site.openingHours}`
 
 const font = {
   display: (size: number) => `800 ${size}px ${FONTS.display}`,
   body: (weight: number, size: number) => `${weight} ${size}px ${FONTS.body}`,
 }
 
-export async function renderOrderImage(order: OrderSnapshot): Promise<Blob> {
-  await loadFonts(order)
+export async function renderOrderImage(order: OrderSnapshot, site: SiteConfig): Promise<Blob> {
+  await loadFonts(order, site)
 
   const cardX = MARGIN
   const cardY = MARGIN
@@ -70,10 +73,12 @@ export async function renderOrderImage(order: OrderSnapshot): Promise<Blob> {
   ctx.textBaseline = 'alphabetic'
   ctx.textAlign = 'left'
   ctx.font = font.display(92)
-  ctx.fillText(`${SITE.brandLead} ${SITE.brandTail}`, left, cardY + 122)
+  ctx.fillText(`${site.brandLead} ${site.brandTail}`, left, cardY + 122)
   ctx.fillStyle = COLORS['ink-soft']
   ctx.font = font.body(600, 32)
   ctx.fillText(`Đơn #${order.code} · ${order.date}`, left, cardY + 172)
+
+  if (order.trackingUrl) drawQr(ctx, order.trackingUrl, right - QR_SIZE, cardY + (BAND_H - QR_SIZE) / 2)
 
   // Item rows: "2 × Name ........ 70.000đ" with the unit price underneath.
   let y = cardY + BAND_H + 40
@@ -87,10 +92,10 @@ export async function renderOrderImage(order: OrderSnapshot): Promise<Blob> {
 
     ctx.textAlign = 'left'
     ctx.font = font.body(700, 34)
-    ctx.fillText(fitText(ctx, `${line.qty} × ${line.product.name}`, right - left - subtotalW - 32), left, y + 46)
+    ctx.fillText(fitText(ctx, `${line.qty} × ${line.name}`, right - left - subtotalW - 32), left, y + 46)
     ctx.font = font.body(400, 26)
     ctx.fillStyle = COLORS.muted
-    ctx.fillText(formatPriceWithUnit(line.product), left, y + 84)
+    ctx.fillText(fitText(ctx, line.priceLabel, right - left), left, y + 84)
 
     if (i < order.lines.length - 1) {
       ctx.fillStyle = COLORS.line
@@ -127,7 +132,7 @@ export async function renderOrderImage(order: OrderSnapshot): Promise<Blob> {
   ctx.textAlign = 'left'
   ctx.font = font.body(500, 27)
   ctx.fillStyle = COLORS.muted
-  ctx.fillText(fitText(ctx, CAPTION, right - left), left, y)
+  ctx.fillText(fitText(ctx, caption(site), right - left), left, y)
 
   // Card border last so it sits on top of the band edges.
   ctx.strokeStyle = COLORS.ink
@@ -156,14 +161,14 @@ export function downloadBlob(blob: Blob, filename: string) {
  * Web fonts load lazily per unicode-range, so ask for exactly the glyphs we
  * are about to draw (Vietnamese diacritics live in their own subset).
  */
-async function loadFonts(order: OrderSnapshot) {
+async function loadFonts(order: OrderSnapshot, site: SiteConfig) {
   if (!document.fonts) return
   const sample = [
-    SITE.brandLead,
-    SITE.brandTail,
+    site.brandLead,
+    site.brandTail,
     `Đơn #${order.code} ${order.date} Tổng cộng món ×`,
-    CAPTION,
-    ...order.lines.map((l) => `${l.product.name} ${formatPriceWithUnit(l.product)} ${formatVnd(l.subtotal)}`),
+    caption(site),
+    ...order.lines.map((l) => `${l.name} ${l.priceLabel} ${formatVnd(l.subtotal)}`),
     formatVnd(order.total),
   ].join(' ')
 
@@ -176,6 +181,25 @@ async function loadFonts(order: OrderSnapshot) {
   ]).catch(() => {
     // Fall back to system fonts rather than failing the download.
   })
+}
+
+/** White rounded tile with the QR modules in ink. */
+function drawQr(ctx: CanvasRenderingContext2D, text: string, x: number, y: number) {
+  const qr = encode(text, { ecc: 'M', border: 1 })
+  const cell = QR_SIZE / qr.size
+  roundedRect(ctx, x - 8, y - 8, QR_SIZE + 16, QR_SIZE + 16, 18)
+  ctx.fillStyle = COLORS.white
+  ctx.fill()
+  ctx.strokeStyle = COLORS.ink
+  ctx.lineWidth = 4
+  ctx.stroke()
+  ctx.fillStyle = COLORS.ink
+  qr.data.forEach((row, r) =>
+    row.forEach((dark, c) => {
+      // +0.5 avoids hairline gaps between modules from fractional cell sizes.
+      if (dark) ctx.fillRect(x + c * cell, y + r * cell, cell + 0.5, cell + 0.5)
+    }),
+  )
 }
 
 /** Shortens text with an ellipsis until it fits `maxWidth` in the current font. */

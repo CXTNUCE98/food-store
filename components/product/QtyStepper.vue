@@ -6,8 +6,10 @@ withDefaults(
     label: string
     size?: 'sm' | 'md' | 'lg'
     block?: boolean
+    /** Stock limit reached — "+" is disabled. */
+    maxReached?: boolean
   }>(),
-  { size: 'md', block: false },
+  { size: 'md', block: false, maxReached: false },
 )
 defineEmits<{ increment: []; decrement: [] }>()
 
@@ -30,8 +32,9 @@ const heights = { sm: 'h-10', md: 'h-11', lg: 'h-[52px]' }
     <span class="display min-w-[2ch] text-center text-[19px] tabular-nums" aria-live="polite">{{ qty }}</span>
     <button
       type="button"
-      class="grid aspect-square h-full cursor-pointer place-items-center rounded-full text-[22px] font-bold leading-none transition-colors hover:text-lime"
-      :aria-label="`Thêm 1 ${label}`"
+      class="grid aspect-square h-full cursor-pointer place-items-center rounded-full text-[22px] font-bold leading-none transition-colors hover:text-lime disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:text-paper"
+      :aria-label="maxReached ? `${label}: đã hết hàng để thêm` : `Thêm 1 ${label}`"
+      :disabled="maxReached"
       @click="$emit('increment')"
     >
       +

@@ -1,6 +1,6 @@
 /**
  * Minimal sitemap. This is a single-page site today; when product detail
- * pages are added, map over getProducts() and emit a <url> for each.
+ * pages are added, fetch the catalogue (GET /catalog/menu) and emit a <url> for each.
  */
 export default defineEventHandler((event) => {
   const siteUrl = (useRuntimeConfig().public.siteUrl as string).replace(/\/$/, '')

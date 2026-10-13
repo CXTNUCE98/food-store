@@ -1,5 +1,3 @@
-import type { CategoryId } from '~/domain/types'
-
 /**
  * Design tokens — the single source of truth for the "Gen Z sticker" look.
  * Tailwind maps its utilities onto these values (tailwind.config.ts) and the
@@ -21,12 +19,16 @@ export const COLORS = {
   pink: '#FF8FC7',
 } as const
 
-/** Each menu category owns one accent; text on top of it is always ink. */
-export const CATEGORY_COLORS: Record<CategoryId, string> = {
+/**
+ * Category accents now come from the admin (category.color). These are the
+ * fallbacks for the original four categories, plus the combo accent.
+ */
+export const CATEGORY_COLORS: Record<string, string> = {
   chua: COLORS.mango,
   lac: COLORS.lime,
   say: COLORS.orange,
   banhtrang: COLORS.pink,
+  combo: COLORS.chili,
 }
 
 export const FONTS = {

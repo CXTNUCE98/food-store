@@ -9,14 +9,14 @@ const steps = [
   },
   {
     n: 2,
-    title: 'Tạo ảnh đơn',
-    text: 'Mở giỏ, bấm “Tạo ảnh đơn” để có một ảnh gom đủ món và tổng tiền.',
+    title: 'Đặt hàng',
+    text: 'Mở giỏ, bấm “Đặt hàng”: điền SĐT để đặt ngay trên web, hoặc tạo ảnh đơn.',
     card: 'bg-lime rotate-1',
   },
   {
     n: 3,
-    title: 'Nhắn tin',
-    text: 'Gửi ảnh qua Messenger, tụi mình chốt đơn liền.',
+    title: 'Chốt đơn',
+    text: 'Tụi mình xác nhận liền. Theo dõi đơn bằng mã đơn ngay trên web.',
     card: 'bg-pink -rotate-1',
   },
 ]

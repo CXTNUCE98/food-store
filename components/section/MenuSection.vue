@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import type { FilterId, Product } from '~/domain/types'
 import { ALL_FILTER } from '~/domain/types'
-import { CATEGORIES } from '~/domain/constants'
-import { getProducts } from '~/data/products'
 
 /**
  * Menu section: filter chips + responsive product grid. Filtering state comes
@@ -13,9 +11,9 @@ import { getProducts } from '~/data/products'
 defineProps<{ products: Product[]; isEmpty: boolean }>()
 const activeFilter = defineModel<FilterId>('filter', { required: true })
 
-const all = getProducts()
+const { products: all, categories } = useCatalog()
 function countFor(filter: FilterId): number {
-  return filter === ALL_FILTER ? all.length : all.filter((p) => p.category === filter).length
+  return filter === ALL_FILTER ? all.value.length : all.value.filter((p) => p.category === filter).length
 }
 </script>
 
@@ -24,7 +22,7 @@ function countFor(filter: FilterId): number {
     <div v-reveal class="reveal">
       <p class="eyebrow">Thực đơn hôm nay</p>
       <h2 class="display mt-3 text-[clamp(36px,5vw,56px)]">Tất cả món đang có</h2>
-      <p class="mt-3 font-medium text-muted">{{ products.length }} món · mới cập nhật hôm nay</p>
+      <p class="mt-3 font-medium text-muted">{{ all.length }} món · mới cập nhật hôm nay</p>
     </div>
 
     <div v-reveal="90" class="reveal mt-7 flex flex-wrap gap-3" role="group" aria-label="Lọc theo danh mục">
@@ -35,7 +33,7 @@ function countFor(filter: FilterId): number {
         @select="activeFilter = ALL_FILTER"
       />
       <FilterChip
-        v-for="cat in CATEGORIES"
+        v-for="cat in categories"
         :key="cat.id"
         :label="cat.label"
         :count="countFor(cat.id)"

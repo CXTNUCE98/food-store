@@ -1,11 +1,11 @@
-import type { Product } from '~/domain/types'
-import { SITE, CATEGORIES } from '~/domain/constants'
+import type { Ref } from 'vue'
+import type { Category, Product, SiteConfig } from '~/domain/types'
 import { formatPrice } from '~/utils/format'
 
 interface HomeSeoInput {
   title: string
   description: string
-  products: Product[]
+  products: Ref<Product[]>
 }
 
 /**
@@ -16,9 +16,10 @@ interface HomeSeoInput {
  */
 export function useHomeSeo({ title, description, products }: HomeSeoInput) {
   const { public: pub } = useRuntimeConfig()
+  const { categories, site } = useCatalog()
   const siteUrl = (pub.siteUrl as string).replace(/\/$/, '')
   const canonical = `${siteUrl}/`
-  const ogImage = products.find((p) => p.thumbnail_url)?.thumbnail_url ?? `${siteUrl}/og.jpg`
+  const ogImage = computed(() => products.value.find((p) => p.thumbnail_url)?.thumbnail_url ?? `${siteUrl}/og.jpg`)
 
   useSeoMeta({
     title,
@@ -41,7 +42,7 @@ export function useHomeSeo({ title, description, products }: HomeSeoInput) {
     script: [
       {
         type: 'application/ld+json',
-        innerHTML: JSON.stringify(buildRestaurantJsonLd(products, siteUrl)),
+        innerHTML: computed(() => JSON.stringify(buildRestaurantJsonLd(products.value, categories.value, site.value, siteUrl))),
       },
     ],
   })
@@ -51,30 +52,32 @@ export function useHomeSeo({ title, description, products }: HomeSeoInput) {
  * Restaurant + hasMenu graph. Each product becomes a MenuItem with an Offer
  * carrying its price so search engines can surface rich menu results.
  */
-function buildRestaurantJsonLd(products: Product[], siteUrl: string) {
-  const menuSections = CATEGORIES.map((cat) => ({
-    '@type': 'MenuSection',
-    name: cat.label,
-    hasMenuItem: products
-      .filter((p) => p.category === cat.id)
-      .map((p) => ({
-        '@type': 'MenuItem',
-        name: p.name,
-        description: p.description,
-        ...(p.thumbnail_url ? { image: p.thumbnail_url } : {}),
-        offers: {
-          '@type': 'Offer',
-          price: formatPrice(p.price).replace(/\./g, ''),
-          priceCurrency: 'VND',
-        },
-      })),
-  })).filter((section) => section.hasMenuItem.length > 0)
+function buildRestaurantJsonLd(products: Product[], categories: Category[], site: SiteConfig, siteUrl: string) {
+  const menuSections = categories
+    .map((cat) => ({
+      '@type': 'MenuSection',
+      name: cat.label,
+      hasMenuItem: products
+        .filter((p) => p.category === cat.id)
+        .map((p) => ({
+          '@type': 'MenuItem',
+          name: p.name,
+          description: p.description,
+          ...(p.thumbnail_url ? { image: p.thumbnail_url } : {}),
+          offers: {
+            '@type': 'Offer',
+            price: formatPrice(p.price).replace(/\./g, ''),
+            priceCurrency: 'VND',
+          },
+        })),
+    }))
+    .filter((section) => section.hasMenuItem.length > 0)
 
   return {
     '@context': 'https://schema.org',
     '@type': 'Restaurant',
     name: 'TÓP TÉP',
-    description: SITE.tagline,
+    description: site.tagline,
     servesCuisine: 'Đồ ăn vặt Việt Nam',
     url: `${siteUrl}/`,
     priceRange: '₫₫',

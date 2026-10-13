@@ -17,9 +17,11 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      // Absolute site origin used for canonical URLs, Open Graph and sitemap.
+      // Absolute site origin used for canonical URLs, Open Graph, sitemap and order links.
       // Override in production via NUXT_PUBLIC_SITE_URL.
       siteUrl: 'https://toptep.vercel.app/',
+      // food-store-be API. Override via NUXT_PUBLIC_API_BASE.
+      apiBase: 'http://localhost:4000/api/v1',
     },
   },
 
@@ -49,12 +51,17 @@ export default defineNuxtConfig({
   // an organizational concern, not part of the component identity.
   components: [{ path: '~/components', pathPrefix: false }],
 
-  // Pre-render the landing page + SEO files to static HTML at build time:
-  // fastest possible first byte and fully-formed markup for crawlers.
+  // The menu now comes from the API, so the landing page is regenerated in the
+  // background (ISR on Vercel) instead of being frozen at build time; the client
+  // also refreshes stock/flash prices after load. Order pages are per-customer:
+  // rendered client-side only. SEO files stay pre-rendered.
+  routeRules: {
+    '/': { isr: 60 },
+    '/don-hang/**': { ssr: false },
+  },
   nitro: {
     prerender: {
-      crawlLinks: true,
-      routes: ['/', '/robots.txt', '/sitemap.xml'],
+      routes: ['/robots.txt', '/sitemap.xml'],
     },
   },
 

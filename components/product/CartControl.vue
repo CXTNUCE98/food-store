@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import type { Product } from '~/domain/types'
+import type { Sellable } from '~/domain/types'
 
 /**
- * "+ Thêm" button that turns into a "− n +" stepper once the product is in
+ * "+ Thêm" button that turns into a "− n +" stepper once the item is in
  * the cart. Both states share one fixed width (or the full width with
- * `block`) so the card layout doesn't jump when it flips.
+ * `block`) so the card layout doesn't jump when it flips. Sold-out items
+ * show a disabled "Hết hàng" instead.
  */
 const props = withDefaults(
   defineProps<{
-    product: Product
+    item: Sellable
     label?: string
     size?: 'md' | 'lg'
     block?: boolean
@@ -17,7 +18,9 @@ const props = withDefaults(
 )
 
 const { qtyOf, increment, decrement } = useCart()
-const qty = computed(() => qtyOf(props.product))
+const qty = computed(() => qtyOf(props.item))
+const soldOut = computed(() => props.item.available <= 0)
+const atMax = computed(() => qty.value >= props.item.available)
 </script>
 
 <template>
@@ -25,19 +28,21 @@ const qty = computed(() => qtyOf(props.product))
     <QtyStepper
       v-if="qty > 0"
       :qty="qty"
-      :label="product.name"
+      :label="item.name"
       :size="size"
+      :max-reached="atMax"
       block
-      @increment="increment(product)"
-      @decrement="decrement(product)"
+      @increment="increment(item)"
+      @decrement="decrement(item)"
     />
+    <AppButton v-else-if="soldOut" variant="white" :size="size" block disabled>Hết hàng</AppButton>
     <AppButton
       v-else
       variant="lime"
       :size="size"
       block
-      :aria-label="`Thêm ${product.name} vào giỏ`"
-      @click="increment(product)"
+      :aria-label="`Thêm ${item.name} vào giỏ`"
+      @click="increment(item)"
     >
       {{ label }}
     </AppButton>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SITE } from '~/domain/constants'
+const { site: SITE } = useCatalog()
 
 const year = new Date().getFullYear()
 </script>
@@ -26,11 +26,12 @@ const year = new Date().getFullYear()
         <h2>Thông tin</h2>
         <p>Giờ mở bán: {{ SITE.openingHours }} hằng ngày</p>
         <p>Khu vực giao: {{ SITE.deliveryArea }}</p>
+        <p><NuxtLink to="/don-hang" class="font-semibold underline-offset-4 hover:text-lime hover:underline">Tra cứu đơn hàng</NuxtLink></p>
       </div>
     </div>
 
     <p class="wrap mt-12 border-t border-paper/20 pt-6 text-[13px] text-paper/60">
-      © {{ year }} TÓP TÉP · Giá là số mẫu, cập nhật theo menu thực tế.
+      © {{ year }} TÓP TÉP · {{ SITE.shippingNote }}
     </p>
   </footer>
 </template>

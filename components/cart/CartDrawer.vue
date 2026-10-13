@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { formatPriceWithUnit, formatVnd } from '~/utils/format'
+import { formatVnd } from '~/utils/format'
 
-/** Right-hand cart drawer: line items with steppers, total, and the order-image CTA. */
-const { lines, count, total, isEmpty, increment, decrement } = useCart()
+/** Right-hand cart drawer: line items with steppers, total, and the checkout CTA. */
+const { lines, count, total, savings, isEmpty, increment, decrement } = useCart()
 const { drawerOpen, openOrder, closeAll } = useOverlays()
+const { site } = useCatalog()
 
 function browseMenu() {
   closeAll()
@@ -30,20 +31,31 @@ function browseMenu() {
         <ul v-else class="flex flex-col gap-4">
           <li
             v-for="line in lines"
-            :key="line.product.id"
+            :key="line.key"
             class="grid grid-cols-[64px_1fr] gap-3 rounded-[20px] border bg-white p-3 shadow-hard-sm"
           >
-            <ProductThumb :product="line.product" :show-label="false" class="size-16 rounded-[14px] border-2" />
+            <ProductThumb :product="line.item" :show-label="false" :width="64" class="size-16 rounded-[14px] border-2" />
             <div class="min-w-0">
-              <p class="font-bold leading-snug">{{ line.product.name }}</p>
-              <p class="text-[13px] text-muted">{{ formatPriceWithUnit(line.product) }}</p>
+              <p class="font-bold leading-snug">
+                {{ line.item.name }}
+                <span v-if="line.item.kind === 'COMBO'" class="ml-1 rounded-full border-2 bg-lime px-1.5 text-[11px]">Combo</span>
+              </p>
+              <p class="text-[13px] text-muted">
+                <template v-if="line.saleQty">
+                  <b class="text-eyebrow">⚡ {{ formatVnd(line.item.flashSale!.salePrice) }}</b>
+                  <template v-if="line.saleQty < line.qty"> × {{ line.saleQty }}, còn lại {{ formatVnd(line.item.price) }}</template>
+                  <s v-else class="ml-1">{{ formatVnd(line.item.price) }}</s>
+                </template>
+                <template v-else>{{ formatVnd(line.item.price) }} / {{ line.item.unit }}</template>
+              </p>
               <div class="mt-2.5 flex items-center justify-between gap-2">
                 <QtyStepper
                   :qty="line.qty"
-                  :label="line.product.name"
+                  :label="line.item.name"
+                  :max-reached="line.qty >= line.item.available"
                   size="sm"
-                  @increment="increment(line.product)"
-                  @decrement="decrement(line.product)"
+                  @increment="increment(line.item)"
+                  @decrement="decrement(line.item)"
                 />
                 <span class="display text-[19px] tabular-nums">{{ formatVnd(line.subtotal) }}</span>
               </div>
@@ -53,15 +65,16 @@ function browseMenu() {
       </div>
 
       <div class="border-t bg-white px-5 pb-5 pt-4">
+        <p v-if="savings > 0" class="mb-1 text-right text-sm font-semibold text-eyebrow">Flash sale giảm {{ formatVnd(savings) }}</p>
         <div class="flex items-end justify-between gap-3">
           <span class="pb-1 text-sm font-semibold text-muted">Tổng · {{ count }} món</span>
           <span class="display text-[40px] tabular-nums">{{ formatVnd(total) }}</span>
         </div>
         <AppButton size="lg" block class="mt-4" :disabled="isEmpty" @click="openOrder">
-          Tạo ảnh đơn
+          Đặt hàng
         </AppButton>
         <p class="mt-3 text-center text-[13px] text-muted">
-          Không thanh toán online — gửi ảnh để tụi mình chốt đơn.
+          {{ site.shippingNote ?? 'Phí ship khách thanh toán trực tiếp cho shipper.' }}
         </p>
       </div>
     </div>
