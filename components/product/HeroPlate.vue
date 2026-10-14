@@ -4,16 +4,17 @@ import { formatVnd } from '~/utils/format'
 
 /**
  * A dish served on a round wooden plate with its name on a white label, like
- * the dishes around the banner title. Links to the product's card in the menu.
+ * the dishes around the banner title. Opens the product detail popup.
  */
 const props = defineProps<{ product: Product; eager?: boolean }>()
 
 const { toSellable } = useCatalog()
+const { openDetail } = useOverlays()
 const item = computed(() => toSellable('PRODUCT', props.product))
 </script>
 
 <template>
-  <a :href="`#${productAnchor(product.id)}`" class="group flex flex-col items-center">
+  <button type="button" class="group flex w-full cursor-pointer flex-col items-center" :aria-label="`Xem chi tiết ${product.name}`" @click="openDetail('PRODUCT', product.id)">
     <span
       class="wood relative block aspect-square w-full rounded-full border-[3px] p-[8%] shadow-hard transition-transform duration-300 group-hover:-rotate-3 group-hover:scale-[1.03]"
     >
@@ -29,5 +30,5 @@ const item = computed(() => toSellable('PRODUCT', props.product))
     <span class="mt-1.5 text-sm font-extrabold">
       {{ formatVnd(item.flashSale?.salePrice ?? item.price) }}<span class="font-bold text-muted"> / {{ product.unit }}</span>
     </span>
-  </a>
+  </button>
 </template>

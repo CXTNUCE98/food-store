@@ -4,9 +4,11 @@ import { formatVnd } from '~/utils/format'
 /**
  * Flash sale, split in two while one runs: a glossy orange panel with the
  * name and a big day/hour/minute/second countdown, and a shelf of the
- * discounted items to add straight to the cart. Hidden otherwise.
+ * discounted items to add straight to the cart (tap one for its details).
+ * Hidden otherwise.
  */
 const { runningFlash, products, combos, toSellable } = useCatalog()
+const { openDetail } = useOverlays()
 const now = useNow()
 
 const sale = computed(() => runningFlash.value[0] ?? null)
@@ -66,13 +68,13 @@ const percentOff = (price: number, sale: number) => Math.round(((price - sale) /
           :key="item.kind + item.id"
           class="flex w-[196px] shrink-0 flex-col rounded-[22px] border bg-white p-2.5 shadow-hard-sm"
         >
-          <div class="relative">
+          <div class="relative cursor-pointer" @click="openDetail(item.kind, item.id)">
             <ProductThumb :product="item" :show-label="false" :width="200" class="aspect-square rounded-2xl border-2" />
             <span class="display absolute -left-1 top-2 -rotate-6 rounded-xl border-2 bg-mango px-2 text-[16px] shadow-hard-sm">
               −{{ percentOff(item.price, item.flashSale!.salePrice) }}%
             </span>
           </div>
-          <p class="mt-2.5 truncate px-1 font-extrabold leading-tight">{{ item.name }}</p>
+          <button type="button" class="mt-2.5 cursor-pointer truncate px-1 text-left font-extrabold leading-tight hover:text-orange-deep" :aria-label="`Xem chi tiết ${item.name}`" @click="openDetail(item.kind, item.id)">{{ item.name }}</button>
           <p class="px-1 text-sm">
             <b class="display text-[20px] text-eyebrow">{{ formatVnd(item.flashSale!.salePrice) }}</b>
             <s class="ml-1 font-semibold text-muted">{{ formatVnd(item.price) }}</s>

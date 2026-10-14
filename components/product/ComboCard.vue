@@ -5,21 +5,24 @@ import { formatVnd } from '~/utils/format'
 /**
  * Combo card in two layouts: `spotlight` (big photo beside the full contents
  * list, used for the lead combo) and `row` (compact: square photo, name,
- * contents in one line, price and add-to-cart).
+ * contents in one line, price and add-to-cart). Either opens the detail popup:
+ * the name is the real button, stretched over the card; cart controls sit above it.
  */
 const props = withDefaults(defineProps<{ combo: Combo; layout?: 'spotlight' | 'row' }>(), { layout: 'row' })
 
 const { toSellable } = useCatalog()
+const { openDetail } = useOverlays()
 const item = computed(() => toSellable('COMBO', props.combo))
 const savings = computed(() => props.combo.originalPrice - (item.value.flashSale?.salePrice ?? props.combo.price))
 const soldOut = computed(() => item.value.available <= 0)
 const thumbProduct = computed(() => ({ ...props.combo, category: 'combo' }))
+const open = () => openDetail('COMBO', props.combo.id)
 </script>
 
 <template>
   <article
     v-if="layout === 'spotlight'"
-    class="grid h-full overflow-hidden rounded-hero border-[3px] bg-white shadow-hard-lg md:grid-cols-[1.05fr_1fr]"
+    class="group relative grid h-full overflow-hidden rounded-hero border-[3px] bg-white shadow-hard-lg md:grid-cols-[1.05fr_1fr]"
   >
     <div class="relative p-3 md:pr-0">
       <ProductThumb :product="thumbProduct" class="aspect-[4/3] h-full rounded-[26px] border-2 md:aspect-auto md:min-h-[320px]" :class="soldOut && 'grayscale'" />
@@ -34,7 +37,16 @@ const thumbProduct = computed(() => ({ ...props.combo, category: 'combo' }))
 
     <div class="flex flex-col p-5 sm:p-6">
       <p class="text-xs font-extrabold uppercase tracking-[0.14em] text-eyebrow">★ Combo được chọn nhiều</p>
-      <h3 class="display mt-1 text-[clamp(28px,3vw,36px)]">{{ combo.name }}</h3>
+      <h3 class="display mt-1 text-[clamp(28px,3vw,36px)]">
+        <button
+          type="button"
+          class="cursor-pointer text-left transition-colors after:absolute after:inset-0 after:content-[''] group-hover:text-orange-deep"
+          :aria-label="`Xem chi tiết ${combo.name}`"
+          @click="open"
+        >
+          {{ combo.name }}
+        </button>
+      </h3>
       <p v-if="combo.description" class="mt-1.5 text-[15px] text-ink-soft">{{ combo.description }}</p>
 
       <p class="mt-4 text-sm font-extrabold">Trong combo có:</p>
@@ -46,7 +58,7 @@ const thumbProduct = computed(() => ({ ...props.combo, category: 'combo' }))
       </ul>
 
       <div class="min-h-6 flex-1" />
-      <div class="flex flex-wrap items-end justify-between gap-4 border-t-2 border-dashed border-line pt-4">
+      <div class="relative z-10 flex flex-wrap items-end justify-between gap-4 border-t-2 border-dashed border-line pt-4">
         <div>
           <PriceTag :item="item" unit="combo" size="lg" />
           <p v-if="!item.flashSale && combo.originalPrice > combo.price" class="text-sm font-semibold text-muted">mua lẻ <s>{{ formatVnd(combo.originalPrice) }}</s></p>
@@ -58,7 +70,7 @@ const thumbProduct = computed(() => ({ ...props.combo, category: 'combo' }))
 
   <article
     v-else
-    class="grid grid-cols-[104px_1fr] gap-4 rounded-card border bg-white p-3 shadow-hard transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-hard-lg sm:grid-cols-[128px_1fr]"
+    class="group relative grid grid-cols-[104px_1fr] gap-4 rounded-card border bg-white p-3 shadow-hard transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-hard-lg sm:grid-cols-[128px_1fr]"
   >
     <div class="relative">
       <ProductThumb :product="thumbProduct" square :show-label="false" :width="140" class="aspect-square rounded-[20px] border-2" :class="soldOut && 'grayscale'" />
@@ -70,12 +82,21 @@ const thumbProduct = computed(() => ({ ...props.combo, category: 'combo' }))
       </span>
     </div>
     <div class="flex min-w-0 flex-col">
-      <h3 class="display text-[21px]">{{ combo.name }}</h3>
+      <h3 class="display text-[21px]">
+        <button
+          type="button"
+          class="cursor-pointer text-left transition-colors after:absolute after:inset-0 after:content-[''] group-hover:text-orange-deep"
+          :aria-label="`Xem chi tiết ${combo.name}`"
+          @click="open"
+        >
+          {{ combo.name }}
+        </button>
+      </h3>
       <p class="mt-0.5 line-clamp-2 text-[13px] font-semibold text-muted">
         {{ combo.items.map((p) => `${p.qty} ${p.unit} ${p.name}`).join(' + ') }}
       </p>
       <p v-if="savings > 0" class="mt-1 text-[13px] font-extrabold text-eyebrow">Tiết kiệm {{ formatVnd(savings) }}</p>
-      <div class="mt-auto flex flex-wrap items-end justify-between gap-2 pt-2">
+      <div class="relative z-10 mt-auto flex flex-wrap items-end justify-between gap-2 pt-2">
         <PriceTag :item="item" unit="combo" />
         <CartControl :item="item" />
       </div>

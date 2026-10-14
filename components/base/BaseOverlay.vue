@@ -1,9 +1,10 @@
 <script setup lang="ts">
 /**
- * Reusable overlay shell for the cart drawer and the order-image modal. Owns
- * the ink backdrop, click-outside + Escape to close, and Tab focus trapping,
- * restoring focus on close. `side` picks a right-hand drawer or a centered
- * panel; the slide/pop animation lives in main.css (.overlay-*).
+ * Reusable overlay shell for the cart drawer, the order-image modal and the
+ * product detail popup. Owns the ink backdrop, click-outside + Escape to
+ * close, and Tab focus trapping, restoring focus on close. `side` picks a
+ * right-hand drawer or a centered panel (`wide` for the two-column detail
+ * popup); the slide/pop animation lives in main.css (.overlay-*).
  * Page scroll locking is handled once in the layout.
  */
 const props = withDefaults(
@@ -12,8 +13,9 @@ const props = withDefaults(
     /** Accessible name of the dialog. */
     label: string
     side?: 'center' | 'right'
+    wide?: boolean
   }>(),
-  { side: 'center' },
+  { side: 'center', wide: false },
 )
 const emit = defineEmits<{ close: [] }>()
 
@@ -79,7 +81,7 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
         :aria-label="label"
         tabindex="-1"
         class="outline-none"
-        :class="side === 'right' ? 'h-full w-full max-w-[440px]' : 'm-auto w-full max-w-[480px]'"
+        :class="side === 'right' ? 'h-full w-full max-w-[440px]' : ['m-auto w-full', wide ? 'max-w-[960px]' : 'max-w-[480px]']"
       >
         <slot />
       </div>

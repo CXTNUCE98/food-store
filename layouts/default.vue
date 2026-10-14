@@ -1,8 +1,9 @@
 <script setup lang="ts">
 /**
  * Default layout: persistent chrome (header, footer, floating cart bar) wraps
- * the routed page content. The cart drawer and order-image modal are rendered
- * here once so they overlay every page; page scroll is locked while either is open.
+ * the routed page content. The cart drawer, order-image modal and product detail
+ * popup are rendered here once so they overlay every page; page scroll is locked
+ * while any of them is open.
  */
 const { isAnyOpen } = useOverlays()
 const { isEmpty } = useCart()
@@ -27,5 +28,6 @@ if (import.meta.client) {
     <CartBar />
     <CartDrawer />
     <OrderModal />
+    <ProductDetailModal />
   </div>
 </template>
