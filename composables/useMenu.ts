@@ -1,26 +1,37 @@
-import type { FilterId, Product } from '~/domain/types'
-import { ALL_FILTER } from '~/domain/types'
+import type { Category, Product } from '~/domain/types'
+import { CATEGORY_COLORS } from '~/design/tokens'
+
+export interface MenuGroup {
+  category: Category
+  products: Product[]
+}
+
+/** Products whose category isn't (or is no longer) in the admin's list land here. */
+const OTHER: Category = { id: 'khac', label: 'Món khác', color: CATEGORY_COLORS.chua! }
 
 /**
- * Menu state: the active category filter and the derived list of visible
- * products. Keeps the filtering rule in one place instead of scattering it
- * through the components. Data comes from useCatalog().
+ * Menu state: the products grouped by category in the admin's order, empty
+ * categories dropped. Keeps the grouping rule in one place for the category
+ * shelf, the menu sidebar and the grouped grid. Data comes from useCatalog().
  */
 export function useMenu() {
-  const { products } = useCatalog()
-  const activeFilter = useState<FilterId>('menu-filter', () => ALL_FILTER)
+  const { products, categories } = useCatalog()
 
-  const visibleProducts = computed<Product[]>(() =>
-    activeFilter.value === ALL_FILTER
-      ? products.value
-      : products.value.filter((p) => p.category === activeFilter.value),
-  )
+  const groups = computed<MenuGroup[]>(() => {
+    const known = new Set(categories.value.map((c) => c.id))
+    const list = categories.value
+      .map((category) => ({ category, products: products.value.filter((p) => p.category === category.id) }))
+      .filter((g) => g.products.length)
+    const others = products.value.filter((p) => !known.has(p.category))
+    if (others.length) list.push({ category: OTHER, products: others })
+    return list
+  })
 
-  const isEmpty = computed(() => visibleProducts.value.length === 0)
-
-  function setFilter(filter: FilterId) {
-    activeFilter.value = filter
-  }
-
-  return { products, activeFilter, visibleProducts, isEmpty, setFilter }
+  return { products, groups }
 }
+
+/** Anchor id of a category block in the menu, shared by every link that jumps to it. */
+export const categoryAnchor = (id: string) => `danh-muc-${id}`
+
+/** Anchor id of a product card in the menu. */
+export const productAnchor = (id: string) => `mon-${id}`

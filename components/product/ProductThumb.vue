@@ -11,10 +11,12 @@ const props = withDefaults(
     eager?: boolean
     /** Show the "ảnh · slug" label on the placeholder (off for tiny thumbs). */
     showLabel?: boolean
+    /** Crop to a square (round plates) instead of the 4:3 card shape. */
+    square?: boolean
     /** Rendered width in px, used to request a right-sized Cloudinary image. */
     width?: number
   }>(),
-  { eager: false, showLabel: true, width: 600 },
+  { eager: false, showLabel: true, square: false, width: 600 },
 )
 
 const { categoryColor } = useCatalog()
@@ -29,7 +31,7 @@ const stripes = computed(() => {
 const src = computed(() => {
   const url = props.product.thumbnail_url
   if (url?.includes('res.cloudinary.com') && url.includes('/upload/')) {
-    return url.replace('/upload/', `/upload/f_auto,q_auto,c_fill,ar_4:3,w_${props.width * 2}/`)
+    return url.replace('/upload/', `/upload/f_auto,q_auto,c_fill,ar_${props.square ? '1:1' : '4:3'},w_${props.width * 2}/`)
   }
   return url
 })

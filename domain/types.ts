@@ -6,13 +6,9 @@
 /** Category slug (e.g. "chua", "lac"), managed in the admin. */
 export type CategoryId = string
 
-/** Special filter value that matches every product. */
-export const ALL_FILTER = 'all' as const
-export type FilterId = typeof ALL_FILTER | CategoryId
-
 export interface Category {
   id: CategoryId
-  /** Human label shown on the filter chip and the card tag. */
+  /** Human label shown on the category shelf, menu headings and the card tag. */
   label: string
   /** Accent colour for chips, tags and the photo placeholder. */
   color: string
