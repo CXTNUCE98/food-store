@@ -1,22 +1,19 @@
 <script setup lang="ts">
-
 /**
- * Sticker wordmark: brandLead (site.config) on an ink block tilted left, brandTail on a lime block
- * tilted right. `size` is the font size in px.
+ * Wordmark: the brand name (site.config) in glossy candy lettering, with a
+ * small wooden "shop" plank hanging off the end. `size` is the font size in px.
  */
-withDefaults(defineProps<{ size?: number }>(), { size: 22 })
+withDefaults(defineProps<{ size?: number }>(), { size: 26 })
 const { site } = useCatalog()
 </script>
 
 <template>
-  <span class="inline-flex items-center" :style="{ fontSize: `${size}px` }">
-    <span class="display -rotate-[4deg] rounded-[0.4em] bg-ink px-[0.35em] pb-[0.18em] pt-[0.26em] text-paper">
-      {{ site.brandLead }}
-    </span>
+  <span class="inline-flex items-end" :style="{ fontSize: `${size}px` }">
+    <CandyText :text="`${site.brandLead} ${site.brandTail}`" class="leading-none" />
     <span
-      class="display -ml-[0.12em] rotate-[3deg] rounded-[0.4em] border bg-lime px-[0.35em] pb-[0.14em] pt-[0.22em] text-ink"
+      class="wood display -mb-[0.1em] ml-[0.3em] rotate-[-6deg] rounded-[0.3em] border-2 px-[0.35em] pt-[0.12em] text-[0.42em] leading-[1.25] tracking-[0.06em] text-ink"
     >
-      {{ site.brandTail }}
+      shop
     </span>
   </span>
 </template>

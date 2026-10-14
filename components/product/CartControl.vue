@@ -38,7 +38,7 @@ const atMax = computed(() => qty.value >= props.item.available)
     <AppButton v-else-if="soldOut" variant="white" :size="size" block disabled>Hết hàng</AppButton>
     <AppButton
       v-else
-      variant="lime"
+      variant="primary"
       :size="size"
       block
       :aria-label="`Thêm ${item.name} vào giỏ`"

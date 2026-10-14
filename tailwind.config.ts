@@ -4,9 +4,10 @@ import { COLORS, FONTS } from './design/tokens'
 const INK = COLORS.ink
 
 /**
- * Tailwind maps its utility names onto the sticker design tokens in
- * design/tokens.ts. The bare `border` utility is the house border (2.5px ink),
- * and the `shadow-hard*` scale is the hard, blur-free offset shadow.
+ * Tailwind maps its utility names onto the candy design tokens in
+ * design/tokens.ts. The bare `border` utility is the house border (2.5px
+ * chocolate), and the `shadow-hard*` scale is the straight-down 3D drop the
+ * banner lettering uses — no blur.
  */
 export default <Partial<Config>>{
   theme: {
@@ -23,14 +24,15 @@ export default <Partial<Config>>{
         DEFAULT: INK,
       },
       borderRadius: {
-        card: '24px',
-        hero: '28px',
+        card: '28px',
+        hero: '36px',
       },
       boxShadow: {
-        'hard-sm': `2px 2px 0 ${INK}`,
-        hard: `5px 5px 0 ${INK}`,
-        'hard-lg': `8px 8px 0 ${INK}`,
-        'hard-chili': `4px 4px 0 ${COLORS.chili}`,
+        'hard-sm': `0 3px 0 ${INK}`,
+        hard: `0 5px 0 ${INK}`,
+        'hard-lg': `0 8px 0 ${INK}`,
+        'hard-orange': `0 5px 0 ${COLORS['orange-deep']}`,
+        soft: '0 22px 40px -22px rgba(122, 62, 20, 0.55)',
       },
       maxWidth: {
         wrap: '1200px',
@@ -50,6 +52,11 @@ export default <Partial<Config>>{
           '0%, 100%': { transform: 'translateY(0) rotate(var(--r, 0deg))' },
           '50%': { transform: 'translateY(-10px) rotate(var(--r, 0deg))' },
         },
+        // Doodle stars pulse in place.
+        twinkle: {
+          '0%, 100%': { transform: 'scale(1) rotate(0deg)', opacity: '1' },
+          '50%': { transform: 'scale(0.82) rotate(12deg)', opacity: '0.7' },
+        },
         // The taste strip scrolls one copy of its content, then loops.
         marquee: {
           from: { transform: 'translateX(0)' },
@@ -60,6 +67,7 @@ export default <Partial<Config>>{
         pop: 'pop 0.22s ease',
         rise: 'rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both',
         float: 'float 5s ease-in-out infinite',
+        twinkle: 'twinkle 3.2s ease-in-out infinite',
         marquee: 'marquee 28s linear infinite',
       },
     },

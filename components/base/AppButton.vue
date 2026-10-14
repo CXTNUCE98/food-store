@@ -1,12 +1,13 @@
 <script setup lang="ts">
 /**
- * The single button primitive used across the site: a pill sticker with an
- * ink border and a hard shadow that presses in on click.
+ * The single button primitive used across the site: a pill sticker with a
+ * chocolate border and a 3D drop that presses in on click. `primary` is the
+ * glossy orange of the banner lettering.
  * Renders as <a> when `href` is given, otherwise a real <button>.
  */
 const props = withDefaults(
   defineProps<{
-    variant?: 'lime' | 'ink' | 'white' | 'chili'
+    variant?: 'primary' | 'ink' | 'white' | 'mango' | 'chili'
     size?: 'md' | 'lg'
     href?: string
     /** When set, opens the link in a new tab with safe rel. */
@@ -16,11 +17,11 @@ const props = withDefaults(
     block?: boolean
     disabled?: boolean
   }>(),
-  { variant: 'lime', size: 'md', type: 'button', external: false, block: false, disabled: false },
+  { variant: 'primary', size: 'md', type: 'button', external: false, block: false, disabled: false },
 )
 
 const base =
-  'press inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border font-bold shadow-hard-sm disabled:pointer-events-none disabled:opacity-45 [&_svg]:size-[18px] [&_svg]:shrink-0'
+  'press inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border font-extrabold shadow-hard-sm disabled:pointer-events-none disabled:opacity-45 [&_svg]:size-[18px] [&_svg]:shrink-0'
 
 const sizes = {
   md: 'min-h-11 px-5 text-[15px]',
@@ -28,10 +29,11 @@ const sizes = {
 }
 
 const variants = {
-  lime: 'bg-lime text-ink',
+  primary: 'candy-fill',
   ink: 'bg-ink text-paper',
   white: 'bg-white text-ink',
-  chili: 'bg-chili text-ink',
+  mango: 'bg-mango text-ink',
+  chili: 'bg-chili text-white',
 }
 
 const classes = computed(() => [

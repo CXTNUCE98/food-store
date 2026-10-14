@@ -92,7 +92,7 @@ function cancel() {
     </form>
 
     <div v-else class="mt-8 space-y-5">
-      <div class="rounded-hero border-[3px] p-5 shadow-hard" :class="order.status === 'CANCELLED' ? 'bg-white' : 'bg-lime'">
+      <div class="rounded-hero border-[3px] p-5 shadow-hard" :class="order.status === 'CANCELLED' ? 'bg-white' : 'bg-mango'">
         <p class="text-sm font-semibold">Trạng thái</p>
         <p class="display mt-1 text-[34px]">{{ order.statusLabel }}</p>
         <p class="mt-1 text-sm text-ink-soft">

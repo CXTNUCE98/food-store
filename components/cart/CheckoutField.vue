@@ -24,7 +24,7 @@ const id = useId()
       :autocomplete="autocomplete"
       :placeholder="placeholder"
       :aria-invalid="!!error"
-      class="w-full resize-none rounded-2xl border bg-white px-4 py-3 text-base outline-none focus:shadow-hard-sm"
+      class="w-full resize-none rounded-2xl border bg-white px-4 py-3 text-base outline-none focus:border-orange-deep focus:shadow-[0_0_0_4px_rgba(255,122,26,0.25)]"
       :class="error && 'border-eyebrow'"
     />
     <input
@@ -36,7 +36,7 @@ const id = useId()
       :inputmode="inputmode"
       :placeholder="placeholder"
       :aria-invalid="!!error"
-      class="min-h-12 w-full rounded-full border bg-white px-4 text-base outline-none focus:shadow-hard-sm"
+      class="min-h-12 w-full rounded-full border bg-white px-4 text-base outline-none focus:border-orange-deep focus:shadow-[0_0_0_4px_rgba(255,122,26,0.25)]"
       :class="error && 'border-eyebrow'"
     />
     <p v-if="error" class="mt-1 text-[13px] font-semibold text-eyebrow">{{ error }}</p>

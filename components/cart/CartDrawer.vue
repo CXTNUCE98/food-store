@@ -14,9 +14,9 @@ function browseMenu() {
 
 <template>
   <BaseOverlay :open="drawerOpen" side="right" label="Giỏ của bạn" @close="closeAll">
-    <div class="flex h-full flex-col border-l bg-paper">
+    <div class="flex h-full flex-col border-l-[3px] bg-paper">
       <div class="flex items-center justify-between gap-3 border-b px-5 py-4">
-        <h2 class="display text-[32px]">Giỏ của bạn</h2>
+        <h2 class="display text-[32px]">Giỏ <CandyText text="của bạn" /></h2>
         <CloseButton @click="closeAll" />
       </div>
 
@@ -32,13 +32,13 @@ function browseMenu() {
           <li
             v-for="line in lines"
             :key="line.key"
-            class="grid grid-cols-[64px_1fr] gap-3 rounded-[20px] border bg-white p-3 shadow-hard-sm"
+            class="grid grid-cols-[64px_1fr] gap-3 rounded-[22px] border bg-white p-3 shadow-hard-sm"
           >
             <ProductThumb :product="line.item" :show-label="false" :width="64" class="size-16 rounded-[14px] border-2" />
             <div class="min-w-0">
-              <p class="font-bold leading-snug">
+              <p class="font-extrabold leading-snug">
                 {{ line.item.name }}
-                <span v-if="line.item.kind === 'COMBO'" class="ml-1 rounded-full border-2 bg-lime px-1.5 text-[11px]">Combo</span>
+                <span v-if="line.item.kind === 'COMBO'" class="ml-1 rounded-full border-2 bg-mango px-1.5 text-[11px]">Combo</span>
               </p>
               <p class="text-[13px] text-muted">
                 <template v-if="line.saleQty">
@@ -64,7 +64,7 @@ function browseMenu() {
         </ul>
       </div>
 
-      <div class="border-t bg-white px-5 pb-5 pt-4">
+      <div class="border-t-2 border-dashed bg-white px-5 pb-5 pt-4">
         <p v-if="savings > 0" class="mb-1 text-right text-sm font-semibold text-eyebrow">Flash sale giảm {{ formatVnd(savings) }}</p>
         <div class="flex items-end justify-between gap-3">
           <span class="pb-1 text-sm font-semibold text-muted">Tổng · {{ count }} món</span>

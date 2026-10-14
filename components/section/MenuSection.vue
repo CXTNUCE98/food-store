@@ -19,13 +19,11 @@ function countFor(filter: FilterId): number {
 
 <template>
   <section id="menu" class="wrap pb-[clamp(64px,8vw,104px)] pt-4">
-    <div v-reveal class="reveal">
-      <p class="eyebrow">Thực đơn hôm nay</p>
-      <h2 class="display mt-3 text-[clamp(36px,5vw,56px)]">Tất cả món đang có</h2>
-      <p class="mt-3 font-medium text-muted">{{ all.length }} món · mới cập nhật hôm nay</p>
-    </div>
+    <SectionTitle v-reveal class="reveal" eyebrow="Thực đơn hôm nay" title="Tất cả món" accent="đang có">
+      <p class="mt-3 font-semibold text-muted">{{ all.length }} món · mới cập nhật hôm nay</p>
+    </SectionTitle>
 
-    <div v-reveal="90" class="reveal mt-7 flex flex-wrap gap-3" role="group" aria-label="Lọc theo danh mục">
+    <div v-reveal="90" class="reveal mt-7 flex flex-wrap justify-center gap-3" role="group" aria-label="Lọc theo danh mục">
       <FilterChip
         label="Tất cả"
         :count="countFor(ALL_FILTER)"
@@ -42,7 +40,7 @@ function countFor(filter: FilterId): number {
       />
     </div>
 
-    <div class="mt-9 grid gap-6 [grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr))]">
+    <div class="mt-10 grid gap-7 [grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr))]">
       <div
         v-for="(product, index) in products"
         :key="`${activeFilter}-${product.id}`"

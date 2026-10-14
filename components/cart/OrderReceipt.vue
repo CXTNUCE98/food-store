@@ -2,6 +2,7 @@
 import { renderSVG } from 'uqr'
 import type { OrderSnapshot } from '~/domain/types'
 import { formatVnd } from '~/utils/format'
+import { COLORS } from '~/design/tokens'
 
 /**
  * On-screen order receipt. utils/orderImage.ts draws the same layout onto a
@@ -10,12 +11,12 @@ import { formatVnd } from '~/utils/format'
  */
 const props = defineProps<{ order: OrderSnapshot }>()
 const { site } = useCatalog()
-const qr = computed(() => (props.order.trackingUrl ? renderSVG(props.order.trackingUrl, { ecc: 'M', border: 1, blackColor: '#17120E', whiteColor: '#FFFFFF' }) : ''))
+const qr = computed(() => (props.order.trackingUrl ? renderSVG(props.order.trackingUrl, { ecc: 'M', border: 1, blackColor: COLORS.ink, whiteColor: COLORS.white }) : ''))
 </script>
 
 <template>
   <div class="overflow-hidden rounded-card border-[3px] bg-white shadow-hard-lg">
-    <div class="flex items-center justify-between gap-3 border-b-[3px] bg-lime px-5 pb-4 pt-5">
+    <div class="flex items-center justify-between gap-3 border-b-[3px] bg-mango px-5 pb-4 pt-5">
       <div>
         <p class="display text-[40px]">{{ site.brandLead }} {{ site.brandTail }}</p>
         <p class="mt-1.5 text-sm font-semibold text-ink-soft">Đơn #{{ order.code }} · {{ order.date }}</p>

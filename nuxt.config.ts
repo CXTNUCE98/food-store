@@ -7,7 +7,7 @@ export default defineNuxtConfig({
 
   modules: ['@nuxtjs/tailwindcss', 'nuxt-api-party'],
 
-  // Global stylesheet: Tailwind layers + a few shared sticker helpers.
+  // Global stylesheet: Tailwind layers + a few shared candy helpers.
   css: ['~/assets/css/main.css'],
 
   tailwindcss: {
@@ -50,7 +50,7 @@ export default defineNuxtConfig({
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'theme-color', content: '#FFF6E6' },
+        { name: 'theme-color', content: '#FFF5E1' },
         { name: 'format-detection', content: 'telephone=no' },
       ],
       link: [
@@ -58,7 +58,7 @@ export default defineNuxtConfig({
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
         {
           rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,800&display=swap',
+          href: 'https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap',
         },
       ],
     },

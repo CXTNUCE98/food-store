@@ -1,22 +1,36 @@
 /**
- * Design tokens — the single source of truth for the "Gen Z sticker" look.
- * Tailwind maps its utilities onto these values (tailwind.config.ts) and the
- * order-image canvas renderer reads them directly, so both stay in sync.
+ * Design tokens — the single source of truth for the "candy snack shop" look:
+ * warm cream paper, chocolate-brown outlines, glossy orange lettering, mango
+ * and leaf accents. Tailwind maps its utilities onto these values
+ * (tailwind.config.ts) and the order-image canvas renderer reads them
+ * directly, so both stay in sync.
  */
 export const COLORS = {
-  ink: '#17120E',
-  paper: '#FFF6E6',
+  /** Chocolate brown: text, outlines and the 3D drop under stickers. */
+  ink: '#4A2511',
+  paper: '#FFF5E1',
+  cream: '#FFE8BE',
   white: '#FFFFFF',
-  'ink-soft': '#3D332B',
-  muted: '#5E5247',
-  line: '#D9CBB6',
-  eyebrow: '#E2361A',
+  'ink-soft': '#6E4428',
+  muted: '#8C6748',
+  line: '#EED7AE',
+  /** Red-orange for small text on paper (tagline, errors) — AA on cream. */
+  eyebrow: '#D3330F',
 
-  lime: '#C6F432',
-  chili: '#FF4D2E',
-  mango: '#FFC83D',
-  orange: '#FF9F5A',
-  pink: '#FF8FC7',
+  /** Brand orange and its deep end — the glossy title gradient runs between them. */
+  orange: '#FF7A1A',
+  'orange-deep': '#E5461A',
+  'orange-light': '#FFB443',
+  chili: '#E5461A',
+  mango: '#FFC63A',
+  'mango-soft': '#FFEFC2',
+  peach: '#FFD9A6',
+  'peach-soft': '#FFE0C2',
+  wood: '#E8B26A',
+  leaf: '#5EA83A',
+  matcha: '#B5DE7A',
+  'matcha-soft': '#E9F5D6',
+  pink: '#FF9FB0',
 } as const
 
 /**
@@ -25,13 +39,13 @@ export const COLORS = {
  */
 export const CATEGORY_COLORS: Record<string, string> = {
   chua: COLORS.mango,
-  lac: COLORS.lime,
-  say: COLORS.orange,
+  lac: COLORS.matcha,
+  say: COLORS.peach,
   banhtrang: COLORS.pink,
-  combo: COLORS.chili,
+  combo: COLORS['orange-light'],
 }
 
 export const FONTS = {
-  display: "'Bricolage Grotesque', 'Be Vietnam Pro', system-ui, sans-serif",
-  body: "'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', sans-serif",
+  display: "'Baloo 2', 'Nunito', system-ui, sans-serif",
+  body: "'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif",
 } as const

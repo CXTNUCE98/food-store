@@ -4,12 +4,9 @@ const { combos } = useCatalog()
 </script>
 
 <template>
-  <section v-if="combos.length" id="combo" class="wrap pb-[clamp(48px,6vw,80px)]">
-    <div v-reveal class="reveal">
-      <p class="eyebrow">Ăn chung cho vui</p>
-      <h2 class="display mt-3 text-[clamp(36px,5vw,56px)]">Combo tiết kiệm</h2>
-    </div>
-    <div class="mt-9 grid gap-6 [grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr))]">
+  <section v-if="combos.length" id="combo" class="wrap pb-[clamp(48px,6vw,80px)] pt-4">
+    <SectionTitle v-reveal class="reveal" eyebrow="Ăn chung cho vui" title="Combo" accent="tiết kiệm" />
+    <div class="mt-10 grid gap-7 [grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr))]">
       <div v-for="(combo, index) in combos" :key="combo.id" v-reveal="(index % 3) * 80" class="reveal h-full">
         <ComboCard :combo="combo" />
       </div>

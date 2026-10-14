@@ -13,13 +13,16 @@
 
   body {
     @apply bg-paper font-sans text-ink antialiased;
+    /* Faint sprinkle dots, like sugar on the tablecloth. */
+    background-image: radial-gradient(rgba(232, 178, 106, 0.22) 1.3px, transparent 1.6px);
+    background-size: 24px 24px;
     font-size: 16px;
     line-height: 1.6;
     min-height: 100vh;
   }
 
   ::selection {
-    @apply bg-lime text-ink;
+    @apply bg-mango text-ink;
   }
 
   a {
@@ -27,14 +30,14 @@
     text-decoration: none;
   }
 
-  /* Keyboard focus ring: a thick ink outline reads on every accent. */
+  /* Keyboard focus ring: a thick chocolate outline reads on every accent. */
   :focus-visible {
     outline: 3px solid theme('colors.ink');
     outline-offset: 3px;
   }
 }
 
-/* ---- Component layer: the few cross-cutting sticker patterns.
+/* ---- Component layer: the few cross-cutting candy patterns.
        Everything else is plain Tailwind utilities in the templates. ---- */
 @layer components {
   /* Centered page container. */
@@ -42,29 +45,119 @@
     @apply mx-auto w-full max-w-wrap px-5;
   }
 
-  /* Display face: Bricolage 800, tight tracking and leading. */
+  /* Display face: Baloo 2 800. Leading leaves room for stacked Vietnamese marks. */
   .display {
     @apply font-display font-extrabold;
-    letter-spacing: -0.03em;
-    line-height: 0.95;
+    letter-spacing: -0.01em;
+    line-height: 1.08;
   }
 
+  /* Section kicker: dashed pill with hearts, as on the banner's "Thiên đường ăn vặt". */
   .eyebrow {
-    @apply text-[13px] font-bold uppercase text-eyebrow;
-    letter-spacing: 0.16em;
+    @apply inline-flex items-center gap-2 rounded-full border-2 border-dashed bg-white/80 px-4 py-1 text-[13px] font-extrabold uppercase text-eyebrow;
+    letter-spacing: 0.12em;
+  }
+  .eyebrow::before,
+  .eyebrow::after {
+    content: '♥';
+    @apply text-orange;
+    letter-spacing: 0;
   }
 
-  /* Pressable sticker: lifts on hover, sinks into its shadow when pressed.
-     Pair with a `shadow-hard*` utility for the resting shadow. */
+  /* Glossy orange fill used by primary buttons, mirroring the title lettering. */
+  .candy-fill {
+    background-image:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0) 48%),
+      linear-gradient(180deg, theme('colors.orange-light') 0%, theme('colors.orange') 45%, theme('colors.orange-deep') 100%);
+    @apply text-white;
+    text-shadow: 0 1.5px 0 rgba(74, 37, 17, 0.6);
+  }
+
+  /* Wooden sign plank ("SHOP" on the banner). */
+  .wood {
+    background-color: theme('colors.wood');
+    background-image:
+      repeating-linear-gradient(176deg, rgba(122, 62, 20, 0.12) 0 2px, transparent 2px 9px),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0) 60%);
+  }
+
+  /* Torn white paper strip with rough ends, for hand-lettered tags. */
+  .brush {
+    @apply bg-white;
+    clip-path: polygon(
+      2% 12%, 9% 3%, 22% 8%, 38% 0, 55% 6%, 72% 1%, 88% 7%, 98% 2%, 96% 30%, 100% 52%, 97% 76%, 99% 96%,
+      84% 92%, 66% 100%, 48% 94%, 30% 100%, 14% 93%, 1% 98%, 3% 74%, 0 50%, 3% 30%
+    );
+  }
+
+  /* Pressable sticker: lifts on hover, sinks into its 3D drop when pressed.
+     Pair with a `shadow-hard*` utility for the resting drop. */
   .press {
     @apply cursor-pointer transition-[transform,box-shadow] duration-150;
   }
   .press:hover {
-    @apply -translate-x-0.5 -translate-y-0.5 shadow-hard;
+    @apply -translate-y-0.5 shadow-hard;
   }
   .press:active {
-    @apply translate-x-0.5 translate-y-0.5 shadow-none;
+    @apply translate-y-[3px] shadow-none;
   }
+}
+
+/* ---- Candy lettering (components/brand/CandyText.vue): three stacked copies
+       of the same text — chocolate outline with a 3D drop, a white rim, then
+       the orange gradient fill on top. ---- */
+.candy {
+  display: inline-grid;
+  letter-spacing: 0.01em;
+}
+.candy > * {
+  grid-area: 1 / 1;
+  /* The rim's filter makes it a stacking context; positioning every layer
+     keeps them painting in source order (rim, ring, face). */
+  position: relative;
+}
+.candy-rim,
+.candy-ring {
+  user-select: none;
+}
+.candy-rim {
+  color: theme('colors.ink');
+  -webkit-text-stroke: 0.22em theme('colors.ink');
+  filter: drop-shadow(0 0.07em 0 theme('colors.ink'));
+}
+.candy-ring {
+  color: theme('colors.white');
+  -webkit-text-stroke: 0.12em theme('colors.white');
+}
+.candy-face {
+  background-image:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0) 38%),
+    linear-gradient(180deg, theme('colors.orange-light') 0%, theme('colors.orange') 48%, theme('colors.orange-deep') 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Warm peach glow behind the hero, brightest at the top like the banner. */
+.hero-glow {
+  background:
+    radial-gradient(60% 50% at 18% 20%, rgba(255, 255, 255, 0.7), transparent 70%),
+    radial-gradient(130% 90% at 50% 0%, theme('colors.cream') 0%, theme('colors.paper') 75%);
+}
+
+/* Gingham tablecloth for the bottom of the hero. */
+.gingham {
+  background-color: #fff1d6;
+  background-image:
+    linear-gradient(90deg, rgba(255, 170, 90, 0.22) 50%, transparent 50%),
+    linear-gradient(rgba(255, 170, 90, 0.22) 50%, transparent 50%);
+  background-size: 40px 40px;
+}
+
+/* Scalloped chocolate edge on top of the footer. */
+.scallop {
+  height: 18px;
+  background: radial-gradient(circle at 50% 100%, theme('colors.ink') 17px, transparent 18px) 0 0 / 36px 18px repeat-x;
 }
 
 /* ---- Overlay transition (drawer + modal). The backdrop fades while the
@@ -121,6 +214,7 @@
 
   .animate-rise,
   .animate-float,
+  .animate-twinkle,
   .animate-marquee {
     animation: none;
   }

@@ -5,7 +5,7 @@ import { formatVnd } from './format'
 
 /**
  * Draws the order receipt onto a 1080px-wide canvas and returns it as a PNG.
- * It mirrors components/cart/OrderReceipt.vue (lime band, item rows, dashed
+ * It mirrors components/cart/OrderReceipt.vue (mango band, item rows, dashed
  * rule, big total) but is laid out straight so it reads well in a chat.
  * A QR with the order link sits in the band so the shop can open the order
  * by pasting the image into the admin.
@@ -13,7 +13,7 @@ import { formatVnd } from './format'
 
 const WIDTH = 1080
 const MARGIN = 64 // paper around the card
-const SHADOW = 16 // hard ink shadow offset
+const SHADOW = 16 // 3D chocolate drop under the card
 const BORDER = 6
 const RADIUS = 56
 const PAD = 56 // inside the card
@@ -36,7 +36,7 @@ export async function renderOrderImage(order: OrderSnapshot, site: SiteConfig): 
 
   const cardX = MARGIN
   const cardY = MARGIN
-  const cardW = WIDTH - MARGIN * 2 - SHADOW
+  const cardW = WIDTH - MARGIN * 2
   const cardH = BAND_H + 40 + order.lines.length * ROW_H + RULE_GAP + TOTAL_H + PAD
   const height = cardY + cardH + SHADOW + MARGIN
 
@@ -49,21 +49,21 @@ export async function renderOrderImage(order: OrderSnapshot, site: SiteConfig): 
   const left = cardX + PAD
   const right = cardX + cardW - PAD
 
-  // Paper, hard shadow, white card.
+  // Paper, 3D drop, white card.
   ctx.fillStyle = COLORS.paper
   ctx.fillRect(0, 0, WIDTH, height)
-  roundedRect(ctx, cardX + SHADOW, cardY + SHADOW, cardW, cardH, RADIUS)
+  roundedRect(ctx, cardX, cardY + SHADOW, cardW, cardH, RADIUS)
   ctx.fillStyle = COLORS.ink
   ctx.fill()
   roundedRect(ctx, cardX, cardY, cardW, cardH, RADIUS)
   ctx.fillStyle = COLORS.white
   ctx.fill()
 
-  // Lime band, clipped to the card's rounded top, with an ink rule under it.
+  // Mango band, clipped to the card's rounded top, with an ink rule under it.
   ctx.save()
   roundedRect(ctx, cardX, cardY, cardW, cardH, RADIUS)
   ctx.clip()
-  ctx.fillStyle = COLORS.lime
+  ctx.fillStyle = COLORS.mango
   ctx.fillRect(cardX, cardY, cardW, BAND_H)
   ctx.fillStyle = COLORS.ink
   ctx.fillRect(cardX, cardY + BAND_H - BORDER, cardW, BORDER)
@@ -173,11 +173,11 @@ async function loadFonts(order: OrderSnapshot, site: SiteConfig) {
   ].join(' ')
 
   await Promise.all([
-    document.fonts.load(`800 40px 'Bricolage Grotesque'`, sample),
-    document.fonts.load(`400 20px 'Be Vietnam Pro'`, sample),
-    document.fonts.load(`500 20px 'Be Vietnam Pro'`, sample),
-    document.fonts.load(`600 20px 'Be Vietnam Pro'`, sample),
-    document.fonts.load(`700 20px 'Be Vietnam Pro'`, sample),
+    document.fonts.load(`800 40px ${FONTS.display}`, sample),
+    document.fonts.load(`400 20px ${FONTS.body}`, sample),
+    document.fonts.load(`500 20px ${FONTS.body}`, sample),
+    document.fonts.load(`600 20px ${FONTS.body}`, sample),
+    document.fonts.load(`700 20px ${FONTS.body}`, sample),
   ]).catch(() => {
     // Fall back to system fonts rather than failing the download.
   })

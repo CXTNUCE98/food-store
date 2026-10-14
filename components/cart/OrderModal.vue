@@ -147,7 +147,7 @@ const trackLink = computed(() => (created.value ? trackingUrl(created.value).rep
 
 <template>
   <BaseOverlay :open="orderOpen" label="Đặt hàng" @close="closeAll">
-    <div class="rounded-hero border-[3px] bg-paper p-5">
+    <div class="rounded-hero border-[3px] bg-paper p-5 shadow-hard-lg">
       <div class="flex items-center justify-between gap-3">
         <h2 class="display text-[28px]">
           {{ step === 'web-done' ? 'Đặt hàng thành công!' : step === 'image-done' ? 'Ảnh đơn của bạn' : 'Đặt hàng' }}
@@ -164,7 +164,7 @@ const trackLink = computed(() => (created.value ? trackingUrl(created.value).rep
 
         <button
           type="button"
-          class="press block w-full rounded-[22px] border bg-lime p-4 text-left shadow-hard-sm disabled:opacity-50"
+          class="press block w-full rounded-[22px] border bg-mango p-4 text-left shadow-hard-sm disabled:opacity-50"
           :disabled="!online || cart.isEmpty.value"
           @click="step = 'form'"
         >
@@ -241,7 +241,7 @@ const trackLink = computed(() => (created.value ? trackingUrl(created.value).rep
 
       <!-- Done: web order -->
       <div v-else-if="step === 'web-done' && created && receipt" class="mt-5 space-y-4">
-        <div class="rounded-2xl border bg-lime p-4">
+        <div class="rounded-2xl border bg-mango p-4">
           <p class="text-sm font-semibold">Mã đơn của bạn</p>
           <p class="display mt-1 text-[36px]">#{{ created.code }}</p>
           <p class="mt-1 text-sm text-ink-soft">Tụi mình sẽ gọi hoặc nhắn {{ form.customerPhone }} để xác nhận nhé.</p>

@@ -41,7 +41,7 @@ const src = computed(() => {
       v-if="src"
       :src="src"
       :alt="product.name"
-      class="absolute inset-0 size-full object-cover"
+      class="absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
       :loading="eager ? 'eager' : 'lazy'"
       :fetchpriority="eager ? 'high' : 'auto'"
       decoding="async"
