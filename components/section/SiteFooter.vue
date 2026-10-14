@@ -31,7 +31,7 @@ const year = new Date().getFullYear()
     </div>
 
     <p class="wrap mt-12 border-t border-paper/20 pt-6 text-[13px] text-paper/60">
-      © {{ year }} TÓP TÉP · {{ SITE.shippingNote }}
+      © {{ year }} {{ SITE.brandLead }} {{ SITE.brandTail }} · {{ SITE.shippingNote }}
     </p>
   </footer>
 </template>

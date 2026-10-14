@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { SITE_NAME } from '~/site.config'
+
 const { count } = useCart()
 const { openDrawer } = useOverlays()
 </script>
@@ -6,7 +8,7 @@ const { openDrawer } = useOverlays()
 <template>
   <header class="sticky top-0 z-40 border-b bg-paper">
     <div class="wrap flex min-h-[68px] items-center justify-between gap-2">
-      <a href="#top" class="shrink-0 py-2" aria-label="TÓP TÉP — về đầu trang">
+      <a href="#top" class="shrink-0 py-2" :aria-label="`${SITE_NAME} — về đầu trang`">
         <BrandLogo :size="22" />
       </a>
 

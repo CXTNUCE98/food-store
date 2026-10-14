@@ -62,7 +62,11 @@ function createCatalog(queryClient: QueryClient) {
   const menu = computed<MenuData>(() => data.value?.menu ?? FALLBACK_MENU)
   const settings = computed<PublicSettings>(() =>
     data.value?.settings
-      ? { site: { ...SITE, ...data.value.settings.site }, paymentMethods: data.value.settings.paymentMethods }
+      ? {
+          // The API is shared by every site, so the brand name always comes from site.config.
+          site: { ...SITE, ...data.value.settings.site, brandLead: SITE.brandLead, brandTail: SITE.brandTail },
+          paymentMethods: data.value.settings.paymentMethods,
+        }
       : { site: SITE, paymentMethods: ['COD'] },
   )
   /** True once the live menu has loaded (the fallback can't take orders). */

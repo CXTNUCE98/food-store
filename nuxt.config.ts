@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { SITE_IDENTITY, SITE_NAME } from './site.config'
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-01-01',
   devtools: { enabled: true },
@@ -19,7 +21,7 @@ export default defineNuxtConfig({
     public: {
       // Absolute site origin used for canonical URLs, Open Graph, sitemap and order links.
       // Override in production via NUXT_PUBLIC_SITE_URL.
-      siteUrl: 'https://toptep.vercel.app/',
+      siteUrl: SITE_IDENTITY.url,
     },
   },
 
@@ -43,8 +45,8 @@ export default defineNuxtConfig({
   app: {
     head: {
       htmlAttrs: { lang: 'vi' },
-      title: 'TÓP TÉP — Menu đồ ăn vặt',
-      titleTemplate: '%s · TÓP TÉP',
+      title: `${SITE_NAME} — Menu đồ ăn vặt`,
+      titleTemplate: `%s · ${SITE_NAME}`,
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },

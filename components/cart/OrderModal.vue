@@ -4,6 +4,7 @@ import type { CheckoutContact, CreatedOrder } from '~/composables/useOrders'
 import { parseCartKey } from '~/composables/useCart'
 import { formatVnd } from '~/utils/format'
 import { downloadBlob, renderOrderImage } from '~/utils/orderImage'
+import { SITE_IDENTITY } from '~/site.config'
 
 /**
  * Checkout. Two ways to order:
@@ -129,7 +130,7 @@ async function download() {
   downloading.value = true
   try {
     const blob = await renderOrderImage(receipt.value, site.value)
-    downloadBlob(blob, `top-tep-don-${receipt.value.code}.png`)
+    downloadBlob(blob, `${SITE_IDENTITY.key}-don-${receipt.value.code}.png`)
   } catch {
     error.value = 'Chưa tạo được ảnh. Bạn chụp màn hình hoá đơn này gửi tụi mình cũng được nhé.'
   } finally {

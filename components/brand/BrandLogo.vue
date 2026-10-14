@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 /**
- * Sticker wordmark: "TÓP" on an ink block tilted left, "TÉP" on a lime block
+ * Sticker wordmark: brandLead (site.config) on an ink block tilted left, brandTail on a lime block
  * tilted right. `size` is the font size in px.
  */
 withDefaults(defineProps<{ size?: number }>(), { size: 22 })

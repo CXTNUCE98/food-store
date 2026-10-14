@@ -1,6 +1,7 @@
 import type { Ref } from 'vue'
 import type { Category, Product, SiteConfig } from '~/domain/types'
 import { formatPrice } from '~/utils/format'
+import { SITE_NAME } from '~/site.config'
 
 interface HomeSeoInput {
   title: string
@@ -25,7 +26,7 @@ export function useHomeSeo({ title, description, products }: HomeSeoInput) {
     title,
     description,
     ogType: 'website',
-    ogSiteName: 'TÓP TÉP',
+    ogSiteName: SITE_NAME,
     ogTitle: title,
     ogDescription: description,
     ogUrl: canonical,
@@ -76,14 +77,14 @@ function buildRestaurantJsonLd(products: Product[], categories: Category[], site
   return {
     '@context': 'https://schema.org',
     '@type': 'Restaurant',
-    name: 'TÓP TÉP',
+    name: SITE_NAME,
     description: site.tagline,
     servesCuisine: 'Đồ ăn vặt Việt Nam',
     url: `${siteUrl}/`,
     priceRange: '₫₫',
     hasMenu: {
       '@type': 'Menu',
-      name: 'Menu TÓP TÉP',
+      name: `Menu ${SITE_NAME}`,
       hasMenuSection: menuSections,
     },
   }
