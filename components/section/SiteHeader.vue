@@ -17,6 +17,9 @@ function rescroll(hash = '') {
   if (hash) document.querySelector(hash)?.scrollIntoView()
   else window.scrollTo({ top: 0 })
 }
+
+/** Order lookup and an order's own page both light up "Tra đơn". */
+const onOrders = computed(() => route.path.startsWith('/don-hang'))
 </script>
 
 <template>
@@ -35,23 +38,39 @@ function rescroll(hash = '') {
         <NuxtLink to="/#combo" class="rounded-full px-3 py-2 transition-colors hover:bg-cream" @click="rescroll('#combo')">Combo</NuxtLink>
         <NuxtLink to="/#how" class="rounded-full px-3 py-2 transition-colors hover:bg-cream" @click="rescroll('#how')">Cách đặt</NuxtLink>
       </nav>
-      <!-- Phones: Messenger takes the left slot so the sign stays centered. -->
-      <a
-        :href="site.messengerUrl"
-        target="_blank"
-        rel="noopener"
-        aria-label="Nhắn Messenger"
-        class="press grid size-11 place-items-center rounded-full border bg-white shadow-hard-sm lg:hidden [&_svg]:size-5"
-      >
-        <IconMessenger />
-      </a>
+      <!-- Below lg: Messenger and order lookup take the left slot (on the narrowest phones the sign sits a little right of center). -->
+      <div class="flex items-center gap-2 lg:hidden">
+        <a
+          :href="site.messengerUrl"
+          target="_blank"
+          rel="noopener"
+          aria-label="Nhắn Messenger"
+          class="press grid size-11 place-items-center rounded-full border bg-white shadow-hard-sm [&_svg]:size-5"
+        >
+          <IconMessenger />
+        </a>
+        <NuxtLink
+          to="/don-hang"
+          aria-label="Tra cứu đơn hàng"
+          class="press grid size-11 place-items-center rounded-full border shadow-hard-sm [&_svg]:size-5"
+          :class="onOrders ? 'bg-mango' : 'bg-white'"
+          :aria-current="onOrders ? 'page' : undefined"
+        >
+          <IconReceipt />
+        </NuxtLink>
+      </div>
 
       <NuxtLink to="/" class="justify-self-center py-2" :aria-label="`${SITE_NAME} — về trang chủ`" @click="rescroll()">
         <BrandLogo :size="30" />
       </NuxtLink>
 
       <div class="flex items-center justify-end gap-2">
-        <NuxtLink to="/don-hang" class="rounded-full px-3 py-2 text-[15px] font-extrabold transition-colors hover:bg-cream max-lg:hidden">
+        <NuxtLink
+          to="/don-hang"
+          class="rounded-full px-3 py-2 text-[15px] font-extrabold transition-colors hover:bg-cream max-lg:hidden"
+          :class="onOrders && 'bg-cream'"
+          :aria-current="onOrders ? 'page' : undefined"
+        >
           Tra đơn
         </NuxtLink>
         <AppButton variant="white" :href="site.messengerUrl" external class="max-lg:hidden">
