@@ -26,6 +26,8 @@ const step = ref<Step>('choose')
 const error = ref('')
 const created = ref<CreatedOrder | null>(null)
 const receipt = ref<OrderSnapshot | null>(null)
+// Optional bank prefix (SePay VA / VietinBank) + order code: the API builds the same string for the order page.
+const transferContent = computed(() => [site.value.bankTransfer?.contentPrefix, created.value?.code].filter(Boolean).join(' '))
 
 const form = reactive({
   customerName: '',
@@ -250,13 +252,14 @@ const trackLink = computed(() => (created.value ? trackingUrl(created.value).rep
           <p class="font-bold">Chuyển khoản {{ formatVnd(created.total) }}</p>
           <p class="mt-1">{{ site.bankTransfer.bankName }} · <b class="tabular-nums">{{ site.bankTransfer.accountNumber }}</b></p>
           <p>Chủ TK: {{ site.bankTransfer.accountName }}</p>
-          <p>Nội dung: <b>{{ created.code }}</b></p>
+          <p>Nội dung: <b>{{ transferContent }}</b></p>
           <TransferQr
             class="mt-3"
             :bank-name="site.bankTransfer.bankName"
+            :bank-bin="site.bankTransfer.bankBin"
             :account-number="site.bankTransfer.accountNumber"
             :amount="created.total"
-            :content="created.code"
+            :content="transferContent"
           />
         </div>
         <OrderReceipt :order="receipt" class="-rotate-1" />

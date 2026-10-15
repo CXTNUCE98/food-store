@@ -18,7 +18,7 @@ interface Tracked {
   canCancel: boolean
   items: { name: string; qty: number; unitPrice: number; finalUnitPrice: number; lineTotal: number; itemType: string }[]
   timeline: { status: string; label: string; at: string }[]
-  bankTransfer: { bankName: string; accountNumber: string; accountName: string; content: string } | null
+  bankTransfer: { bankName: string; bankBin?: string; accountNumber: string; accountName: string; content: string } | null
 }
 
 /**
@@ -136,6 +136,7 @@ function cancel() {
         <TransferQr
           class="mt-4"
           :bank-name="order.bankTransfer.bankName"
+          :bank-bin="order.bankTransfer.bankBin"
           :account-number="order.bankTransfer.accountNumber"
           :amount="order.total"
           :content="order.bankTransfer.content"

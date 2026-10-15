@@ -153,7 +153,7 @@ export interface SiteConfig {
   openingHours: string
   deliveryArea: string
   shippingNote?: string
-  bankTransfer?: { bankName: string; accountNumber: string; accountName: string }
+  bankTransfer?: { bankName: string; bankBin?: string; accountNumber: string; accountName: string; contentPrefix?: string }
 }
 
 export type PaymentMethod = 'COD' | 'BANK_TRANSFER' | 'ONLINE'
