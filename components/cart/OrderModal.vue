@@ -251,6 +251,13 @@ const trackLink = computed(() => (created.value ? trackingUrl(created.value).rep
           <p class="mt-1">{{ site.bankTransfer.bankName }} · <b class="tabular-nums">{{ site.bankTransfer.accountNumber }}</b></p>
           <p>Chủ TK: {{ site.bankTransfer.accountName }}</p>
           <p>Nội dung: <b>{{ created.code }}</b></p>
+          <TransferQr
+            class="mt-3"
+            :bank-name="site.bankTransfer.bankName"
+            :account-number="site.bankTransfer.accountNumber"
+            :amount="created.total"
+            :content="created.code"
+          />
         </div>
         <OrderReceipt :order="receipt" class="-rotate-1" />
         <div class="flex flex-wrap gap-3 [&>*]:flex-1">

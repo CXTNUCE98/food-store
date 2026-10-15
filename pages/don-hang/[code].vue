@@ -133,6 +133,13 @@ function cancel() {
         <p class="mt-2">{{ order.bankTransfer.bankName }} · <b class="tabular-nums">{{ order.bankTransfer.accountNumber }}</b></p>
         <p>Chủ tài khoản: {{ order.bankTransfer.accountName }}</p>
         <p>Số tiền: <b>{{ formatVnd(order.total) }}</b> · Nội dung: <b>{{ order.bankTransfer.content }}</b></p>
+        <TransferQr
+          class="mt-4"
+          :bank-name="order.bankTransfer.bankName"
+          :account-number="order.bankTransfer.accountNumber"
+          :amount="order.total"
+          :content="order.bankTransfer.content"
+        />
       </div>
 
       <div class="flex flex-wrap gap-3 [&>*]:flex-1">
