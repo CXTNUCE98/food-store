@@ -4,13 +4,19 @@ import { SITE_NAME } from '~/site.config'
 /**
  * Two-tier header: a chocolate info strip (scrolls away) over the sticky shop
  * bar — nav on the left, the wordmark centered like a shop sign, Messenger and
- * the cart on the right. On subpages the anchors point back to the home page.
+ * the cart on the right. Links point at the home page so they work from every page.
  */
 const { count } = useCart()
 const { openDrawer } = useOverlays()
 const { site } = useCatalog()
 const route = useRoute()
-const home = computed(() => (route.path === '/' ? '' : '/'))
+
+/** A click on the URL we're already at is a no-op for the router: scroll to the target ourselves (top for the logo). */
+function rescroll(hash = '') {
+  if (route.path !== '/' || route.hash !== hash) return
+  if (hash) document.querySelector(hash)?.scrollIntoView()
+  else window.scrollTo({ top: 0 })
+}
 </script>
 
 <template>
@@ -25,9 +31,9 @@ const home = computed(() => (route.path === '/' ? '' : '/'))
   <header class="sticky top-0 z-40 border-b bg-paper/95 backdrop-blur-sm">
     <div class="wrap grid h-[68px] grid-cols-[1fr_auto_1fr] items-center gap-2">
       <nav class="flex items-center gap-1 text-[15px] font-extrabold max-lg:hidden" aria-label="Điều hướng chính">
-        <a :href="`${home}#menu`" class="rounded-full px-3 py-2 transition-colors hover:bg-cream">Thực đơn</a>
-        <a :href="`${home}#combo`" class="rounded-full px-3 py-2 transition-colors hover:bg-cream">Combo</a>
-        <a :href="`${home}#how`" class="rounded-full px-3 py-2 transition-colors hover:bg-cream">Cách đặt</a>
+        <NuxtLink to="/#menu" class="rounded-full px-3 py-2 transition-colors hover:bg-cream" @click="rescroll('#menu')">Thực đơn</NuxtLink>
+        <NuxtLink to="/#combo" class="rounded-full px-3 py-2 transition-colors hover:bg-cream" @click="rescroll('#combo')">Combo</NuxtLink>
+        <NuxtLink to="/#how" class="rounded-full px-3 py-2 transition-colors hover:bg-cream" @click="rescroll('#how')">Cách đặt</NuxtLink>
       </nav>
       <!-- Phones: Messenger takes the left slot so the sign stays centered. -->
       <a
@@ -40,7 +46,7 @@ const home = computed(() => (route.path === '/' ? '' : '/'))
         <IconMessenger />
       </a>
 
-      <NuxtLink to="/" class="justify-self-center py-2" :aria-label="`${SITE_NAME} — trang chủ`">
+      <NuxtLink to="/" class="justify-self-center py-2" :aria-label="`${SITE_NAME} — về trang chủ`" @click="rescroll()">
         <BrandLogo :size="30" />
       </NuxtLink>
 

@@ -33,7 +33,9 @@ export interface ApiError {
 
 export function toApiError(err: unknown): ApiError {
   const data = (err as { data?: ApiError })?.data
-  return data?.message ? data : { statusCode: 0, code: 'NETWORK', message: 'Không kết nối được máy chủ. Thử lại sau ít phút nhé.' }
+  // The API's rate-limit message is the raw English ThrottlerException text.
+  if (data?.statusCode === 429) return { ...data, message: 'Bạn thao tác hơi nhanh — đợi vài phút rồi thử lại nhé.' }
+  return data?.message ? data :{ statusCode: 0, code: 'NETWORK', message: 'Không kết nối được máy chủ. Thử lại sau ít phút nhé.' }
 }
 
 interface SavedOrder {
@@ -65,6 +67,9 @@ export function useOrders() {
       return null
     }
   }
+
+  /** Phone from the "Tra cứu đơn" search, handed to the order page in memory (not the URL). */
+  const lookupPhone = useState<string | null>('order-lookup-phone', () => null)
 
   function savedOrders(): SavedOrder[] {
     try {
@@ -111,5 +116,5 @@ export function useOrders() {
     }
   }
 
-  return { placeOrder, snapshot, trackingUrl, savedToken, savedOrders }
+  return { placeOrder, snapshot, trackingUrl, savedToken, savedOrders, lookupPhone }
 }

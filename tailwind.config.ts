@@ -57,6 +57,11 @@ export default <Partial<Config>>{
           '0%, 100%': { transform: 'scale(1) rotate(0deg)', opacity: '1' },
           '50%': { transform: 'scale(0.82) rotate(12deg)', opacity: '0.7' },
         },
+        // Loader dots: hop in turn (staggered via animation-delay).
+        hop: {
+          '0%, 70%, 100%': { transform: 'translateY(0)' },
+          '35%': { transform: 'translateY(-12px)' },
+        },
         // The taste strip scrolls one copy of its content, then loops.
         marquee: {
           from: { transform: 'translateX(0)' },
@@ -69,6 +74,7 @@ export default <Partial<Config>>{
         float: 'float 5s ease-in-out infinite',
         twinkle: 'twinkle 3.2s ease-in-out infinite',
         marquee: 'marquee 28s linear infinite',
+        hop: 'hop 0.9s ease-in-out infinite',
       },
     },
   },

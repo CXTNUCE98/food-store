@@ -1609,6 +1609,32 @@
         ]
       }
     },
+    "/orders/lookup": {
+      "get": {
+        "operationId": "PublicOrdersController_lookup",
+        "summary": "No-login order history: the recent orders placed with this phone (newest first, max 20).",
+        "parameters": [
+          {
+            "name": "phone",
+            "required": true,
+            "in": "query",
+            "description": "Phone number used when ordering (spaces / +84 allowed).",
+            "schema": {
+              "maxLength": 20,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "public"
+        ]
+      }
+    },
     "/orders/track/{code}": {
       "get": {
         "operationId": "PublicOrdersController_track",

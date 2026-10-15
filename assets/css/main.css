@@ -6,9 +6,14 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 88px;
     /* Overlays lock body scroll; reserving the gutter stops the page jumping. */
     scrollbar-gutter: stable;
+  }
+
+  /* Anchor targets land below the sticky header. Margin, not the html's scroll-padding: the
+     router's scroll to /#menu from another page honours scroll-margin-top only. */
+  [id] {
+    scroll-margin-top: 88px;
   }
 
   body {
@@ -215,6 +220,7 @@
   .animate-rise,
   .animate-float,
   .animate-twinkle,
+  .animate-hop,
   .animate-marquee {
     animation: none;
   }

@@ -27,14 +27,15 @@ interface Tracked {
  */
 await loadCatalog()
 const route = useRoute()
-const { savedToken } = useOrders()
+const { savedToken, lookupPhone } = useOrders()
 const { site } = useCatalog()
 const queryClient = useQueryClient()
 const code = computed(() => String(route.params.code).toUpperCase())
 useSeoMeta({ title: () => `Đơn #${code.value}`, robots: 'noindex' })
 
 type Access = { token: string } | { phone: string }
-const phone = ref((route.query.phone as string) ?? '')
+// Phone: from an old ?phone= link, or the "Tra cứu đơn" search this visit.
+const phone = ref((route.query.phone as string) || lookupPhone.value || '')
 /** What the lookup is authorised with: the tracking token if we have one, else the phone (set on submit). */
 function initialAccess(): Access | null {
   const token = (route.query.t as string) || savedToken(code.value)
@@ -83,7 +84,7 @@ function cancel() {
     <NuxtLink to="/don-hang" class="text-sm font-bold text-muted hover:underline">← Tra cứu đơn khác</NuxtLink>
     <h1 class="display mt-3 text-[clamp(36px,6vw,56px)]">Đơn #{{ code }}</h1>
 
-    <p v-if="loading" class="mt-8 text-muted">Đang tải đơn…</p>
+    <AppLoader v-if="loading" label="Đang tải đơn…" class="mt-8" />
 
     <form v-else-if="!order" class="mt-8 space-y-3 rounded-hero border-[3px] bg-white p-5 shadow-hard" @submit.prevent="submitPhone">
       <p class="text-ink-soft">Nhập số điện thoại đã dùng khi đặt để xem đơn.</p>
@@ -92,7 +93,7 @@ function cancel() {
     </form>
 
     <div v-else class="mt-8 space-y-5">
-      <div class="rounded-hero border-[3px] p-5 shadow-hard" :class="order.status === 'CANCELLED' ? 'bg-white' : 'bg-mango'">
+      <div class="rounded-hero border-[3px] p-5 shadow-hard" :class="order.status === 'CANCELLED' ? 'bg-white' : 'bg-lime'">
         <p class="text-sm font-semibold">Trạng thái</p>
         <p class="display mt-1 text-[34px]">{{ order.statusLabel }}</p>
         <p class="mt-1 text-sm text-ink-soft">

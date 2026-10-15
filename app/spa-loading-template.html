@@ -1,0 +1,40 @@
+<!--
+  Shown by Nuxt while a client-only route (/don-hang/**, `ssr: false`) boots and loads its data.
+  Plain HTML, so the colours are copied from design/tokens.ts (paper, ink, orange, mango, leaf)
+  and it has no brand name; the dots mirror components/base/AppLoader.vue.
+-->
+<div class="spa-loader" role="status" aria-label="Đang tải">
+  <span style="background: #ff7a1a"></span>
+  <span style="background: #ffc63a; animation-delay: 0.15s"></span>
+  <span style="background: #5ea83a; animation-delay: 0.3s"></span>
+</div>
+<style>
+  html,
+  body {
+    margin: 0;
+    background: #fff5e1;
+  }
+  .spa-loader {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .spa-loader span {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #4a2511;
+    border-radius: 999px;
+    box-shadow: 2px 2px 0 #4a2511;
+    animation: spa-hop 0.9s ease-in-out infinite;
+  }
+  @keyframes spa-hop {
+    0%, 70%, 100% { transform: translateY(0); }
+    35% { transform: translateY(-12px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .spa-loader span { animation: none; }
+  }
+</style>
