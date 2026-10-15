@@ -28,6 +28,8 @@ const created = ref<CreatedOrder | null>(null)
 const receipt = ref<OrderSnapshot | null>(null)
 // Optional bank prefix (SePay VA / VietinBank) + order code: the API builds the same string for the order page.
 const transferContent = computed(() => [site.value.bankTransfer?.contentPrefix, created.value?.code].filter(Boolean).join(' '))
+// The done step shows the transfer details beside the QR, which needs a wider modal.
+const showTransfer = computed(() => step.value === 'web-done' && created.value?.paymentMethod === 'BANK_TRANSFER' && !!site.value.bankTransfer?.accountNumber)
 
 const form = reactive({
   customerName: '',
@@ -148,7 +150,7 @@ const trackLink = computed(() => (created.value ? trackingUrl(created.value).rep
 </script>
 
 <template>
-  <BaseOverlay :open="orderOpen" label="Đặt hàng" @close="closeAll">
+  <BaseOverlay :open="orderOpen" label="Đặt hàng" :max-width="showTransfer ? 'max-w-[760px]' : undefined" @close="closeAll">
     <div class="rounded-hero border-[3px] bg-paper p-5 shadow-hard-lg">
       <div class="flex items-center justify-between gap-3">
         <h2 class="display text-[28px]">
@@ -248,21 +250,24 @@ const trackLink = computed(() => (created.value ? trackingUrl(created.value).rep
           <p class="display mt-1 text-[36px]">#{{ created.code }}</p>
           <p class="mt-1 text-sm text-ink-soft">Tụi mình sẽ gọi hoặc nhắn {{ form.customerPhone }} để xác nhận nhé.</p>
         </div>
-        <div v-if="created.paymentMethod === 'BANK_TRANSFER' && site.bankTransfer?.accountNumber" class="rounded-2xl border bg-white p-4 text-sm">
-          <p class="font-bold">Chuyển khoản {{ formatVnd(created.total) }}</p>
-          <p class="mt-1">{{ site.bankTransfer.bankName }} · <b class="tabular-nums">{{ site.bankTransfer.accountNumber }}</b></p>
-          <p>Chủ TK: {{ site.bankTransfer.accountName }}</p>
-          <p>Nội dung: <b>{{ transferContent }}</b></p>
-          <TransferQr
-            class="mt-3"
-            :bank-name="site.bankTransfer.bankName"
-            :bank-bin="site.bankTransfer.bankBin"
-            :account-number="site.bankTransfer.accountNumber"
-            :amount="created.total"
-            :content="transferContent"
-          />
+        <!-- From `sm` (the modal widens for this step): order receipt left, payment QR right. On phones the QR comes first. -->
+        <div :class="showTransfer ? 'grid items-start gap-5 sm:grid-cols-2' : ''">
+          <div v-if="showTransfer" class="rounded-2xl border bg-white p-4 text-sm sm:order-2">
+            <p class="text-base font-bold">Chuyển khoản {{ formatVnd(created.total) }}</p>
+            <p class="mt-1">{{ site.bankTransfer!.bankName }} · <b class="tabular-nums">{{ site.bankTransfer!.accountNumber }}</b></p>
+            <p>Chủ TK: {{ site.bankTransfer!.accountName }}</p>
+            <p>Nội dung: <b>{{ transferContent }}</b></p>
+            <TransferQr
+              class="mt-3"
+              :bank-name="site.bankTransfer!.bankName"
+              :bank-bin="site.bankTransfer!.bankBin"
+              :account-number="site.bankTransfer!.accountNumber"
+              :amount="created.total"
+              :content="transferContent"
+            />
+          </div>
+          <OrderReceipt :order="receipt" class="-rotate-1 sm:order-1" />
         </div>
-        <OrderReceipt :order="receipt" class="-rotate-1" />
         <div class="flex flex-wrap gap-3 [&>*]:flex-1">
           <AppButton variant="ink" size="lg" :href="trackLink">Theo dõi đơn</AppButton>
           <AppButton variant="white" size="lg" :disabled="downloading" @click="download"><IconDownload /> Lưu ảnh đơn</AppButton>

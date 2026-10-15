@@ -14,6 +14,8 @@ const props = withDefaults(
     label: string
     side?: 'center' | 'right'
     wide?: boolean
+    /** Tailwind max-width class overriding the centered panel width (e.g. a step that needs more room). */
+    maxWidth?: string
   }>(),
   { side: 'center', wide: false },
 )
@@ -81,7 +83,7 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
         :aria-label="label"
         tabindex="-1"
         class="outline-none"
-        :class="side === 'right' ? 'h-full w-full max-w-[440px]' : ['m-auto w-full', wide ? 'max-w-[960px]' : 'max-w-[480px]']"
+        :class="side === 'right' ? 'h-full w-full max-w-[440px]' : ['m-auto w-full', maxWidth ?? (wide ? 'max-w-[960px]' : 'max-w-[480px]')]"
       >
         <slot />
       </div>
